@@ -1,0 +1,43 @@
+{% load staticfiles %}
+{% block top_html %}
+
+<html>
+{% endblock %}
+    <head>
+        <title>Mixpanel Table for 2</title>
+        <meta charset="utf-8">
+        {% block head_css %}
+            <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+            <!-- <link rel="stylesheet" href="{% static "onboarding/css/style.css" %}"> -->
+        {% endblock %}
+        {% block head_js %}
+            <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+            <!-- <script type="text/javascript" src="{% static "onboarding/js/utilities.js" %}"></script> -->
+        {% endblock %}
+    </head>
+
+    <body>
+        <ul class="nav nav-tabs">
+<!--             <li role="presentation"><a class="nav-link" href="/"><strong>Support Onboarding Guide</strong></a></li>
+            <li role="presentation"><a class="nav-link" href="/getting-started">Getting Started</a></li>
+            <li role="presentation"><a class="nav-link" href="/trainings">Trainings</a></li>
+            <li role="presentation"><a class="nav-link" href="/reference">Reference</a></li>
+            <li role="presentation"><a class="nav-link" href="/team">Team</a></li>
+            <li role="presentation" class="disabled navbar-right"><a class="nav-link" id="self">Welcome</a></li>
+            <li role="presentation" class="navbar-right"><a class="nav-link" href="https://accounts.google.com/logout">Logout</a></li> -->
+        </ul>
+        <div class="wrapper">
+            {% block content %}
+                {% load static %}
+            {% endblock %}
+        </div>
+        <footer>
+            <!-- <img id ="logo" src="{% static 'onboarding/img/logo_white.svg' %}"> -->
+            <span id="footer-text">Made with &#9829 by Tiffany</span>
+        </footer>
+        {% block bottom_js %}
+            <!-- <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script> -->
+        {% endblock %}
+    </body>
+</html>
