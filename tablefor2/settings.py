@@ -10,7 +10,9 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "p32@h3u(q1mof&a87q#(5b1sjy)%(^ct3bsg9a*#b3d_65)mgl"
+SECRET_KEY = os.environ['TF2_DJANGO_SECRET_KEY']
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['TF2_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['TF2_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 SOCIAL_AUTH_RAISE_EXCEPTIONS = True
@@ -73,6 +75,8 @@ TEMPLATES = [
         },
     },
 ]
+
+LOGIN_URL = '/'
 
 WSGI_APPLICATION = 'tablefor2.wsgi.application'
 

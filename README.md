@@ -1,11 +1,11 @@
 # Table For Two
-===============
+
 
 ## TODOs
 - [x] Create home_logged_out page
 - [x] Create database and model
-- [] Create signup flow
-- [] Connect to bambooHR?
+- [ ] Create signup flow
+- [ ] Connect to bambooHR?
 
 
 ## Features
@@ -29,6 +29,7 @@
 - If that user is matched, then we'll set the name and email equal to the match
 
 ### Testing
+```
 from tablefor2.models import *
 import datetime
 
@@ -47,6 +48,7 @@ tv1.matched_name = a.first_name
 tv1.matched_email = a.email
 av.matched_name = t.first_name
 av.matched_email = t.email
+```
 
 
 ## Signup process

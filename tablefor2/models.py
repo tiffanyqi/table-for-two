@@ -4,6 +4,7 @@ from django.db import models
 
 
 class Profile(models.Model):
+    # user = models.OneToOneField(User)
     first_name = models.CharField(null=True, max_length=50)
     last_name = models.CharField(null=True, max_length=50)
     email = models.CharField(null=True, max_length=50)
