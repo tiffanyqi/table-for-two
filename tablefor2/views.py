@@ -10,7 +10,9 @@ from social.apps.django_app.utils import psa
 
 
 def home(request):
-    if request.user.is_authenticated():
+    print request.user.is_authenticated
+    print request.user
+    if request.user:
         return render(request, 'tablefor2/home_logged_in.html')
     else:
         return render(request, 'tablefor2/home_logged_out.html')

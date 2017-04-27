@@ -1,16 +1,29 @@
-from django.contrib.auth.models import User
+# from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, UserManager
 from django_unixdatetimefield import UnixDateTimeField
 from django.db import models
+from django.utils import timezone
 
 
-class Profile(models.Model):
+class Profile(AbstractBaseUser):
     # user = models.OneToOneField(User)
     first_name = models.CharField(null=True, max_length=50)
     last_name = models.CharField(null=True, max_length=50)
     email = models.CharField(null=True, max_length=50)
+
+    USERNAME_FIELD = 'email'
+    username = models.CharField(null=True, max_length=50)
+    is_authenticated = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(default=timezone.now)
+
     division = models.CharField(null=True, max_length=50)
     location = models.CharField(null=True, max_length=50)
     ghangout = models.BooleanField(default=False)
+
+    objects = UserManager()
 
 
 class Availability(models.Model):
