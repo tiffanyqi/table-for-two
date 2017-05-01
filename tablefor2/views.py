@@ -1,7 +1,7 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt
 
 from oauth2client.client import OAuth2WebServerFlow, AccessTokenCredentials
 # from oauth2client.django_orm import Storage
@@ -10,9 +10,7 @@ from social.apps.django_app.utils import psa
 
 
 def home(request):
-    print request.user.is_authenticated
-    print request.user
-    if request.user:
+    if request.user.is_authenticated():
         return render(request, 'tablefor2/home_logged_in.html')
     else:
         return render(request, 'tablefor2/home_logged_out.html')

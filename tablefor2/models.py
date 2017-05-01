@@ -25,6 +25,9 @@ class Profile(AbstractBaseUser):
 
     objects = UserManager()
 
+    def is_authenticated(self):
+        return self.is_authenticated
+
 
 class Availability(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)

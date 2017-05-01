@@ -80,6 +80,7 @@ TEMPLATES = [
 ]
 
 LOGIN_URL = '/'
+LOGIN_REDIRECT_URL = 'home'
 
 WSGI_APPLICATION = 'tablefor2.wsgi.application'
 
