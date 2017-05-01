@@ -4,14 +4,14 @@
 ## TODOs
 - [x] Create home_logged_out page
 - [x] Create database and model
-- [ ] Create signup flow
-- [ ] Connect to bambooHR?
+- [x] Create signup flow
+- [ ] Ask for extra information (profile_information)
+- [ ] Save user in database
 
 
 ## Features
-- Connect data from bambooHR
 - Set your profile settings (location? willing to google hangout if not in the same location?)
-- Set your availability on calendar and see your Mixpanel calendar
+- Set your availability on calendar
 - Get the set of people and match people based on diff division (Can't with the same person afterwards)
 - With a match, send out a calendar invite
 - Weekly email reminder to do a tf2 (Mixpanel? Or set calendar invite for 9am every Monday)
@@ -70,3 +70,10 @@ av.matched_email = t.email
 - Settings
     - Edit any info
     - See current info
+
+
+# V2
+- BambooHR instead?
+- Variable locations?
+- See your Mixpanel calendar
+

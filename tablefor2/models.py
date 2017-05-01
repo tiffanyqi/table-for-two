@@ -19,9 +19,11 @@ class Profile(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
-    division = models.CharField(null=True, max_length=50)
+    preferred_name = models.CharField(null=True, max_length=50)
+    department = models.CharField(null=True, max_length=50)
     location = models.CharField(null=True, max_length=50)
     ghangout = models.BooleanField(default=False)
+    date_entered_mixpanel = models.DateTimeField(default=timezone.now)
 
     objects = UserManager()
 

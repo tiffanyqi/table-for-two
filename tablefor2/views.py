@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -9,16 +10,21 @@ from oauth2client.client import OAuth2WebServerFlow, AccessTokenCredentials
 from social.apps.django_app.utils import psa
 
 
-def home(request):
+def index(request):
     if request.user.is_authenticated():
-        return render(request, 'tablefor2/home_logged_in.html')
+        return render(request, 'tablefor2/index-logged-in.html')
     else:
-        return render(request, 'tablefor2/home_logged_out.html')
+        return render(request, 'tablefor2/index-logged-out.html')
+
+
+@login_required
+def profile_information(request):
+    return render(request, 'tablefor2/profile-information.html')
 
 
 @csrf_exempt
 @psa('social:complete')
-def complete_with_token(request, backend):
+def register_by_access_token(request, backend):
     # This view expects an access_token POST parameter, if it's needed,
     # request.backend and request.strategy will be loaded with the current
     # backend and strategy.
@@ -36,6 +42,7 @@ def complete_with_token(request, backend):
     return HttpResponseRedirect("/")
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect("/")

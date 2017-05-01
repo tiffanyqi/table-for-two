@@ -1,0 +1,62 @@
+{% extends "tablefor2/base.html" %}
+{% load staticfiles %}
+
+{% block head %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {% load static %}
+        <p>Hello {{ user.first_name }}, thanks for signing up!</p>
+        <p>To make this more comprehensive, please fill out the following things:</p>
+        <ul>
+            <li>Preferred Name</li>
+<!--             <li> {{ user.first_name }} </li>
+            <li> {{ user.last_name }} </li>
+            <li> {{ user.email }} </li>
+            <li> {{ user.username }} </li>
+            <li> {{ user.is_active }} </li>
+            <li> {{ user.is_superuser }} </li>
+            <li> {{ user.is_staff }} </li>
+            <li> {{ user.date_joined }} </li> -->
+            <li>Department</li>
+            <!-- 
+            BOAS (6)
+            Commercial Sales (18), 
+            Content Marketing (4),
+            Corporate Marketing (1),
+            Customer Success Management (25),
+            Demand Gen (1),
+            Design (9),
+            Enterprise Sales (14), 
+            Finance (15), 
+            G & A Admin (3),
+            Legal (4),
+            Machine Learning (7),
+            Marketing Admin (3),
+            People and Culture (5),
+            Product Engineering (27), 
+            Product Marketing (4), 
+            Support (28), 
+            Sales Admin (3),
+            Sales Development (14), 
+            Sales Enablement (5),
+            Sales Engineering (10),  
+            Site Reliability Engineering (3),
+            Solutions Architects (7),
+            Strategic Sales (5),
+            Systems Engineering (14), 
+            Talent Acquisition (11), 
+            Workplace (4),
+        -->
+            <li>Location</li>
+            <!-- San Francisco, Seattle, Lehi, New York, Other -->
+            <li>Would you like to Google Hangout?</li>
+            <li>When did you join Mixpanel?</li>
+            <!-- boolean -->
+        </ul>
+    {% endblock %}
+
+{% block bottom %}
+    {{ block.super }}
+{% endblock %}
