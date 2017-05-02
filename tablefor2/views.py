@@ -1,4 +1,4 @@
-from django.contrib.auth import login, logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -8,6 +8,8 @@ from oauth2client.client import OAuth2WebServerFlow, AccessTokenCredentials
 # from oauth2client.django_orm import Storage
 
 from social.apps.django_app.utils import psa
+
+from tablefor2.forms import ProfileForm
 
 
 def index(request):
@@ -19,7 +21,30 @@ def index(request):
 
 @login_required
 def profile_information(request):
-    return render(request, 'tablefor2/profile-information.html')
+    form = ProfileForm(initial={'department': '', 'location': ''})
+    return render(request, 'tablefor2/profile-information.html', {'form': form})
+    # return render(request, 'tablefor2/profile-information.html')
+
+
+@login_required
+def register(request, username):
+    user = authenticate(username=username, password=None)
+    # if user is None and request.method == 'POST':
+    #     form = ProfileForm(request.POST)
+    #     print form.location.selected
+
+        # if form.is_valid():
+
+# user.first_name
+# user.last_name
+# user.email
+# user.username
+# user.is_active
+# user.is_superuser
+# user.is_staff
+# user.date_joined
+
+    return HttpResponseRedirect('/')
 
 
 @csrf_exempt

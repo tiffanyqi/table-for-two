@@ -1,12 +1,11 @@
-# from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AbstractBaseUser, UserManager
 from django_unixdatetimefield import UnixDateTimeField
+
 from django.db import models
 from django.utils import timezone
 
 
 class Profile(AbstractBaseUser):
-    # user = models.OneToOneField(User)
     first_name = models.CharField(null=True, max_length=50)
     last_name = models.CharField(null=True, max_length=50)
     email = models.CharField(null=True, max_length=50)
