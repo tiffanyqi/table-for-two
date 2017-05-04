@@ -7,10 +7,15 @@
 
 {% block content %}
     {% load static %}
-        <p>Hello {{ user.first_name }}, thanks for signing up!</p>
-        <p>To make this more comprehensive, please fill out the following things:</p>
 
-        <form action="{% url 'register' %}" method="POST" class="post-form">{% csrf_token %}
+        <h1>Edit Your Profile</h1>
+
+        {% if not profile.extra_saved_information %}
+            <p>Hello {{ user.first_name }}, thanks for signing up!</p>
+            <p>To make this more comprehensive, please fill out the following things:</p>
+        {% endif %}
+
+        <form action="{% url 'save-profile' %}" method="POST" class="post-form">{% csrf_token %}
             {% for field in form %}
                 <div class="fieldWrapper">
                     {{ field.errors }}

@@ -7,9 +7,9 @@ from tablefor2 import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^admin/', admin.site.urls),
-    url(r'^profile-information/$', views.profile_information, name='profile-information'),
-    # url(r'^register-by-token/(?P<backend>[^/]+)/$', 'register_by_access_token'),
-    url(r'^register/$', views.register, name='register'),
+    url(r'^edit-profile/$', views.edit_profile, name='edit-profile'),
+    url(r'^save-profile/$', views.save_profile, name='save-profile'),
+    url(r'^profile/$', views.profile, name='profile'),
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', views.logout_view, name='logout'),
     url('', include('social_django.urls', namespace='social')),

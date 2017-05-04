@@ -2,12 +2,26 @@
 
 
 ## TODOs
-- [x] Create home_logged_out page
+
+Signup
 - [x] Create database and model
 - [x] Create signup flow
-- [x] Ask for extra information (profile_information)
-- [x] Create the form
+- [x] Create index-logged-out page
+- [x] Ask for extra information (edit-profile)
+- [x] Create the form and edit-profile page
 - [x] Save user in database
+- [x] Create profile page
+
+Availability
+- [ ] Create index-logged-in page
+- [ ] Set availabilities in back-end
+- [ ] Show you made these availabilities
+
+Matching
+- [ ] Match the people
+- [ ] Show your future matches
+- [ ] Show your previous matches
+- [ ] Send a google calendar invite
 
 
 ## Features
