@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^profile-information/$', views.profile_information, name='profile-information'),
     # url(r'^register-by-token/(?P<backend>[^/]+)/$', 'register_by_access_token'),
-    url(r'^register/(?P<username>[^/]+)/$', views.register, name='register'),
+    url(r'^register/$', views.register, name='register'),
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', views.logout_view, name='logout'),
     url('', include('social_django.urls', namespace='social')),

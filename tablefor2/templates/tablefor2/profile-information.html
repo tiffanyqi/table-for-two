@@ -10,7 +10,7 @@
         <p>Hello {{ user.first_name }}, thanks for signing up!</p>
         <p>To make this more comprehensive, please fill out the following things:</p>
 
-        <form action="{% url 'register' user.username %}" method="POST" class="post-form">{% csrf_token %}
+        <form action="{% url 'register' %}" method="POST" class="post-form">{% csrf_token %}
             {% for field in form %}
                 <div class="fieldWrapper">
                     {{ field.errors }}

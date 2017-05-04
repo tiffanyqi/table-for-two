@@ -5,10 +5,10 @@ from django.utils import timezone
 
 DEPARTMENTS = (
     ('---', 'Select a Department'),
-    ('ENG', 'Engineering'),
-    ('G&A', 'General & Administrative'),
-    ('MAR', 'Marketing'),
-    ('SUC', 'Success')
+    ('Engineering', 'Engineering'),
+    ('General & Administrative', 'General & Administrative'),
+    ('Marketing', 'Marketing'),
+    ('Success', 'Success')
 )
 
 # BOAS (6)
@@ -42,17 +42,17 @@ DEPARTMENTS = (
 
 LOCATIONS = (
     ('--', 'Select a Location'),
-    ('SF', 'San Francisco'),
-    ('NY', 'New York'),
-    ('SE', 'Seattle'),
-    ('LE', 'Lehi'),
-    ('OT', 'Other')
+    ('San Francisco', 'San Francisco'),
+    ('New York', 'New York'),
+    ('Seattle', 'Seattle'),
+    ('Lehi', 'Lehi'),
+    ('Other', 'Other')
 )
 
 BOOLEANS = (
     ('-', 'Select a Choice'),
-    ('Y', 'Yes'),
-    ('N', 'No')
+    ('Yes', 'Yes'),
+    ('No', 'No')
 )
 
 
@@ -67,18 +67,22 @@ class ProfileForm(forms.Form):
         department = self.cleaned_data.get('department')
         if department == '---':
             raise forms.ValidationError('Please select your department.')
+        return department
 
     def clean_location(self):
         location = self.cleaned_data.get('location')
         if location == '--':
             raise forms.ValidationError('Please select your location.')
+        return location
 
     def clean_google_hangout(self):
         google_hangout = self.cleaned_data.get('google_hangout')
         if google_hangout == '-':
             raise forms.ValidationError('Please select your Google Hangout preference.')
+        return google_hangout
 
     def clean_date_entered_mixpanel(self):
         date_entered_mixpanel = self.cleaned_data.get('date_entered_mixpanel')
         if date_entered_mixpanel > timezone.now():
             raise forms.ValidationError("Please enter a valid Mixpanel start time! (You started in the future?)")
+        return date_entered_mixpanel

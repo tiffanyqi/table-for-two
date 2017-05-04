@@ -7,7 +7,7 @@
 - [x] Create signup flow
 - [x] Ask for extra information (profile_information)
 - [x] Create the form
-- [ ] Save user in database
+- [x] Save user in database
 
 
 ## Features
