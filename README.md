@@ -1,53 +1,94 @@
-# Heroku Django Starter Template
+# Table For Two
 
-An utterly fantastic project starter template for Django 1.10.
+
+## TODOs
+
+Signup
+- [x] Create database and model
+- [x] Create signup flow
+- [x] Create index-logged-out page
+- [x] Ask for extra information (edit-profile)
+- [x] Create the form and edit-profile page
+- [x] Save user in database
+- [x] Create profile page
+
+Availability
+- [ ] Create index-logged-in page
+- [ ] Set availabilities in back-end
+- [ ] Show you made these availabilities
+
+Matching
+- [ ] Match the people
+- [ ] Show your future matches
+- [ ] Show your previous matches
+- [ ] Send a google calendar invite
+
 
 ## Features
-
-- Production-ready configuration for Static Files, Database Settings, Gunicorn, etc.
-- Enhancements to Django's static file serving functionality via WhiteNoise.
-- Latest Python 3.6 runtime environment. 
-
-## How to Use
-
-To use this project, follow these steps:
-
-1. Create your working environment.
-2. Install Django (`$ pip install django`)
-3. Create a new project using this template
-
-## Creating Your Project
-
-Using this template to create a new Django app is easy::
-
-    $ django-admin.py startproject --template=https://github.com/heroku/heroku-django-template/archive/master.zip --name=Procfile helloworld
-
-(If this doesn't work on windows, replace `django-admin.py` with `django-admin`)
-
-You can replace ``helloworld`` with your desired project name.
-
-## Deployment to Heroku
-
-    $ git init
-    $ git add -A
-    $ git commit -m "Initial commit"
-
-    $ heroku create
-    $ git push heroku master
-
-    $ heroku run python manage.py migrate
-
-See also, a [ready-made application](https://github.com/heroku/python-getting-started), ready to deploy.
-
-## Using Python 2.7?
-
-Just update `runtime.txt` to `python-2.7.13` (no trailing spaces or newlines!).
+- Set your profile settings (location? willing to google hangout if not in the same location?)
+- Set your availability on calendar
+- Get the set of people and match people based on diff division (Can't with the same person afterwards)
+- With a match, send out a calendar invite
+- Weekly email reminder to do a tf2 (Mixpanel? Or set calendar invite for 9am every Monday)
 
 
-## License: MIT
+## Matching process
 
-## Further Reading
+### Matching algorithm (in order)
+- For every availability, create an Availability for that user (date and time of beginning 1/2 hour, assuming timeslot is half hour)
+- Runs a thing at 3pm the day before
+- People who are available at the same time
+- Are in a different division
+- Haven't matched before
+- Those who are in the same location (last, GHangout)
+- If that user is matched, then we'll set the name and email equal to the match
 
-- [Gunicorn](https://warehouse.python.org/project/gunicorn/)
-- [WhiteNoise](https://warehouse.python.org/project/whitenoise/)
-- [dj-database-url](https://warehouse.python.org/project/dj-database-url/)
+### Testing
+```
+from tablefor2.models import *
+import datetime
+
+t = Profile.objects.create(first_name='tiffany', email='tiffany.qi@mixpanel.com')
+a = Profile.objects.create(first_name='andrew', email='andrew.huang@not-mixpanel.com')
+dec_30_1pm = datetime.datetime(2016, 12, 30, 13)
+dec_31_1pm = datetime.datetime(2016, 12, 31, 13)
+tv1 = Availability.objects.create(profile=t, time_available=dec_30_1pm)
+tv2 = Availability.objects.create(profile=t, time_available=dec_31_1pm)
+av = Availability.objects.create(profile=a, time_available=dec_30_1pm)
+Availability.objects.all()
+
+Availability.objects.filter(time_available=dec_30_1pm)
+
+tv1.matched_name = a.first_name
+tv1.matched_email = a.email
+av.matched_name = t.first_name
+av.matched_email = t.email
+```
+
+
+## Signup process
+- Connect to Mixpanel google account
+- Takes email address from bambooHR and saves each field into app
+- Takes availability from google calendar and displays it
+
+
+## Views
+- Home Logged Out
+- Signup
+    - Input email
+    - Confirm bambooHR info
+    - Add whether to googleHangout
+- Home Logged In
+    - See calendar
+    - See previous people you've matched with
+    - See who you're currently set up to match with
+- Settings
+    - Edit any info
+    - See current info
+
+
+# V2
+- BambooHR instead?
+- Variable locations?
+- See your Mixpanel calendar
+

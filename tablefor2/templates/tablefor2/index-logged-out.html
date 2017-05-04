@@ -1,0 +1,25 @@
+{% extends "tablefor2/base.html" %}
+{% load staticfiles %}
+
+{% block head %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {% load static %}
+        <h1>Welcome to Table for Two!</h1>
+
+        <p>We consistently hear that MPers would like more opportunities to meet and connect with people on other teams or departments. Any Mixpaneler can now grab lunch, coffee, or do a Google Hangout with someone from a different division.</p>
+
+		<p>What is Table for Two? Table for two is a lunch program where you are randomly matched with someone outside of your team to have a 1:1 lunch with- either in the Cafe or offsite, the choice is yours!</p>
+
+        <p>Instead of having Kate doing the program manually, you can now choose to opt in, whenever you want, to meet people from other departments on your own time. You could even have a Google Hangout with someone from a different city!</p>
+
+        <p>Want to try it out? <a href="{% url "social:begin" "google-oauth2" %}">Sign up</a>.</p>
+
+		<p>#BeSocialMakeFriendships</p>
+    {% endblock %}
+
+{% block bottom %}
+    {{ block.super }}
+{% endblock %}

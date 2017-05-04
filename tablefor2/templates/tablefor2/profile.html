@@ -1,0 +1,31 @@
+{% extends "tablefor2/base.html" %}
+{% load staticfiles %}
+
+{% block head %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {% load static %}
+
+        <h1>Your Profile</h1>
+
+        <ul>
+            <li>First Name: {{ profile.first_name }}</li>
+            <li>Last Name: {{ profile.last_name }}</li>
+            <li>Email: {{ profile.email }}</li>
+            <li>Preferred Name: {{ profile.preferred_name }}</li>
+            <li>Department: {{ profile.department }}</li>
+            <li>Want to Google Hangout?: {{ profile.google_hangout }}</li>
+            <li>Location: {{ profile.location }}</li>
+            <li>Date Entered Mixpanel: {{ profile.date_entered_mixpanel }}</li>
+        </ul>
+
+
+        <p><a href="{% url 'edit-profile' %}">Edit your profile</a></p>
+
+    {% endblock %}
+
+{% block bottom %}
+    {{ block.super }}
+{% endblock %}

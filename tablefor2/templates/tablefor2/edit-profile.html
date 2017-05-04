@@ -1,0 +1,32 @@
+{% extends "tablefor2/base.html" %}
+{% load staticfiles %}
+
+{% block head %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {% load static %}
+
+        <h1>Edit Your Profile</h1>
+
+        {% if not profile.extra_saved_information %}
+            <p>Hello {{ user.first_name }}, thanks for signing up!</p>
+            <p>To make this more comprehensive, please fill out the following things:</p>
+        {% endif %}
+
+        <form action="{% url 'save-profile' %}" method="POST" class="post-form">{% csrf_token %}
+            {% for field in form %}
+                <div class="fieldWrapper">
+                    {{ field.errors }}
+                    {{ field.label_tag }} {{ field }}
+                    {{ field.help_text }}
+                </div>
+            {% endfor %}
+            <button type="submit" class="save btn btn-default">Save</button>
+        </form>
+    {% endblock %}
+
+{% block bottom %}
+    {{ block.super }}
+{% endblock %}
