@@ -21,30 +21,31 @@ def index(request):
 
 @login_required
 def profile_information(request):
-    form = ProfileForm(initial={'department': '', 'location': ''})
+    form = ProfileForm(request.POST or None, request.FILES or None)
     return render(request, 'tablefor2/profile-information.html', {'form': form})
-    # return render(request, 'tablefor2/profile-information.html')
 
 
 @login_required
 def register(request, username):
-    user = authenticate(username=username, password=None)
-    # if user is None and request.method == 'POST':
-    #     form = ProfileForm(request.POST)
-    #     print form.location.selected
+    form = ProfileForm(request.POST or None, request.FILES or None)
+    authenticated_user = authenticate(username=username, password=None)
+    requested_user = request.user
+    if authenticated_user is None and request.method == 'POST':
+
+        print form.is_valid()
 
         # if form.is_valid():
+            # requested_user.first_name
+            # requested_user.last_name
+            # requested_user.email
+            # requested_user.username
+            # requested_user.is_active
+            # requested_user.is_superuser
+            # requested_user.is_staff
+            # requested_user.date_joined
+            # return HttpResponseRedirect('/')
 
-# user.first_name
-# user.last_name
-# user.email
-# user.username
-# user.is_active
-# user.is_superuser
-# user.is_staff
-# user.date_joined
-
-    return HttpResponseRedirect('/')
+    return render(request, 'tablefor2/profile-information.html', {'form': form})
 
 
 @csrf_exempt

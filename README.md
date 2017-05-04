@@ -5,7 +5,8 @@
 - [x] Create home_logged_out page
 - [x] Create database and model
 - [x] Create signup flow
-- [ ] Ask for extra information (profile_information)
+- [x] Ask for extra information (profile_information)
+- [x] Create the form
 - [ ] Save user in database
 
 

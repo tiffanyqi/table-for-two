@@ -15,9 +15,9 @@
                 <div class="fieldWrapper">
                     {{ field.errors }}
                     {{ field.label_tag }} {{ field }}
+                    {{ field.help_text }}
                 </div>
             {% endfor %}
-           
             <button type="submit" class="save btn btn-default">Save</button>
         </form>
     {% endblock %}

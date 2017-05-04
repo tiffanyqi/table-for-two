@@ -1,5 +1,7 @@
 from django import forms
 
+from django.utils import timezone
+
 
 DEPARTMENTS = (
     ('---', 'Select a Department'),
@@ -58,14 +60,25 @@ class ProfileForm(forms.Form):
     preferred_name = forms.CharField(max_length=50)
     department = forms.ChoiceField(choices=DEPARTMENTS)
     location = forms.ChoiceField(choices=LOCATIONS)
-    ghangout = forms.ChoiceField(choices=BOOLEANS)
-    date_entered_mixpanel = forms.DateTimeField()
+    google_hangout = forms.ChoiceField(choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to Google Hangout?')
+    date_entered_mixpanel = forms.DateTimeField(help_text='(MM/DD/YYYY)')
 
-    def clean_profile(self):
-        department = self.cleaned_date.get('department')
-        location = self.cleaned_date.get('location')
-        ghangout = self.cleaned_date.get('ghangout')
-        date_entered_mixpanel = self.cleaned_date.get('date_entered_mixpanel')
+    def clean_department(self):
+        department = self.cleaned_data.get('department')
+        if department == '---':
+            raise forms.ValidationError('Please select your department.')
 
-        if department == self.fields['department'].choices[0][0]:
-            raise forms.ValidationError('This field is required')
+    def clean_location(self):
+        location = self.cleaned_data.get('location')
+        if location == '--':
+            raise forms.ValidationError('Please select your location.')
+
+    def clean_google_hangout(self):
+        google_hangout = self.cleaned_data.get('google_hangout')
+        if google_hangout == '-':
+            raise forms.ValidationError('Please select your Google Hangout preference.')
+
+    def clean_date_entered_mixpanel(self):
+        date_entered_mixpanel = self.cleaned_data.get('date_entered_mixpanel')
+        if date_entered_mixpanel > timezone.now():
+            raise forms.ValidationError("Please enter a valid Mixpanel start time! (You started in the future?)")
