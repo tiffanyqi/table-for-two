@@ -11,35 +11,6 @@ DEPARTMENTS = (
     ('Success', 'Success')
 )
 
-# BOAS (6)
-# Commercial Sales (18),
-# Content Marketing (4),
-# Corporate Marketing (1),
-# Customer Success Management (25),
-# Demand Gen (1),
-# Design (9),
-# Enterprise Sales (14),
-# Finance (15),
-# G & A Admin (3),
-# Legal (4),
-# Machine Learning (7),
-# Marketing Admin (3),
-# People and Culture (5),
-# Product Engineering (27),
-# Product Marketing (4),
-# Support (28),
-# Sales Admin (3),
-# Sales Development (14),
-# Sales Enablement (5),
-# Sales Engineering (10),
-# Site Reliability Engineering (3),
-# Solutions Architects (7),
-# Strategic Sales (5),
-# Systems Engineering (14),
-# Talent Acquisition (11),
-# Workplace (4),
-
-
 LOCATIONS = (
     ('--', 'Select a Location'),
     ('San Francisco', 'San Francisco'),
