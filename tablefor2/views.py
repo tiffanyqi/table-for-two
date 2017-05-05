@@ -3,7 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from tablefor2.forms import ProfileForm
+import time
+import datetime
+
+from tablefor2.forms import *
 from tablefor2.models import *
 
 
@@ -15,11 +18,35 @@ def index(request):
         # force users to add more info
         if not profile.extra_saved_information:
             return HttpResponseRedirect('/edit-profile')
+
+        # show profile and availability and matches!
         else:
-            return render(request, 'tablefor2/index-logged-in.html', {'profile': profile})
+            form = AvailabilityForm(request.POST or None, request.FILES or None)
+            availabilities = Availability.objects.filter(profile=profile) or None
+            return render(request, 'tablefor2/index-logged-in.html', {
+                'profile': profile,
+                'form': form,
+                'availabilities': availabilities
+            })
 
     except:
         return render(request, 'tablefor2/index-logged-out.html')
+
+
+@login_required
+def save_availability(request):
+    profile = Profile.objects.get(email=request.user.email)
+    form = AvailabilityForm(request.POST or None, request.FILES or None)
+
+    if request.method == 'POST':
+
+        if form.is_valid():
+            availability = Availability(profile=profile)
+            availability.time_available = form.cleaned_data.get('time_available')
+            availability.save()
+            return HttpResponseRedirect("/")
+
+    return render(request, 'tablefor2/index-logged-in.html', {'form': form})
 
 
 @login_required

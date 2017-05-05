@@ -36,4 +36,4 @@ class Availability(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     matched_name = models.CharField(null=True, max_length=50)
     matched_email = models.CharField(null=True, max_length=50)
-    time_available = UnixDateTimeField()
+    time_available = models.DateTimeField(default=timezone.now)
