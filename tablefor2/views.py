@@ -35,8 +35,21 @@ def profile(request):
 
 @login_required
 def edit_profile(request):
-    form = ProfileForm(request.POST or None, request.FILES or None)
     profile = Profile.objects.get(email=request.user.email)
+
+    if not profile.extra_saved_information:
+        form = ProfileForm(request.POST or None, request.FILES or None)
+    else:
+        data = {
+            'preferred_name': profile.preferred_name,
+            'department': profile.department,
+            'location': profile.location,
+            'google_hangout': profile.google_hangout,
+            'frequency': profile.frequency,
+            'date_entered_mixpanel': profile.date_entered_mixpanel
+        }
+        form = ProfileForm(initial=data)
+
     return render(request, 'tablefor2/edit-profile.html', {'form': form, 'profile': profile})
 
 
@@ -52,6 +65,7 @@ def save_profile(request):
             profile.department = form.cleaned_data.get('department')
             profile.google_hangout = form.cleaned_data.get('google_hangout')
             profile.location = form.cleaned_data.get('location')
+            profile.frequency = form.cleaned_data.get('frequency')
             profile.date_entered_mixpanel = form.cleaned_data.get('date_entered_mixpanel')
             profile.extra_saved_information = True
             profile.save()

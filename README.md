@@ -11,10 +11,11 @@ Signup
 - [x] Create the form and edit-profile page
 - [x] Save user in database
 - [x] Create profile page
+- [ ] Show existing profile in form
 
 Availability
 - [ ] Create index-logged-in page
-- [ ] Set availabilities in back-end
+- [ ] Set availabilities in back-end by frequency
 - [ ] Show you made these availabilities
 
 Matching
@@ -27,6 +28,8 @@ Matching
 ## Features
 - Set your profile settings (location? willing to google hangout if not in the same location?)
 - Set your availability on calendar
+- Prioritize newer Mixpanel hires
+- Set your frequency
 - Get the set of people and match people based on diff division (Can't with the same person afterwards)
 - With a match, send out a calendar invite
 - Weekly email reminder to do a tf2 (Mixpanel? Or set calendar invite for 9am every Monday)
@@ -40,8 +43,10 @@ Matching
 - People who are available at the same time
 - Are in a different division
 - Haven't matched before
+- Newer Mixpanel hires
 - Those who are in the same location (last, GHangout)
 - If that user is matched, then we'll set the name and email equal to the match
+- Only if fits their frequency
 
 ### Testing
 ```
@@ -73,12 +78,11 @@ av.matched_email = t.email
 
 
 ## Views
-- Home Logged Out
+- Index Logged Out
 - Signup
     - Input email
-    - Confirm bambooHR info
-    - Add whether to googleHangout
-- Home Logged In
+    - Confirm and add info
+- Index Logged In
     - See calendar
     - See previous people you've matched with
     - See who you're currently set up to match with
