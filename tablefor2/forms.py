@@ -1,6 +1,6 @@
 from django import forms
 
-from django.utils import timezone
+from datetime import *
 
 
 DEPARTMENTS = (
@@ -40,7 +40,7 @@ class ProfileForm(forms.Form):
     location = forms.ChoiceField(choices=LOCATIONS)
     google_hangout = forms.ChoiceField(choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to Google Hangout?')
     frequency = forms.ChoiceField(choices=FREQUENCY, help_text='How often do you want to participate?')
-    date_entered_mixpanel = forms.DateTimeField(help_text='(MM/DD/YYYY)')
+    date_entered_mixpanel = forms.DateField(help_text='(MM/DD/YYYY or YYYY-MM-DD)')
 
     def clean_department(self):
         department = self.cleaned_data.get('department')
@@ -68,6 +68,6 @@ class ProfileForm(forms.Form):
 
     def clean_date_entered_mixpanel(self):
         date_entered_mixpanel = self.cleaned_data.get('date_entered_mixpanel')
-        if date_entered_mixpanel > timezone.now():
+        if date_entered_mixpanel > date.today():
             raise forms.ValidationError("Please enter a valid Mixpanel start time! (You started in the future?)")
         return date_entered_mixpanel
