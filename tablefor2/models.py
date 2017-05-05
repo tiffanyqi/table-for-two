@@ -22,7 +22,8 @@ class Profile(AbstractBaseUser):
     preferred_name = models.CharField(null=True, max_length=50)
     department = models.CharField(null=True, max_length=50)
     location = models.CharField(null=True, max_length=50)
-    google_hangout = models.BooleanField(default=False)
+    google_hangout = models.CharField(null=True, max_length=50)
+    frequency = models.CharField(null=True, max_length=50)
     date_entered_mixpanel = models.DateTimeField(default=timezone.now)
 
     objects = UserManager()
