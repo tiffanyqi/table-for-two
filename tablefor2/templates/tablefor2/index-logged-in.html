@@ -8,7 +8,28 @@
 {% block content %}
     {% load static %}
 
-        <p>Hi</p>
+        <h1>Your Availabilities</h1>
+
+        <ul>
+        {% for availability in availabilities %}
+        	<li>{{ availability.time_available }}</li>
+        {% endfor %}
+        </ul>
+        <p>Your frequency: {{ profile.frequency }}</p>
+
+        <p>Add a time you're available:</p>
+        <form action="{% url 'save-availability' %}" method="POST" class="post-form">{% csrf_token %}
+            {% for field in form %}
+                <div class="fieldWrapper">
+                    {{ field.errors }}
+                    {{ field.label_tag }} {{ field }}
+                    {{ field.help_text }}
+                </div>
+            {% endfor %}
+            <button type="submit" class="save btn btn-default">Save</button>
+        </form>
+
+        <!-- <h1>Your Matches</h1> -->
 
     {% endblock %}
 

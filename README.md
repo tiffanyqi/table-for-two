@@ -11,18 +11,21 @@ Signup
 - [x] Create the form and edit-profile page
 - [x] Save user in database
 - [x] Create profile page
-- [ ] Show existing profile in form
+- [x] Show existing profile in form
 
 Availability
-- [ ] Create index-logged-in page
-- [ ] Set availabilities in back-end by frequency
-- [ ] Show you made these availabilities
+- [x] Create index-logged-in page
+- [x] Set availabilities in back-end
+- [x] Show you made these availabilities
 
 Matching
-- [ ] Match the people
+- [ ] Match the people by availability and frequency
 - [ ] Show your future matches
 - [ ] Show your previous matches
 - [ ] Send a google calendar invite
+
+Notifications
+- [ ] Set notification based on frequency and current matchings
 
 
 ## Features
