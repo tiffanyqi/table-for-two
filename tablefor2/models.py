@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractBaseUser, UserManager
-from django_unixdatetimefield import UnixDateTimeField
 
 from django.db import models
 from django.utils import timezone

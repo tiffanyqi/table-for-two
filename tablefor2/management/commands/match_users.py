@@ -1,6 +1,8 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from tablefor2.forms import *
+from tablefor2.models import *
+
+import datetime
 
 
 class Command(BaseCommand):
@@ -20,9 +22,17 @@ class Command(BaseCommand):
     '''
 
     def handle(self, *args, **options):
-        # time_available__gte date.today()
-        availabilities = Availability.objects.all()  # filter
+        today = datetime.date.today()
+        availabilities = Availability.objects.filter(time_available__gte=today).order_by('time_available', '-profile__date_entered_mixpanel')
         for availability in availabilities:
             profile = availability.profile
             time_available = availability.time_available
-            same_times = Availability.objects.filter(time_available=time_available)
+            current_times = Availability.objects.filter(time_available=time_available)
+
+            # for current_time in current_times:
+
+
+
+
+            # print profile.date_entered_mixpanel
+            # print availability.time_available

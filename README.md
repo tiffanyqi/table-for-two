@@ -12,17 +12,21 @@ Signup
 - [x] Save user in database
 - [x] Create profile page
 - [x] Show existing profile in form
+- [ ] Test
 
 Availability
 - [x] Create index-logged-in page
 - [x] Set availabilities in back-end
 - [x] Show you made these availabilities
+- [ ] Test
 
 Matching
-- [ ] Match the people by availability and frequency
-- [ ] Show your future matches
-- [ ] Show your previous matches
+- [ ] Match the people by availability (frequency V2)
+- [x] Show your future matches
+- [x] Show your previous matches
 - [ ] Send a google calendar invite
+- [ ] Change everything to proper timezone
+- [ ] Test
 
 Notifications
 - [ ] Set notification based on frequency and current matchings
@@ -56,16 +60,18 @@ Notifications
 from tablefor2.models import *
 import datetime
 
-t = Profile.objects.create(first_name='tiffany', email='tiffany.qi@mixpanel.com')
-a = Profile.objects.create(first_name='andrew', email='andrew.huang@not-mixpanel.com')
-dec_30_1pm = datetime.datetime(2016, 12, 30, 13)
-dec_31_1pm = datetime.datetime(2016, 12, 31, 13)
-tv1 = Availability.objects.create(profile=t, time_available=dec_30_1pm)
-tv2 = Availability.objects.create(profile=t, time_available=dec_31_1pm)
-av = Availability.objects.create(profile=a, time_available=dec_30_1pm)
+d1 = datetime.datetime(2015, 1, 1)
+d2 = datetime.datetime(2016, 1, 1)
+t = Profile.objects.create(first_name='meh', email='meh.qi@mixpanel.com', date_entered_mixpanel=d1)
+a = Profile.objects.create(first_name='andrew', email='andrew.huang@not-mixpanel.com', date_entered_mixpanel=d2)
+past = datetime.datetime(2016, 12, 30, 13)
+future = datetime.datetime(2017, 12, 31, 13)
+tv1 = Availability.objects.create(profile=t, time_available=past)
+tv2 = Availability.objects.create(profile=t, time_available=future)
+av = Availability.objects.create(profile=a, time_available=future)
 Availability.objects.all()
 
-Availability.objects.filter(time_available=dec_30_1pm)
+Availability.objects.filter(time_available=past)
 
 tv1.matched_name = a.first_name
 tv1.matched_email = a.email
@@ -98,4 +104,5 @@ av.matched_email = t.email
 - BambooHR instead?
 - Variable locations?
 - See your Mixpanel calendar
+- Change frequencies
 
