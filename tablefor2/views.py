@@ -21,12 +21,17 @@ def index(request):
 
         # show profile and availability and matches!
         else:
+            today = date.today()
             form = AvailabilityForm(request.POST or None, request.FILES or None)
             availabilities = Availability.objects.filter(profile=profile) or None
+            past_matches = Availability.objects.filter(profile=profile, time_available__lte=today).exclude(matched_name=None) or None
+            current_matches = Availability.objects.filter(profile=profile, time_available__gte=today).exclude(matched_name=None) or None
             return render(request, 'tablefor2/index-logged-in.html', {
                 'profile': profile,
                 'form': form,
-                'availabilities': availabilities
+                'availabilities': availabilities,
+                'past_matches': past_matches,
+                'current_matches': current_matches
             })
 
     except:
