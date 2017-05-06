@@ -1,5 +1,13 @@
 # Table For Two
 
+Table for Two is a web app that allows Mixpanelers the chance to meet with other Mixpanelers from different departments whenever they'd like. It prioritizes new hires, and allows lunch and coffee dates in 30 minute increments.
+
+## Features
+- Set your own availability
+- Set your own profile settings (location? google hangout?)
+- Matches folks automatically and puts the event on the calendar
+- Sends out weekly email reminders
+
 
 ## TODOs
 
@@ -31,73 +39,27 @@ Matching
 Notifications
 - [ ] Set notification based on frequency and current matchings
 
-
-## Features
-- Set your profile settings (location? willing to google hangout if not in the same location?)
-- Set your availability on calendar
-- Prioritize newer Mixpanel hires
-- Set your frequency
-- Get the set of people and match people based on diff division (Can't with the same person afterwards)
-- With a match, send out a calendar invite
-- Weekly email reminder to do a tf2 (Mixpanel? Or set calendar invite for 9am every Monday)
+Mixpanel
+- Goal: acquisition
+- [ ] Alias/identify
+- [ ] Signup flow (index -> signup -> profile -> save)
+- [ ] Set availability
+- [ ] Match made (server-side)
+- [ ] Notification flow (notification sent -> set availability)
+- [ ] People prop: email, dept, etc, number of matches, number of availabilities
 
 
 ## Matching process
-
-### Matching algorithm (in order)
 - For every availability, create an Availability for that user (date and time of beginning 1/2 hour, assuming timeslot is half hour)
 - Runs a thing at 3pm the day before
-- People who are available at the same time
-- Are in a different division
-- Haven't matched before
-- Newer Mixpanel hires
-- Those who are in the same location (last, GHangout)
+- First pick are the newer Mixpanel hires
+- Check for:
+	- People who are available at the same time
+	- Are in a different department
+	- Haven't matched before
+	- Those who are in the same location (last, GHangout)
+	- Only if fits their frequency (V2)
 - If that user is matched, then we'll set the name and email equal to the match
-- Only if fits their frequency
-
-### Testing
-```
-from tablefor2.models import *
-import datetime
-
-d1 = datetime.datetime(2015, 1, 1)
-d2 = datetime.datetime(2016, 1, 1)
-t = Profile.objects.create(first_name='meh', email='meh.qi@mixpanel.com', date_entered_mixpanel=d1)
-a = Profile.objects.create(first_name='andrew', email='andrew.huang@not-mixpanel.com', date_entered_mixpanel=d2)
-past = datetime.datetime(2016, 12, 30, 13)
-future = datetime.datetime(2017, 12, 31, 13)
-tv1 = Availability.objects.create(profile=t, time_available=past)
-tv2 = Availability.objects.create(profile=t, time_available=future)
-av = Availability.objects.create(profile=a, time_available=future)
-Availability.objects.all()
-
-Availability.objects.filter(time_available=past)
-
-tv1.matched_name = a.first_name
-tv1.matched_email = a.email
-av.matched_name = t.first_name
-av.matched_email = t.email
-```
-
-
-## Signup process
-- Connect to Mixpanel google account
-- Takes email address from bambooHR and saves each field into app
-- Takes availability from google calendar and displays it
-
-
-## Views
-- Index Logged Out
-- Signup
-    - Input email
-    - Confirm and add info
-- Index Logged In
-    - See calendar
-    - See previous people you've matched with
-    - See who you're currently set up to match with
-- Settings
-    - Edit any info
-    - See current info
 
 
 # V2
@@ -105,4 +67,3 @@ av.matched_email = t.email
 - Variable locations?
 - See your Mixpanel calendar
 - Change frequencies
-

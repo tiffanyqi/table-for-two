@@ -1,3 +1,4 @@
+from django.core.management import call_command
 from django.test import TestCase
 from tablefor2.models import *
 
@@ -7,6 +8,8 @@ import datetime
 class MatchTestCase(TestCase):
     past = datetime.datetime(2016, 11, 5, 12, 0)
     future = datetime.datetime(2017, 11, 5, 12, 0)
+
+    # https://hprog99.wordpress.com/2014/08/14/how-to-setup-django-cron-jobs/comment-page-1/
 
     def setup(self):
         # none
@@ -23,7 +26,9 @@ class MatchTestCase(TestCase):
         # tiffany, Success, SF, No, once a week
         t = Profile.objects.create(
             first_name='tiffany',
-            email='tiffany.qi@mixpanel.com',
+            last_name='qi',
+            preferred_name='tiffany',
+            email='tiffany@mixpanel.com',
             department='Success',
             location='San Francisco',
             google_hangout='No',
@@ -32,16 +37,18 @@ class MatchTestCase(TestCase):
         )
         Availability.objects.create(
             profile=t,
-            time_available=past
+            time_available=self.past
         )
         Availability.objects.create(
             profile=t,
-            time_available=future
+            time_available=self.future
         )
 
         # andrew, Engineering, SF, No, once a week
         a = Profile.objects.create(
             first_name='andrew',
+            last_name='huang',
+            preferred_name='andrew',
             email='andrew@not-mixpanel.com',
             department='Engineering',
             location='San Francisco',
@@ -51,16 +58,18 @@ class MatchTestCase(TestCase):
         )
         Availability.objects.create(
             profile=a,
-            time_available=past
+            time_available=self.past
         )
         Availability.objects.create(
             profile=a,
-            time_available=future
+            time_available=self.future
         )
 
         # PJ, Success, SF, No, once a week
         pj = Profile.objects.create(
-            first_name='pj',
+            first_name='philip',
+            last_name='ople',
+            preferred_name='pj',
             email='pj@mixpanel.com',
             department='Success',
             location='San Francisco',
@@ -70,46 +79,54 @@ class MatchTestCase(TestCase):
         )
         Availability.objects.create(
             profile=pj,
-            time_available=past
+            time_available=self.past
         )
         Availability.objects.create(
             profile=pj,
-            time_available=future
+            time_available=self.future
         )
 
-    def test_none_match(self):
+   #  def test_none_match(self):
         # none = Profile.objects.get(first_name=None)
         # run cron
         # assert availabilities are none
 
     def test_availability_match(self):
+        self.setup()
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
-        t_availability = Availability.objects.get(profile=t, time_available=future)
-        a_availability = Availability.objects.get(profile=a, time_available=future)
-        # run cron
-        # assert that t_availability.matched_name = 'andrew'
-        # assert that a_availability.matched_name = 'tiffany'
+        t_availability = Availability.objects.get(profile=t, time_available=self.future)
+        a_availability = Availability.objects.get(profile=a, time_available=self.future)
+
+        call_command('match_users')
+        self.assertEqual(t_availability.matched_name, 'andrew huang')
+        self.assertEqual(a_availability.matched_name, 'tiffany qi')
 
     def test_location_match(self):
+        self.setup()
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
-        t_availability = Availability.objects.get(profile=t, time_available=past)
-        a_availability = Availability.objects.get(profile=a, time_available=past)
-        pj_availability = Availability.objects.get(profile=pj, time_available=past)
-        # run cron
-        # assert that t_availability.matched_name = 'andrew'
-        # assert that a_availability.matched_name = 'tiffany'
-        # assert that pj_availability.matched_name = None
+        pj = Profile.objects.get(first_name='philip')
+        t_availability = Availability.objects.get(profile=t, time_available=self.future)
+        a_availability = Availability.objects.get(profile=a, time_available=self.future)
+        pj_availability = Availability.objects.get(profile=pj, time_available=self.future)
 
-    def test_department_match(self):
+        call_command('match_users')
+        self.assertEqual(t_availability.matched_name, 'andrew huang')
+        self.assertEqual(a_availability.matched_name, 'tiffany qi')
+        self.assertEqual(pj_availability.matched_name, None)
+
+    # def test_department_match(self):
         #hi
 
-    def test_google_hangout_match(self):
+    # def test_google_hangout_match(self):
         #hi
 
-    def test_frequency_match(self):
+    # def test_frequency_match(self):
         #hi
 
-    def test_new_hire_match(self):
+    # def test_new_hire_match(self):
+        #hi
+
+    # def test_not previous_match(self):
         #hi
