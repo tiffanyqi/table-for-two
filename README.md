@@ -48,6 +48,13 @@ Mixpanel
 - [ ] Notification flow (notification sent -> set availability)
 - [ ] People prop: email, dept, etc, number of matches, number of availabilities
 
+Front-end
+- PRETTIFY
+- [ ] index-logged-out
+- [ ] index-logged-in
+- [ ] profile
+- [ ] edit-profile
+
 
 ## Matching process
 - For every availability, create an Availability for that user (date and time of beginning 1/2 hour, assuming timeslot is half hour)

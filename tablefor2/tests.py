@@ -1,6 +1,8 @@
 from django.core.management import call_command
 from django.test import TestCase
+
 from tablefor2.models import *
+from tablefor2.management.commands.match_users import Command
 
 import datetime
 
@@ -73,13 +75,69 @@ class MatchTestCase(TestCase):
             time_available=self.future
         )
 
-    def test_availability_match(self):
+    def test_high_level_match(self):
         self.setup()
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
         t_availability = Availability.objects.get(profile=t, time_available=self.future)
         a_availability = Availability.objects.get(profile=a, time_available=self.future)
+        pj_availability = Availability.objects.get(profile=pj, time_available=self.future)
 
         call_command('match_users')
         self.assertEqual(t_availability.matched_name, 'andrew huang')
         self.assertEqual(a_availability.matched_name, 'tiffany qi')
+        self.assertEqual(pj_availability.matched_name, None)
+
+    def test_check_match(self):
+        self.setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+
+        call_command('match_users')
+        self.assertEqual(Command.check_match(Command(), t, a), True)
+        self.assertEqual(Command.check_match(Command(), a, t), True)
+        self.assertEqual(Command.check_match(Command(), t, pj), False)
+        self.assertEqual(Command.check_match(Command(), a, pj), False)
+        self.assertEqual(Command.check_match(Command(), pj, t), False)
+        self.assertEqual(Command.check_match(Command(), pj, a), False)
+
+    def test_check_google_hangout(self):
+        self.setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+
+        self.assertEqual(Command.check_google_hangout(Command(), t, a), False)
+
+    def test_check_locations(self):
+        self.setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+
+        self.assertEqual(Command.check_locations(Command(), t, a), True)
+
+    def test_check_departments(self):
+        self.setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+
+        self.assertEqual(Command.check_departments(Command(), t, a), True)
+        self.assertEqual(Command.check_departments(Command(), t, pj), False)
+
+    def test_check_previous_matches(self):
+        self.setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+        # at some point
+
+    def test_setup(self):
+        self.setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+        # at some point
