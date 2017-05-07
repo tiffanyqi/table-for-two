@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'social_django',
+    'django_nose',
     'tablefor2'
 ]
 
@@ -86,6 +87,8 @@ WSGI_APPLICATION = 'tablefor2.wsgi.application'
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 SOCIAL_AUTH_USER_MODEL = 'tablefor2.Profile'
+
+# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases

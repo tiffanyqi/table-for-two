@@ -2,6 +2,8 @@ from django.core.management.base import BaseCommand
 
 from tablefor2.models import *
 
+import pytz
+import time
 import datetime
 
 
@@ -12,50 +14,55 @@ class Command(BaseCommand):
     - [ ] Runs this command at 3pm on all Availabilities that do not have
     a matched_name from tomorrow until a week from tomorrow.
     - [x] Prioritizes new Mixpanel hires.
-    - [ ] Compares only users who have a different profile.department and
-    do not have previous Availabilities with the same matched_name
-    - [ ] Matches the user if they are in the same location first, else
+    - [x] Compares only users who have a different profile.department
+    - [x] Matches the user if they are in the same location first, else
     will check whether they are both open to a google_hangout
-    - [ ] Check if they haven't been matched before
+    - [x] Check if they haven't been matched before
     - [ ] (V2) Ensure that the frequency has not yet been satisifed
     - [ ] If two users finally fits all all of these criteria, we'll take
     the two Availability models and set the matched_name and matched_email
+    - [ ] Send a calendar invite to both parties
     '''
 
     def handle(self, *args, **options):
         today = datetime.date.today()
-        availabilities = Availability.objects.filter(time_available__gte=today, matched_name=None).order_by('time_available', '-profile__date_entered_mixpanel')
+        avs = Availability.objects.filter(time_available__gte=today, matched_name=None).order_by('time_available', '-profile__date_entered_mixpanel')
 
-        # for every single availability in the future that hasn't been matched
-        for availability in availabilities:
-            time_available = availability.time_available
-            current_times = Availability.objects.filter(time_available=time_available)
+        # dictionary of availability objects with datetime key
+        future_availabilities = self.setup(avs)
 
-            # in every availability for the same time slot
-            matches = []
-            count = 0
-            for av_a in current_times:
-                count += 1
-                for av_b in current_times[count:]:
-                    profile_a = Profile.objects.get(email=av_a.profile)
-                    profile_b = Profile.objects.get(email=av_b.profile)
-                    # previous_matches
+        # actually do the matching from here
+        for timestamp, availability_object in future_availabilities.iteritems():
+            for availability in availability_object:
+                print availability.profile
 
-                    # if original was matched, match the other one too
-                    if av_a in matches:
-                        self.match_profile(av_a, av_b, matches)
+        print future_availabilities
 
-                    # if both haven't been matched yet, check
-                    elif av_a not in matches and av_b not in matches:
-                        if profile_a.department != profile_b.department:
-                            if profile_a.location == profile_b.location:
-                                self.match_profile(av_a, av_b, matches)
-                            elif profile_a.google_hangout == 'Yes' and profile_b.google_hangout == 'Yes':
-                                self.match_profile(av_a, av_b, matches)
+    def match(self):
+        print 'hi'
 
-    def match_profile(self, av_a, av_b, matches):
-        profile_b = av_b.profile
-        av_a.matched_name = profile_b.preferred_name + ' ' + profile_b.last_name
-        av_a.matched_email = profile_b.email
-        av_a.save()
-        matches.append(av_a)
+    # check to see that the departments aren't the same [TEST]
+    def check_departments(self, profile1, profile2):
+        return profile1.department != profile2.department
+
+    # check to see that the google hangouts aren't the same [TEST]
+    def check_google_hangout(self, profile1, profile2):
+        return profile1.google_hangout == 'Yes' and profile2.google_hangout == 'Yes'
+
+    # get all previous matches in list form from a profile and check they weren't there before [TEST]
+    def check_previous_matches(self, profile1, profile2):
+        today = datetime.date.today()
+        avs = Availability.objects.filter(time_available__lte=today, profile=profile1).exclude(matched_name=None)
+        previous_matches = avs.values('matched_email')
+        return profile2.email not in previous_matches
+
+    # sets up dictionary of timestamps to a list of availabilities
+    def setup(self, avs):
+        future_availabilities = {}
+        for availability in avs:
+            timestamp = (availability.time_available-datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)).total_seconds()
+            if timestamp in future_availabilities:
+                future_availabilities[timestamp].append(availability)
+            else:
+                future_availabilities[timestamp] = [availability]
+        return future_availabilities
