@@ -11,9 +11,9 @@ class MatchTestCase(TestCase):
     past = datetime.datetime(2016, 11, 5, 12, 0)
     future = datetime.datetime(2017, 11, 5, 12, 0)  # UTC
 
-    def setup(self):
+    def init_profiles(self):
         # tiffany, Success, SF, No, once a week
-        t = Profile.objects.create(
+        Profile.objects.create(
             first_name='tiffany',
             last_name='qi',
             preferred_name='tiffany',
@@ -24,17 +24,8 @@ class MatchTestCase(TestCase):
             frequency='Once a week',
             date_entered_mixpanel=datetime.datetime(2016, 10, 31)
         )
-        Availability.objects.create(
-            profile=t,
-            time_available=self.past
-        )
-        Availability.objects.create(
-            profile=t,
-            time_available=self.future
-        )
-
         # andrew, Engineering, SF, No, once a week
-        a = Profile.objects.create(
+        Profile.objects.create(
             first_name='andrew',
             last_name='huang',
             preferred_name='andrew',
@@ -45,17 +36,8 @@ class MatchTestCase(TestCase):
             frequency='Once a week',
             date_entered_mixpanel=datetime.datetime(2016, 11, 01)
         )
-        Availability.objects.create(
-            profile=a,
-            time_available=self.past
-        )
-        Availability.objects.create(
-            profile=a,
-            time_available=self.future
-        )
-
-        # PJ, Success, SF, No, once a week
-        pj = Profile.objects.create(
+        # PJ, Success, SF, Yes, once a week
+        Profile.objects.create(
             first_name='philip',
             last_name='ople',
             preferred_name='pj',
@@ -66,61 +48,132 @@ class MatchTestCase(TestCase):
             frequency='Once a week',
             date_entered_mixpanel=datetime.datetime(2015, 11, 01)
         )
+
+    def fresh_setup(self):
+        self.init_profiles()
         Availability.objects.create(
-            profile=pj,
+            profile=Profile.objects.get(first_name='tiffany'),
             time_available=self.past
         )
         Availability.objects.create(
-            profile=pj,
+            profile=Profile.objects.get(first_name='tiffany'),
+            time_available=self.future
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='andrew'),
+            time_available=self.past
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='andrew'),
+            time_available=self.future
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='philip'),
+            time_available=self.past
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='philip'),
             time_available=self.future
         )
 
-    def test_high_level_match(self):
-        self.setup()
+    def previous_matches_setup(self):
+        self.init_profiles()
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tiffany'),
+            time_available=self.past,
+            matched_name='andrew huang',
+            matched_email='andrew@not-mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tiffany'),
+            time_available=self.future
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='andrew'),
+            time_available=self.past,
+            matched_name='tiffany qi',
+            matched_email='tiffany@mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='andrew'),
+            time_available=self.future
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='philip'),
+            time_available=self.past
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='philip'),
+            time_available=self.future
+        )
+
+    def test_match(self):
+        self.previous_matches_setup()
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
         pj = Profile.objects.get(first_name='philip')
-        t_availability = Availability.objects.get(profile=t, time_available=self.future)
-        a_availability = Availability.objects.get(profile=a, time_available=self.future)
-        pj_availability = Availability.objects.get(profile=pj, time_available=self.future)
+        t_av = Availability.objects.get(profile=t, time_available=self.past)
+        a_av = Availability.objects.get(profile=a, time_available=self.past)
+        pj_av = Availability.objects.get(profile=pj, time_available=self.past)
 
-        call_command('match_users')
-        self.assertEqual(t_availability.matched_name, 'andrew huang')
-        self.assertEqual(a_availability.matched_name, 'tiffany qi')
-        self.assertEqual(pj_availability.matched_name, None)
+        self.assertEqual(t_av.matched_name, 'andrew huang')
+        self.assertEqual(a_av.matched_name, 'tiffany qi')
+        self.assertEqual(pj_av.matched_name, None)
 
     def test_check_match(self):
-        self.setup()
+        self.fresh_setup()
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
         pj = Profile.objects.get(first_name='philip')
+        t_av = Availability.objects.get(profile=t, time_available=self.future)
+        a_av = Availability.objects.get(profile=a, time_available=self.future)
+        pj_av = Availability.objects.get(profile=pj, time_available=self.future)
 
-        call_command('match_users')
-        self.assertEqual(Command.check_match(Command(), t, a), True)
-        self.assertEqual(Command.check_match(Command(), a, t), True)
-        self.assertEqual(Command.check_match(Command(), t, pj), False)
-        self.assertEqual(Command.check_match(Command(), a, pj), False)
-        self.assertEqual(Command.check_match(Command(), pj, t), False)
-        self.assertEqual(Command.check_match(Command(), pj, a), False)
+        # case where users don't have any matches in the beginning
+        self.assertEqual(Command.check_match(Command(), a_av, a, t), True)
+        self.assertEqual(Command.check_match(Command(), a_av, a, pj), True)
+        self.assertEqual(Command.check_match(Command(), t_av, t, pj), False)
+        self.assertEqual(Command.check_match(Command(), t_av, t, a), True)
+        self.assertEqual(Command.check_match(Command(), pj_av, pj, t), False)
+        self.assertEqual(Command.check_match(Command(), pj_av, pj, a), True)
+
+    def test_check_match_with_matches(self):
+        self.previous_matches_setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+        t_av = Availability.objects.get(profile=t, time_available=self.future)
+        a_av = Availability.objects.get(profile=a, time_available=self.future)
+        pj_av = Availability.objects.get(profile=pj, time_available=self.future)
+
+        # case where there are matches in the beginning
+        self.assertEqual(Command.check_match(Command(), a_av, a, t), False)
+        self.assertEqual(Command.check_match(Command(), a_av, a, pj), True)
+        self.assertEqual(Command.check_match(Command(), t_av, t, pj), False)
+        self.assertEqual(Command.check_match(Command(), t_av, t, a), False)
+        self.assertEqual(Command.check_match(Command(), pj_av, pj, t), False)
+        self.assertEqual(Command.check_match(Command(), pj_av, pj, a), True)
 
     def test_check_google_hangout(self):
-        self.setup()
+        self.fresh_setup()
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
         pj = Profile.objects.get(first_name='philip')
 
         self.assertEqual(Command.check_google_hangout(Command(), t, a), False)
+        self.assertEqual(Command.check_google_hangout(Command(), t, pj), False)
 
     def test_check_locations(self):
-        self.setup()
+        self.fresh_setup()
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
         pj = Profile.objects.get(first_name='philip')
 
         self.assertEqual(Command.check_locations(Command(), t, a), True)
+        self.assertEqual(Command.check_locations(Command(), t, pj), True)
 
     def test_check_departments(self):
-        self.setup()
+        self.fresh_setup()
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
         pj = Profile.objects.get(first_name='philip')
@@ -129,15 +182,47 @@ class MatchTestCase(TestCase):
         self.assertEqual(Command.check_departments(Command(), t, pj), False)
 
     def test_check_previous_matches(self):
-        self.setup()
+        self.fresh_setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+
+        # case where users don't have any matches in the beginning
+        self.assertEqual(Command.check_previous_matches(Command(), a, t), True)
+        self.assertEqual(Command.check_previous_matches(Command(), a, pj), True)
+        self.assertEqual(Command.check_previous_matches(Command(), t, pj), True)
+
+    def test_check_not_currently_matched(self):
+        self.fresh_setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+        t_av = Availability.objects.get(profile=t, time_available=self.future)
+        a_av = Availability.objects.get(profile=a, time_available=self.future)
+        pj_av = Availability.objects.get(profile=pj, time_available=self.future)
+
+        # case where users don't have any matches in the beginning
+        self.assertEqual(Command.check_not_currently_matched(Command(), a_av), True)
+        self.assertEqual(Command.check_not_currently_matched(Command(), t_av), True)
+        self.assertEqual(Command.check_not_currently_matched(Command(), pj_av), True)
+
+        # case where users just were matched
+        t_av.matched_name = 'andrew huang'
+        t_av.matched_email = 'andrew@not-mixpanel.com'
+        a_av.matched_name = 'tiffany qi'
+        a_av.matched_email = 'tiffany@mixpanel.com'
+
+        self.assertEqual(Command.check_not_currently_matched(Command(), a_av), False)
+        self.assertEqual(Command.check_not_currently_matched(Command(), t_av), False)
+        self.assertEqual(Command.check_not_currently_matched(Command(), pj_av), True)
+
+    def test_setup(self):
+        self.fresh_setup()
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
         pj = Profile.objects.get(first_name='philip')
         # at some point
 
-    def test_setup(self):
-        self.setup()
-        t = Profile.objects.get(first_name='tiffany')
-        a = Profile.objects.get(first_name='andrew')
-        pj = Profile.objects.get(first_name='philip')
+    def test_none(self):
+        self.fresh_setup()
         # at some point

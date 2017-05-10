@@ -37,31 +37,33 @@ class Command(BaseCommand):
                 for av2 in availability_list[rest_count:]:
                     profile1 = Profile.objects.get(email=av1.profile)
                     profile2 = Profile.objects.get(email=av2.profile)
-                    if self.check_match(profile1, profile2):
+                    if self.check_match(av1, profile1, profile2):
                         self.match(av1, av2, profile1, profile2)
-
-        # print Availability.objects.all().values()
 
     # actually match the two [TESt]
     def match(self, av1, av2, profile1, profile2):
-        print av1.matched_name
-        print av2.matched_name
         av1.matched_name = profile2.preferred_name + ' ' + profile2.last_name
         av1.matched_email = profile2.email
         av2.matched_name = profile1.preferred_name + ' ' + profile1.last_name
         av2.matched_email = profile1.email
         av1.save()
         av2.save()
-        print '--'
 
     # check to see that the two profiles should match [TEST]
-    def check_match(self, profile1, profile2):
-        if self.check_previous_matches(profile1, profile2):
-            if self.check_departments(profile1, profile2):
-                return self.check_locations(profile1, profile2) or self.google_hangout(profile1, profile2)
+    def check_match(self, av1, profile1, profile2):
+        if self.check_not_currently_matched(av1):
+            if self.check_previous_matches(profile1, profile2):
+                if self.check_departments(profile1, profile2):
+                    # print 'here?', profile1, profile2
+                    return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
+                else:
+                    # print 'here??', profile1, profile2
+                    return False
             else:
+                # print 'here???', profile1, profile2
                 return False
         else:
+            # print 'here????', profile1, profile2
             return False
 
     # check to see that the google hangouts aren't the same
@@ -79,8 +81,12 @@ class Command(BaseCommand):
     # get all previous matches in list form from a profile and check they weren't there before [TEST]
     def check_previous_matches(self, profile1, profile2):
         avs = Availability.objects.filter(profile=profile1).exclude(matched_name=None)
-        previous_matches = avs.values('matched_email')
+        previous_matches = avs.values_list('matched_email', flat=True)
         return profile2.email not in previous_matches
+
+    # check to see that this availability is not matched yet [TEST]
+    def check_not_currently_matched(self, av):
+        return av.matched_name is None
 
     # sets up dictionary of timestamps to a list of availabilities [TEST]
     def setup(self, avs):
