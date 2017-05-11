@@ -13,11 +13,11 @@ class Command(BaseCommand):
     - [ ] Runs this command at 3pm on all Availabilities that do not have
     a matched_name from tomorrow until a week from tomorrow.
     - [x] Prioritizes new Mixpanel hires.
-    - [ ] Check if they haven't been matched before
+    - [x] Check if they haven't been matched before
     - [x] Compares only users who have a different profile.department
     - [x] Checks same location first, else if both open to a google_hangout
     - [ ] (V2) Ensure that the frequency has not yet been satisifed
-    - [ ] If two users finally fits all all of these criteria, we'll take
+    - [x] If two users finally fits all all of these criteria, we'll take
     the two Availability models and set the matched_name and matched_email
     - [ ] Send a calendar invite to both parties
     '''
@@ -40,7 +40,20 @@ class Command(BaseCommand):
                     if self.check_match(av1, profile1, profile2):
                         self.match(av1, av2, profile1, profile2)
 
-    # actually match the two [TESt]
+    # check to see that the two profiles should match
+    def check_match(self, av1, profile1, profile2):
+        if self.check_not_currently_matched(av1):
+            if self.check_previous_matches(profile1, profile2):
+                if self.check_departments(profile1, profile2):
+                    return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
+                else:
+                    return False
+            else:
+                return False
+        else:
+            return False
+
+    # actually match the two
     def match(self, av1, av2, profile1, profile2):
         av1.matched_name = profile2.preferred_name + ' ' + profile2.last_name
         av1.matched_email = profile2.email
@@ -48,23 +61,6 @@ class Command(BaseCommand):
         av2.matched_email = profile1.email
         av1.save()
         av2.save()
-
-    # check to see that the two profiles should match [TEST]
-    def check_match(self, av1, profile1, profile2):
-        if self.check_not_currently_matched(av1):
-            if self.check_previous_matches(profile1, profile2):
-                if self.check_departments(profile1, profile2):
-                    # print 'here?', profile1, profile2
-                    return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
-                else:
-                    # print 'here??', profile1, profile2
-                    return False
-            else:
-                # print 'here???', profile1, profile2
-                return False
-        else:
-            # print 'here????', profile1, profile2
-            return False
 
     # check to see that the google hangouts aren't the same
     def check_google_hangout(self, profile1, profile2):
@@ -84,11 +80,11 @@ class Command(BaseCommand):
         previous_matches = avs.values_list('matched_email', flat=True)
         return profile2.email not in previous_matches
 
-    # check to see that this availability is not matched yet [TEST]
+    # check to see that this availability is not matched yet
     def check_not_currently_matched(self, av):
         return av.matched_name is None
 
-    # sets up dictionary of timestamps to a list of availabilities [TEST]
+    # sets up dictionary of timestamps to a list of availabilities
     def setup(self, avs):
         future_availabilities = {}
         for availability in avs:
