@@ -24,11 +24,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         today = datetime.date.today()
-        avs = Availability.objects.filter(time_available__gte=today, matched_name=None).order_by('time_available', '-profile__date_entered_mixpanel')
+        avs = Availability.objects.filter(time_available__gte=today).order_by('time_available', '-profile__date_entered_mixpanel')
 
         # dictionary of availability objects with datetime key
         future_availabilities = self.setup(avs)
+        return self.runs_matches(future_availabilities)
 
+    # actually runs the cron job, here for testing purposes
+    def runs_matches(self, future_availabilities):
+        matches = []
         # actually do the matching from here
         for timestamp, availability_list in future_availabilities.iteritems():
             rest_count = 0
@@ -37,12 +41,16 @@ class Command(BaseCommand):
                 for av2 in availability_list[rest_count:]:
                     profile1 = Profile.objects.get(email=av1.profile)
                     profile2 = Profile.objects.get(email=av2.profile)
-                    if self.check_match(av1, profile1, profile2):
+                    if self.check_match(av1, av2, profile1, profile2):
                         self.match(av1, av2, profile1, profile2)
+                        matches.append([timestamp, profile1, profile2])
+
+        print matches
+        return matches
 
     # check to see that the two profiles should match
-    def check_match(self, av1, profile1, profile2):
-        if self.check_not_currently_matched(av1):
+    def check_match(self, av1, av2, profile1, profile2):
+        if self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2):
             if self.check_previous_matches(profile1, profile2):
                 if self.check_departments(profile1, profile2):
                     return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
