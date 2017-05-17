@@ -16,7 +16,7 @@ class Command(BaseCommand):
     - [x] Check if they haven't been matched before
     - [x] Compares only users who have a different profile.department
     - [x] Checks same location first, else if both open to a google_hangout
-    - [ ] (V2) Ensure that the frequency has not yet been satisifed
+    - [ ] (v2) Ensure that the frequency has not yet been satisifed (1x/wk)
     - [x] If two users finally fits all all of these criteria, we'll take
     the two Availability models and set the matched_name and matched_email
     - [ ] Send a calendar invite to both parties
@@ -44,8 +44,6 @@ class Command(BaseCommand):
                     if self.check_match(av1, av2, profile1, profile2):
                         self.match(av1, av2, profile1, profile2)
                         matches.append([timestamp, profile1, profile2])
-
-        print matches
         return matches
 
     # check to see that the two profiles should match

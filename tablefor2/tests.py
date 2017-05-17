@@ -1,4 +1,4 @@
-from django.core.management import call_command
+# from django.core.management import call_command
 from django.test import TestCase
 
 from tablefor2.models import *
@@ -350,7 +350,6 @@ class MatchTestCase(TestCase):
         mike = Profile.objects.get(first_name='michael')
         t_av_past = Availability.objects.get(profile=t, time_available=self.past)
         a_av_past = Availability.objects.get(profile=a, time_available=self.past)
-        tim_av_past2 = Availability.objects.get(profile=tim, time_available=self.past2)
         mike_av_past2 = Availability.objects.get(profile=mike, time_available=self.past2)
         t_av_future = Availability.objects.get(profile=t, time_available=self.future)
         a_av_future = Availability.objects.get(profile=a, time_available=self.future)
@@ -370,9 +369,7 @@ class MatchTestCase(TestCase):
             [1509883200.0, a, mike],
             [1509883200.0, pj, tim]
         ]
-        call_command('match_users')  # does the right thing!
-        # still says self doesn't have test case
-        self.asssertEqual(Command.runs_matches(Command(), future_availabilities), matches)
+        self.assertEqual(Command.runs_matches(Command(), future_availabilities), matches)
 
     def test_check_google_hangout(self):
         self.fresh_setup()
