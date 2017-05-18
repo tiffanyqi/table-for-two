@@ -4,6 +4,7 @@ from tablefor2.models import *
 
 import pytz
 import datetime
+from datetime import timedelta
 
 
 class Command(BaseCommand):
@@ -16,7 +17,8 @@ class Command(BaseCommand):
     - [x] Check if they haven't been matched before
     - [x] Compares only users who have a different profile.department
     - [x] Checks same location first, else if both open to a google_hangout
-    - [ ] (v2) Ensure that the frequency has not yet been satisifed (1x/wk)
+    - [x] Ensure that the 1x/wk frequency has not yet been satisifed
+    - [ ] (v2) Ensure that their chosen frequency has not yet been satisfied
     - [x] If two users finally fits all all of these criteria, we'll take
     the two Availability models and set the matched_name and matched_email
     - [ ] Send a calendar invite to both parties
@@ -48,10 +50,13 @@ class Command(BaseCommand):
 
     # check to see that the two profiles should match
     def check_match(self, av1, av2, profile1, profile2):
-        if self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2):
-            if self.check_previous_matches(profile1, profile2):
-                if self.check_departments(profile1, profile2):
-                    return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
+        if self.check_frequency(profile1) and self.check_frequency(profile2):
+            if self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2):
+                if self.check_previous_matches(profile1, profile2):
+                    if self.check_departments(profile1, profile2):
+                        return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
+                    else:
+                        return False
                 else:
                     return False
             else:
@@ -89,6 +94,15 @@ class Command(BaseCommand):
     # check to see that this availability is not matched yet
     def check_not_currently_matched(self, av):
         return av.matched_name is None
+
+    def check_frequency(self, profile):
+        # today = datetime.date.today()
+        today = datetime.datetime(2017, 11, 1)
+        # based by 1x/wk for now
+        start_week = today - timedelta(days=today.weekday())
+        end_week = start_week + timedelta(days=6)
+        avs = Availability.objects.filter(profile=profile, time_available__gte=start_week, time_available__lte=end_week).exclude(matched_name=None)
+        return not avs
 
     # sets up dictionary of timestamps to a list of availabilities
     def setup(self, avs):

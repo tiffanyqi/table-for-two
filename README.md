@@ -29,7 +29,7 @@ Availability
 - [ ] Test
 
 Matching
-- [ ] Match the people by availability (frequency V2)
+- [x] Match the people by availability and 1x/wk (frequency V2)
 - [x] Show your future matches
 - [x] Show your previous matches
 - [ ] Send a google calendar invite

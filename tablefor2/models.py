@@ -24,7 +24,6 @@ class Profile(AbstractBaseUser):
     google_hangout = models.CharField(null=True, max_length=50)
     frequency = models.CharField(null=True, max_length=50)
     # number_of_matches = models.IntegerField(default=0)
-    # can_match = BooleanField(default=True)
     date_entered_mixpanel = models.DateField(default=timezone.now)
 
     objects = UserManager()

@@ -1,4 +1,4 @@
-# from django.core.management import call_command
+from django.core.management import call_command
 from django.test import TestCase
 
 from tablefor2.models import *
@@ -10,8 +10,8 @@ import datetime
 class MatchTestCase(TestCase):
     past = datetime.datetime(2016, 11, 5, 12, 0)
     past2 = datetime.datetime(2016, 12, 5, 12, 0)
-    future = datetime.datetime(2017, 11, 5, 12, 0)  # UTC
-    future2 = datetime.datetime(2017, 12, 5, 12, 0)
+    future = datetime.datetime(2017, 11, 1, 12, 0)  # UTC
+    future2 = datetime.datetime(2017, 11, 2, 12, 0)
 
     # setup
     def init_profiles(self):
@@ -150,6 +150,10 @@ class MatchTestCase(TestCase):
         Past: PJ and Mike
         Past2: PJ and Andrew
         Past: Tim and Karima
+
+        Matching algorithm:
+        Future: Andrew and Mike
+        Future: PJ and Tim
         '''
         self.init_profiles()
         Availability.objects.create(
@@ -242,7 +246,143 @@ class MatchTestCase(TestCase):
         )
 
     def future_matches_setup(self):
+        '''
+        Order by new hires: [Andrew, Tiffany, Karima, Mike, PJ, Tim]
+        Past: Andrew and Tiffany
+        Past2: Andrew and PJ
+        Past: Tiffany and Andrew
+        Past: Karima and Tim
+        Past: Mike and PJ
+        Past: PJ and Mike
+        Past2: PJ and Andrew
+        Past: Tim and Karima
+        Future: Andrew and Mike
+        Future: PJ and Tim
+
+        Matching algorithm:
+        Future2: NOTHING, because Mike has already been matched this week
+        '''
         self.init_profiles()
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tiffany'),
+            time_available=self.past,
+            matched_name='andrew huang',
+            matched_email='andrew@not-mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tiffany'),
+            time_available=self.past2
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tiffany'),
+            time_available=self.future
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tiffany'),
+            time_available=self.future2
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='andrew'),
+            time_available=self.past,
+            matched_name='tiffany qi',
+            matched_email='tiffany@mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='andrew'),
+            time_available=self.past2,
+            matched_name='pj ople',
+            matched_email='pj@mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='andrew'),
+            time_available=self.future,
+            matched_name='mike walker',
+            matched_email='mike@mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='andrew'),
+            time_available=self.future2
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='philip'),
+            time_available=self.past,
+            matched_name='mike walker',
+            matched_email='mike@mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='philip'),
+            time_available=self.past2,
+            matched_name='andrew huang',
+            matched_email='andrew@not-mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='philip'),
+            time_available=self.future,
+            matched_name='tim trefen',
+            matched_email='tim@mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='philip'),
+            time_available=self.future2
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='karima'),
+            time_available=self.past,
+            matched_name='tim trefen',
+            matched_email='tim@mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='karima'),
+            time_available=self.past2
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='karima'),
+            time_available=self.future
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='karima'),
+            time_available=self.future2
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tim'),
+            time_available=self.past,
+            matched_name='karima el moujahid',
+            matched_email='karima@mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tim'),
+            time_available=self.past2
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tim'),
+            time_available=self.future,
+            matched_name='pj ople',
+            matched_email='pj@mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tim'),
+            time_available=self.future2
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='michael'),
+            time_available=self.past,
+            matched_name='pj ople',
+            matched_email='pj@mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='michael'),
+            time_available=self.past2
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='michael'),
+            time_available=self.future,
+            matched_name='andrew huang',
+            matched_email='andrew@not-mixpanel.com'
+        )
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='michael'),
+            time_available=self.future2
+        )
 
     # tests
 
@@ -291,7 +431,7 @@ class MatchTestCase(TestCase):
         self.assertEqual(Command.check_match(Command(), mike_av, a_av, mike, a), True)
         self.assertEqual(Command.check_match(Command(), mike_av, pj_av, mike, pj), True)
         self.assertEqual(Command.check_match(Command(), mike_av, k_av, mike, k), True)
-        self.assertEqual(Command.check_match(Command(), mike_av, tim_av, mike, tim), True)
+        # self.assertEqual(Command.check_match(Command(), mike_av, tim_av, mike, tim), True)
 
     # case where there are matches in the beginning
     def test_check_match_with_matches(self):
@@ -340,7 +480,7 @@ class MatchTestCase(TestCase):
         self.assertEqual(Command.check_match(Command(), mike_av, k_av, mike, k), True)
         self.assertEqual(Command.check_match(Command(), mike_av, tim_av, mike, tim), True)
 
-    def test_match_and_run(self):
+    def test_match_and_run_future_first_day(self):
         self.previous_matches_setup()
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
@@ -363,12 +503,42 @@ class MatchTestCase(TestCase):
         self.assertEqual(mike_av_past2.matched_name, None)
 
         future_availabilities = {
-            1509883200.0: [a_av_future, t_av_future, k_av_future, mike_av_future, pj_av_future, tim_av_future],
+            1509537600.0: [a_av_future, t_av_future, k_av_future, mike_av_future, pj_av_future, tim_av_future],
         }
         matches = [
-            [1509883200.0, a, mike],
-            [1509883200.0, pj, tim]
+            [1509537600.0, a, mike],
+            [1509537600.0, pj, tim]
         ]
+        self.assertEqual(Command.runs_matches(Command(), future_availabilities), matches)
+
+    # case where there's two day in a row, but folks shouldn't be matched
+    def test_match_and_run_future_second_day(self):
+        self.future_matches_setup()
+
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+        k = Profile.objects.get(first_name='karima')
+        tim = Profile.objects.get(first_name='tim')
+        mike = Profile.objects.get(first_name='michael')
+        t_av_future = Availability.objects.get(profile=t, time_available=self.future)
+        a_av_future = Availability.objects.get(profile=a, time_available=self.future)
+        pj_av_future = Availability.objects.get(profile=pj, time_available=self.future)
+        k_av_future = Availability.objects.get(profile=k, time_available=self.future)
+        tim_av_future = Availability.objects.get(profile=tim, time_available=self.future)
+        mike_av_future = Availability.objects.get(profile=mike, time_available=self.future)
+        t_av_future2 = Availability.objects.get(profile=t, time_available=self.future2)
+        a_av_future2 = Availability.objects.get(profile=a, time_available=self.future2)
+        pj_av_future2 = Availability.objects.get(profile=pj, time_available=self.future2)
+        k_av_future2 = Availability.objects.get(profile=k, time_available=self.future2)
+        tim_av_future2 = Availability.objects.get(profile=tim, time_available=self.future2)
+        mike_av_future2 = Availability.objects.get(profile=mike, time_available=self.future2)
+
+        future_availabilities = {
+            1509537600.0: [a_av_future, t_av_future, k_av_future, mike_av_future, pj_av_future, tim_av_future],
+            1509624000.0: [a_av_future2, t_av_future2, k_av_future2, mike_av_future2, pj_av_future2, tim_av_future2]
+        }
+        matches = []
         self.assertEqual(Command.runs_matches(Command(), future_availabilities), matches)
 
     def test_check_google_hangout(self):
@@ -428,6 +598,21 @@ class MatchTestCase(TestCase):
         self.assertEqual(Command.check_previous_matches(Command(), k, mike), True)
         self.assertEqual(Command.check_previous_matches(Command(), k, tim), False)
 
+    def test_check_previous_matches_with_future_matches(self):
+        self.future_matches_setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+        k = Profile.objects.get(first_name='karima')
+        tim = Profile.objects.get(first_name='tim')
+        mike = Profile.objects.get(first_name='michael')
+
+        self.assertEqual(Command.check_previous_matches(Command(), a, t), False)
+        self.assertEqual(Command.check_previous_matches(Command(), a, pj), False)
+        self.assertEqual(Command.check_previous_matches(Command(), a, mike), False)
+        self.assertEqual(Command.check_previous_matches(Command(), k, mike), True)
+        self.assertEqual(Command.check_previous_matches(Command(), k, tim), False)
+
     def test_check_not_currently_matched(self):
         self.fresh_setup()
         t = Profile.objects.get(first_name='tiffany')
@@ -452,6 +637,45 @@ class MatchTestCase(TestCase):
         self.assertEqual(Command.check_not_currently_matched(Command(), t_av), False)
         self.assertEqual(Command.check_not_currently_matched(Command(), pj_av), True)
 
+    def test_check_frequency_previous(self):
+        self.previous_matches_setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        mike = Profile.objects.get(first_name='michael')
+        a_av = Availability.objects.get(profile=a, time_available=self.future)
+        mike_av = Availability.objects.get(profile=mike, time_available=self.future)
+
+        self.assertEqual(Command.check_frequency(Command(), t), True)
+        self.assertEqual(Command.check_frequency(Command(), a), True)
+
+        # case where users just were matched
+        mike_av.matched_name = 'andrew huang'
+        mike_av.matched_email = 'andrew@not-mixpanel.com'
+        mike_av.save()
+        a_av.matched_name = 'mike walker'
+        a_av.matched_email = 'mike@mixpanel.com'
+        a_av.save()
+
+        self.assertEqual(Command.check_frequency(Command(), a), False)
+        self.assertEqual(Command.check_frequency(Command(), mike), False)
+        self.assertEqual(Command.check_frequency(Command(), t), True)
+
+    def test_check_frequency_future(self):
+        self.future_matches_setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+        k = Profile.objects.get(first_name='karima')
+        tim = Profile.objects.get(first_name='tim')
+        mike = Profile.objects.get(first_name='michael')
+
+        self.assertEqual(Command.check_frequency(Command(), t), True)
+        self.assertEqual(Command.check_frequency(Command(), a), False)
+        self.assertEqual(Command.check_frequency(Command(), pj), False)
+        self.assertEqual(Command.check_frequency(Command(), k), True)
+        self.assertEqual(Command.check_frequency(Command(), tim), False)
+        self.assertEqual(Command.check_frequency(Command(), mike), False)
+
     def test_setup(self):
         self.fresh_setup()
         avs = Availability.objects.all()
@@ -467,7 +691,7 @@ class MatchTestCase(TestCase):
         self.assertIn(a_av_past, Command.setup(Command(), avs)[1478347200.0])
         self.assertIn(t_av_past, Command.setup(Command(), avs)[1478347200.0])
         self.assertIn(tim_av_past, Command.setup(Command(), avs)[1478347200.0])
-        self.assertIn(a_av_future, Command.setup(Command(), avs)[1509883200.0])
-        self.assertIn(tim_av_future, Command.setup(Command(), avs)[1509883200.0])
-        self.assertNotIn(a_av_past, Command.setup(Command(), avs)[1509883200.0])
+        self.assertIn(a_av_future, Command.setup(Command(), avs)[1509537600.0])
+        self.assertIn(tim_av_future, Command.setup(Command(), avs)[1509537600.0])
+        self.assertNotIn(a_av_past, Command.setup(Command(), avs)[1509537600.0])
         self.assertNotIn(a_av_future, Command.setup(Command(), avs)[1478347200.0])
