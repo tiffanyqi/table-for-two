@@ -32,8 +32,9 @@ Matching
 - [x] Match the people by availability and 1x/wk (frequency V2)
 - [x] Show your future matches
 - [x] Show your previous matches
-- [ ] Send a google calendar invite
 - [ ] Change everything to proper timezone
+- [ ] Run the actual cron job
+- [ ] Send a google calendar invite
 - [ ] Test
 
 Notifications
@@ -61,11 +62,11 @@ Front-end
 - Runs a thing at 3pm the day before
 - First pick are the newer Mixpanel hires
 - Check for:
+	- Only if fits their frequency of 1x/wk (V2 will be programmatic)
 	- People who are available at the same time
 	- Are in a different department
 	- Haven't matched before
 	- Those who are in the same location (last, GHangout)
-	- Only if fits their frequency (V2)
 - If that user is matched, then we'll set the name and email equal to the match
 
 
@@ -73,4 +74,4 @@ Front-end
 - BambooHR instead?
 - Variable locations?
 - See your Mixpanel calendar
-- Change frequencies
+- Programmatic frequencies

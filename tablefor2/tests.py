@@ -642,11 +642,12 @@ class MatchTestCase(TestCase):
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
         mike = Profile.objects.get(first_name='michael')
+        t_av = Availability.objects.get(profile=t, time_available=self.future)
         a_av = Availability.objects.get(profile=a, time_available=self.future)
         mike_av = Availability.objects.get(profile=mike, time_available=self.future)
 
-        self.assertEqual(Command.check_frequency(Command(), t), True)
-        self.assertEqual(Command.check_frequency(Command(), a), True)
+        self.assertEqual(Command.check_frequency(Command(), t_av, t), True)
+        self.assertEqual(Command.check_frequency(Command(), a_av, a), True)
 
         # case where users just were matched
         mike_av.matched_name = 'andrew huang'
@@ -656,9 +657,9 @@ class MatchTestCase(TestCase):
         a_av.matched_email = 'mike@mixpanel.com'
         a_av.save()
 
-        self.assertEqual(Command.check_frequency(Command(), a), False)
-        self.assertEqual(Command.check_frequency(Command(), mike), False)
-        self.assertEqual(Command.check_frequency(Command(), t), True)
+        self.assertEqual(Command.check_frequency(Command(), a_av, a), False)
+        self.assertEqual(Command.check_frequency(Command(), mike_av, mike), False)
+        self.assertEqual(Command.check_frequency(Command(), t_av, t), True)
 
     def test_check_frequency_future(self):
         self.future_matches_setup()
@@ -668,13 +669,19 @@ class MatchTestCase(TestCase):
         k = Profile.objects.get(first_name='karima')
         tim = Profile.objects.get(first_name='tim')
         mike = Profile.objects.get(first_name='michael')
+        t_av = Availability.objects.get(profile=t, time_available=self.future2)
+        a_av = Availability.objects.get(profile=a, time_available=self.future2)
+        pj_av = Availability.objects.get(profile=pj, time_available=self.future2)
+        k_av = Availability.objects.get(profile=k, time_available=self.future2)
+        tim_av = Availability.objects.get(profile=tim, time_available=self.future2)
+        mike_av = Availability.objects.get(profile=mike, time_available=self.future2)
 
-        self.assertEqual(Command.check_frequency(Command(), t), True)
-        self.assertEqual(Command.check_frequency(Command(), a), False)
-        self.assertEqual(Command.check_frequency(Command(), pj), False)
-        self.assertEqual(Command.check_frequency(Command(), k), True)
-        self.assertEqual(Command.check_frequency(Command(), tim), False)
-        self.assertEqual(Command.check_frequency(Command(), mike), False)
+        self.assertEqual(Command.check_frequency(Command(), t_av, t), True)
+        self.assertEqual(Command.check_frequency(Command(), a_av, a), False)
+        self.assertEqual(Command.check_frequency(Command(), pj_av, pj), False)
+        self.assertEqual(Command.check_frequency(Command(), k_av, k), True)
+        self.assertEqual(Command.check_frequency(Command(), tim_av, tim), False)
+        self.assertEqual(Command.check_frequency(Command(), mike_av, mike), False)
 
     def test_setup(self):
         self.fresh_setup()

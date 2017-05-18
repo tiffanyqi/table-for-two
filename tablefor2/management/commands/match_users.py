@@ -2,9 +2,9 @@ from django.core.management.base import BaseCommand
 
 from tablefor2.models import *
 
-import pytz
-import datetime
 from datetime import timedelta
+import datetime
+import pytz
 
 
 class Command(BaseCommand):
@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
     # check to see that the two profiles should match
     def check_match(self, av1, av2, profile1, profile2):
-        if self.check_frequency(profile1) and self.check_frequency(profile2):
+        if self.check_frequency(av1, profile1) and self.check_frequency(av2, profile2):
             if self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2):
                 if self.check_previous_matches(profile1, profile2):
                     if self.check_departments(profile1, profile2):
@@ -95,11 +95,10 @@ class Command(BaseCommand):
     def check_not_currently_matched(self, av):
         return av.matched_name is None
 
-    def check_frequency(self, profile):
-        # today = datetime.date.today()
-        today = datetime.datetime(2017, 11, 1)
-        # based by 1x/wk for now
-        start_week = today - timedelta(days=today.weekday())
+    # check to see that the frequency has not been matched yet, for now bsased on 1x/wk
+    def check_frequency(self, av, profile):
+        av_time = av.time_available
+        start_week = av_time - timedelta(days=av_time.weekday())
         end_week = start_week + timedelta(days=6)
         avs = Availability.objects.filter(profile=profile, time_available__gte=start_week, time_available__lte=end_week).exclude(matched_name=None)
         return not avs
