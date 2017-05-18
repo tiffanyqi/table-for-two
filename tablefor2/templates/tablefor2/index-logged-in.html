@@ -12,7 +12,7 @@
 
         <ul>
         {% for availability in availabilities %}
-        	<li>{{ availability.time_available }}</li>
+            <li>{{ availability.time_available }}</li>
         {% endfor %}
         </ul>
         <p>Your frequency: {{ profile.frequency }}</p>
@@ -29,7 +29,37 @@
             <button type="submit" class="save btn btn-default">Save</button>
         </form>
 
-        <!-- <h1>Your Matches</h1> -->
+        <h1>Your Current Matches</h1>
+
+        {% if not current_matches %}
+            <p>Go set some availabilities!</p>
+
+        {% else %}
+
+        <ul>
+        {% for current_match in current_matches %}
+            <li>{{ current_match.matched_name}} at {{ current_match.time_available }}</li>
+        {% endfor %}
+        </ul>
+
+        {% endif %}
+
+        <h1>Your Past Matches</h1>
+
+        {% if not past_matches %}
+            <p>Go set some availabilities!</p>
+
+        {% else %}
+
+        <ul>
+        {% for past_match in past_matches %}
+            <li>{{ past_match.matched_name}} at {{ past_match.time_available }}</li>
+        {% endfor %}
+
+        {% endif %}
+
+        </ul>
+
 
     {% endblock %}
 

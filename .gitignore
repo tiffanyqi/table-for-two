@@ -4,3 +4,4 @@ staticfiles
 .env
 client_secrets.json
 notes.txt
+.coverage

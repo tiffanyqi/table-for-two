@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractBaseUser, UserManager
-from django_unixdatetimefield import UnixDateTimeField
 
 from django.db import models
 from django.utils import timezone
@@ -24,6 +23,7 @@ class Profile(AbstractBaseUser):
     location = models.CharField(null=True, max_length=50)
     google_hangout = models.CharField(null=True, max_length=50)
     frequency = models.CharField(null=True, max_length=50)
+    # number_of_matches = models.IntegerField(default=0)
     date_entered_mixpanel = models.DateField(default=timezone.now)
 
     objects = UserManager()
