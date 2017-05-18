@@ -32,9 +32,8 @@ Matching
 - [x] Match the people by availability and 1x/wk (frequency V2)
 - [x] Show your future matches
 - [x] Show your previous matches
-- [ ] Change everything to proper timezone
-- [ ] Run the actual cron job
 - [ ] Send a google calendar invite
+- [ ] Run the actual cron job
 - [ ] Test
 
 Notifications

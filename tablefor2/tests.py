@@ -5,13 +5,14 @@ from tablefor2.models import *
 from tablefor2.management.commands.match_users import Command
 
 import datetime
+import pytz
 
 
 class MatchTestCase(TestCase):
-    past = datetime.datetime(2016, 11, 5, 12, 0)
-    past2 = datetime.datetime(2016, 12, 5, 12, 0)
-    future = datetime.datetime(2017, 11, 1, 12, 0)  # UTC
-    future2 = datetime.datetime(2017, 11, 2, 12, 0)
+    past = datetime.datetime(2016, 11, 5, 12, 0, tzinfo=pytz.UTC)
+    past2 = datetime.datetime(2016, 12, 5, 12, 0, tzinfo=pytz.UTC)
+    future = datetime.datetime(2017, 11, 1, 12, 0, tzinfo=pytz.UTC)
+    future2 = datetime.datetime(2017, 11, 2, 12, 0, tzinfo=pytz.UTC)
 
     # setup
     def init_profiles(self):
