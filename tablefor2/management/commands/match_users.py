@@ -52,7 +52,11 @@ class Command(BaseCommand):
 
         # dictionary of availability objects with datetime key
         future_availabilities = self.setup(avs)
-        return self.runs_matches(future_availabilities)
+
+        matches = self.runs_matches(future_availabilities)
+        for match in matches:
+            self.send_google_calendar_invite(match[0], match[1], match[2])
+        return matches
 
     # actually runs the cron job, here for testing purposes
     def runs_matches(self, future_availabilities):
@@ -94,14 +98,13 @@ class Command(BaseCommand):
         av2.matched_email = profile1.email
         av1.save()
         av2.save()
-        self.send_google_calendar_invite(av1, profile1, profile2)
 
-    def send_google_calendar_invite(self, av1, profile1, profile2):
+    def send_google_calendar_invite(self, timestamp, profile1, profile2):
         credentials = self.get_credentials()
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('calendar', 'v3', http=http)
 
-        start_time = av1.time_available
+        start_time = datetime.datetime.fromtimestamp(timestamp)
         end_time = start_time + datetime.timedelta(minutes=30)
 
         # 2017-05-25 12:00:00+00:00 --> 2017-05-25T12:00:00.0z
@@ -122,9 +125,9 @@ class Command(BaseCommand):
                 {'email': profile1.email},
                 {'email': profile2.email},
                 {'email': 'tiffany.qi+tf2test@mixpanel.com'}  # confirm it worked
-            ]
+            ],
         }
-        event = service.events().insert(calendarId='primary', body=event).execute()
+        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         print('Event created between %s and %s' % (profile1.preferred_name, profile2.preferred_name))
 
     # check to see that the google hangouts aren't the same

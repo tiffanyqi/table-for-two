@@ -432,7 +432,7 @@ class MatchTestCase(TestCase):
         self.assertEqual(Command.check_match(Command(), mike_av, a_av, mike, a), True)
         self.assertEqual(Command.check_match(Command(), mike_av, pj_av, mike, pj), True)
         self.assertEqual(Command.check_match(Command(), mike_av, k_av, mike, k), True)
-        # self.assertEqual(Command.check_match(Command(), mike_av, tim_av, mike, tim), True)
+        self.assertEqual(Command.check_match(Command(), mike_av, tim_av, mike, tim), True)
 
     # case where there are matches in the beginning
     def test_check_match_with_matches(self):
