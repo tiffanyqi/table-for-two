@@ -26,6 +26,7 @@ Availability
 - [x] Create index-logged-in page
 - [x] Set availabilities in back-end
 - [x] Show you made these availabilities
+- [ ] Remove availabilities
 - [ ] Test
 
 Matching

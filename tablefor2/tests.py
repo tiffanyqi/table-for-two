@@ -21,7 +21,7 @@ class MatchTestCase(TestCase):
             first_name='tiffany',
             last_name='qi',
             preferred_name='tiffany',
-            email='tiffany@mixpanel.com',
+            email='tiffany@TEST-mixpanel.com',
             department='Success',
             location='San Francisco',
             google_hangout='No',
@@ -33,7 +33,7 @@ class MatchTestCase(TestCase):
             first_name='andrew',
             last_name='huang',
             preferred_name='andrew',
-            email='andrew@not-mixpanel.com',
+            email='andrew@not-TEST-mixpanel.com',
             department='Engineering',
             location='San Francisco',
             google_hangout='No',
@@ -45,7 +45,7 @@ class MatchTestCase(TestCase):
             first_name='philip',
             last_name='ople',
             preferred_name='pj',
-            email='pj@mixpanel.com',
+            email='pj@TEST-mixpanel.com',
             department='Success',
             location='San Francisco',
             google_hangout='Yes',
@@ -57,7 +57,7 @@ class MatchTestCase(TestCase):
             first_name='karima',
             last_name='el moujahid',
             preferred_name='karima',
-            email='karima@mixpanel.com',
+            email='karima@TEST-mixpanel.com',
             department='Success',
             location='Other',
             google_hangout='Yes',
@@ -69,7 +69,7 @@ class MatchTestCase(TestCase):
             first_name='tim',
             last_name='trefen',
             preferred_name='tim',
-            email='tim@mixpanel.com',
+            email='tim@TEST-mixpanel.com',
             department='Engineering',
             location='New York',
             google_hangout='Yes',
@@ -81,7 +81,7 @@ class MatchTestCase(TestCase):
             first_name='michael',
             last_name='walker',
             preferred_name='mike',
-            email='mike@mixpanel.com',
+            email='mike@TEST-mixpanel.com',
             department='Sales',
             location='San Francisco',
             google_hangout='Yes',
@@ -161,7 +161,7 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='tiffany'),
             time_available=self.past,
             matched_name='andrew huang',
-            matched_email='andrew@not-mixpanel.com'
+            matched_email='andrew@not-TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='tiffany'),
@@ -175,13 +175,13 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='andrew'),
             time_available=self.past,
             matched_name='tiffany qi',
-            matched_email='tiffany@mixpanel.com'
+            matched_email='tiffany@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='andrew'),
             time_available=self.past2,
             matched_name='pj ople',
-            matched_email='pj@mixpanel.com'
+            matched_email='pj@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='andrew'),
@@ -191,13 +191,13 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='philip'),
             time_available=self.past,
             matched_name='mike walker',
-            matched_email='mike@mixpanel.com'
+            matched_email='mike@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='philip'),
             time_available=self.past2,
             matched_name='andrew huang',
-            matched_email='andrew@not-mixpanel.com'
+            matched_email='andrew@not-TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='philip'),
@@ -207,7 +207,7 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='karima'),
             time_available=self.past,
             matched_name='tim trefen',
-            matched_email='tim@mixpanel.com'
+            matched_email='tim@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='karima'),
@@ -221,7 +221,7 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='tim'),
             time_available=self.past,
             matched_name='karima el moujahid',
-            matched_email='karima@mixpanel.com'
+            matched_email='karima@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='tim'),
@@ -235,7 +235,7 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='michael'),
             time_available=self.past,
             matched_name='pj ople',
-            matched_email='pj@mixpanel.com'
+            matched_email='pj@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='michael'),
@@ -268,7 +268,7 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='tiffany'),
             time_available=self.past,
             matched_name='andrew huang',
-            matched_email='andrew@not-mixpanel.com'
+            matched_email='andrew@not-TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='tiffany'),
@@ -286,19 +286,19 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='andrew'),
             time_available=self.past,
             matched_name='tiffany qi',
-            matched_email='tiffany@mixpanel.com'
+            matched_email='tiffany@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='andrew'),
             time_available=self.past2,
             matched_name='pj ople',
-            matched_email='pj@mixpanel.com'
+            matched_email='pj@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='andrew'),
             time_available=self.future,
             matched_name='mike walker',
-            matched_email='mike@mixpanel.com'
+            matched_email='mike@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='andrew'),
@@ -308,19 +308,19 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='philip'),
             time_available=self.past,
             matched_name='mike walker',
-            matched_email='mike@mixpanel.com'
+            matched_email='mike@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='philip'),
             time_available=self.past2,
             matched_name='andrew huang',
-            matched_email='andrew@not-mixpanel.com'
+            matched_email='andrew@not-TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='philip'),
             time_available=self.future,
             matched_name='tim trefen',
-            matched_email='tim@mixpanel.com'
+            matched_email='tim@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='philip'),
@@ -330,7 +330,7 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='karima'),
             time_available=self.past,
             matched_name='tim trefen',
-            matched_email='tim@mixpanel.com'
+            matched_email='tim@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='karima'),
@@ -348,7 +348,7 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='tim'),
             time_available=self.past,
             matched_name='karima el moujahid',
-            matched_email='karima@mixpanel.com'
+            matched_email='karima@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='tim'),
@@ -358,7 +358,7 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='tim'),
             time_available=self.future,
             matched_name='pj ople',
-            matched_email='pj@mixpanel.com'
+            matched_email='pj@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='tim'),
@@ -368,7 +368,7 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='michael'),
             time_available=self.past,
             matched_name='pj ople',
-            matched_email='pj@mixpanel.com'
+            matched_email='pj@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='michael'),
@@ -378,7 +378,7 @@ class MatchTestCase(TestCase):
             profile=Profile.objects.get(first_name='michael'),
             time_available=self.future,
             matched_name='andrew huang',
-            matched_email='andrew@not-mixpanel.com'
+            matched_email='andrew@not-TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='michael'),
@@ -630,9 +630,9 @@ class MatchTestCase(TestCase):
 
         # case where users just were matched
         t_av.matched_name = 'andrew huang'
-        t_av.matched_email = 'andrew@not-mixpanel.com'
+        t_av.matched_email = 'andrew@not-TEST-mixpanel.com'
         a_av.matched_name = 'tiffany qi'
-        a_av.matched_email = 'tiffany@mixpanel.com'
+        a_av.matched_email = 'tiffany@TEST-mixpanel.com'
 
         self.assertEqual(Command.check_not_currently_matched(Command(), a_av), False)
         self.assertEqual(Command.check_not_currently_matched(Command(), t_av), False)
@@ -652,10 +652,10 @@ class MatchTestCase(TestCase):
 
         # case where users just were matched
         mike_av.matched_name = 'andrew huang'
-        mike_av.matched_email = 'andrew@not-mixpanel.com'
+        mike_av.matched_email = 'andrew@not-TEST-mixpanel.com'
         mike_av.save()
         a_av.matched_name = 'mike walker'
-        a_av.matched_email = 'mike@mixpanel.com'
+        a_av.matched_email = 'mike@TEST-mixpanel.com'
         a_av.save()
 
         self.assertEqual(Command.check_frequency(Command(), a_av, a), False)

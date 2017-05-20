@@ -1,10 +1,32 @@
+from __future__ import print_function
 from django.core.management.base import BaseCommand
+
+from apiclient import discovery
+from oauth2client import client
+from oauth2client import tools
+from oauth2client.file import Storage
 
 from tablefor2.models import *
 
+import httplib2
 from datetime import timedelta
+from dateutil.tz import tzlocal
 import datetime
+import dateutil.parser
 import pytz
+import os
+
+try:
+    import argparse
+    flags = tools.argparser.parse_args([])
+except ImportError:
+    flags = None
+
+# If modifying these scopes, delete your previously saved credentials
+# at ~/.credentials/calendar-python-quickstart.json
+SCOPES = 'https://www.googleapis.com/auth/calendar'
+CLIENT_SECRET_FILE = 'calendar_secret.json'
+APPLICATION_NAME = 'Table for 2'
 
 
 class Command(BaseCommand):
@@ -72,6 +94,38 @@ class Command(BaseCommand):
         av2.matched_email = profile1.email
         av1.save()
         av2.save()
+        self.send_google_calendar_invite(av1, profile1, profile2)
+
+    def send_google_calendar_invite(self, av1, profile1, profile2):
+        credentials = self.get_credentials()
+        http = credentials.authorize(httplib2.Http())
+        service = discovery.build('calendar', 'v3', http=http)
+
+        start_time = av1.time_available
+        end_time = start_time + datetime.timedelta(minutes=30)
+
+        # 2017-05-25 12:00:00+00:00 --> 2017-05-25T12:00:00.0z
+        # start_time = datetime.datetime(2017, 5, 22, 19, 0, tzinfo=pytz.UTC)  # UTC? 12:00?
+
+        event = {
+            'summary': '%s // %s Table for 2' % (profile1.preferred_name, profile2.preferred_name),
+            'description': 'Tablefor2!',
+            'start': {
+                'dateTime': start_time.isoformat(),
+                'timeZone': 'UTC',  # programmatic?
+            },
+            'end': {
+                'dateTime': end_time.isoformat(),
+                'timeZone': 'UTC',  # programmatic?
+            },
+            'attendees': [
+                {'email': profile1.email},
+                {'email': profile2.email},
+                {'email': 'tiffany.qi+tf2test@mixpanel.com'}  # confirm it worked
+            ]
+        }
+        event = service.events().insert(calendarId='primary', body=event).execute()
+        print('Event created between %s and %s' % (profile1.preferred_name, profile2.preferred_name))
 
     # check to see that the google hangouts aren't the same
     def check_google_hangout(self, profile1, profile2):
@@ -113,3 +167,31 @@ class Command(BaseCommand):
             else:
                 future_availabilities[timestamp] = [availability]
         return future_availabilities
+
+    # taken from https://developers.google.com/google-apps/calendar/quickstart/python
+    def get_credentials(self):
+        """Gets valid user credentials from storage.
+
+        If nothing has been stored, or if the stored credentials are invalid,
+        the OAuth2 flow is completed to obtain the new credentials.
+
+        Returns:
+            Credentials, the obtained credential.
+        """
+        home_dir = os.path.expanduser('~')
+        credential_dir = os.path.join(home_dir, '.credentials')
+        if not os.path.exists(credential_dir):
+            os.makedirs(credential_dir)
+        credential_path = os.path.join(credential_dir, 'table-for-2.json')
+
+        store = Storage(credential_path)
+        credentials = store.get()
+        if not credentials or credentials.invalid:
+            flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
+            flow.user_agent = APPLICATION_NAME
+            if flags:
+                credentials = tools.run_flow(flow, store, flags)
+            else:  # Needed only for compatibility with Python 2.6
+                credentials = tools.run(flow, store)
+            print('Storing credentials to ' + credential_path)
+        return credentials
