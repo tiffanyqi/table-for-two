@@ -819,7 +819,7 @@ class HelpersTest(TestCase):
             date_entered_mixpanel=datetime.datetime(2016, 06, 01)
         )
 
-    def test_timezones(self):
+    def test_calculate_utc(self):
         self.setup_profiles()
         t = Profile.objects.get(first_name='tiffany')
         tim = Profile.objects.get(first_name='tim')

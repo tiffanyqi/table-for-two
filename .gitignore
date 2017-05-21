@@ -1,9 +1,12 @@
-venv
-*.pyc
+# large files
 staticfiles
+*.pyc
+.coverage
 .env
+venv
+
+# secrets
 calendar_secret.json
 social_auth_secret.json
 service_secret.json
 notes.txt
-.coverage

@@ -35,9 +35,9 @@ Matching
 - [x] Show your future matches
 - [x] Show your previous matches
 - [x] Send a google calendar invite
-- [ ] Change everything to proper timezone
+- [x] Change everything to proper timezone
 - [ ] Run the actual cron job
-- [ ] Test
+- [x] Test
 
 Notifications
 - [ ] Set notification based on frequency and current matchings
