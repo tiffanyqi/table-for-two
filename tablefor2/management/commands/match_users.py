@@ -162,7 +162,6 @@ class Command(BaseCommand):
     def setup(self, avs):
         future_availabilities = {}
         for availability in avs:
-            print(availability.time_available_utc)
             timestamp = (availability.time_available_utc-datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)).total_seconds()
             if timestamp in future_availabilities:
                 future_availabilities[timestamp].append(availability)

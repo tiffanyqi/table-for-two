@@ -1,6 +1,7 @@
 from django.core.management import call_command
 from django.test import TestCase
 
+from tablefor2.helpers import calculate_utc
 from tablefor2.models import *
 from tablefor2.management.commands.match_users import Command
 
@@ -774,3 +775,62 @@ class MatchTestCase(TestCase):
         self.assertIn(tim_av_future, Command.setup(Command(), avs)[1509537600.0])
         self.assertNotIn(a_av_past, Command.setup(Command(), avs)[1509537600.0])
         self.assertNotIn(a_av_future, Command.setup(Command(), avs)[1478347200.0])
+
+
+class HelpersTest(TestCase):
+    def setup_profiles(self):
+        # tiffany, Success, SF, No, once a week
+        Profile.objects.create(
+            first_name='tiffany',
+            last_name='qi',
+            preferred_name='tiffany',
+            email='tiffany@TEST-mixpanel.com',
+            department='Success',
+            location='San Francisco',
+            timezone='PST (San Francisco, Seattle)',
+            google_hangout='No',
+            frequency='Once a week',
+            date_entered_mixpanel=datetime.datetime(2016, 10, 31)
+        )
+        # Tim, Engineering, New York, Yes, once a week
+        Profile.objects.create(
+            first_name='tim',
+            last_name='trefen',
+            preferred_name='tim',
+            email='tim@TEST-mixpanel.com',
+            department='Engineering',
+            location='New York',
+            google_hangout='Yes',
+            timezone='EST (New York)',
+            frequency='Once a week',
+            date_entered_mixpanel=datetime.datetime(2013, 06, 01)
+        )
+        # Karima, Success, Other, Yes, once a week
+        Profile.objects.create(
+            first_name='karima',
+            last_name='el moujahid',
+            preferred_name='karima',
+            email='karima@TEST-mixpanel.com',
+            department='Success',
+            location='Other',
+            google_hangout='Yes',
+            timezone='CEST (Barcelona, Madrid, Paris, Amsterdam)',
+            frequency='Once a week',
+            date_entered_mixpanel=datetime.datetime(2016, 06, 01)
+        )
+
+    def test_timezones(self):
+        self.setup_profiles()
+        t = Profile.objects.get(first_name='tiffany')
+        tim = Profile.objects.get(first_name='tim')
+        k = Profile.objects.get(first_name='karima')
+
+        # not daylight savings
+        self.assertEqual(calculate_utc(t, datetime.datetime(2016, 1, 5, 12, 0)), datetime.datetime(2016, 1, 5, 20, 0, tzinfo=pytz.UTC))
+        self.assertEqual(calculate_utc(tim, datetime.datetime(2016, 1, 5, 15, 0)), datetime.datetime(2016, 1, 5, 20, 0, tzinfo=pytz.UTC))
+        self.assertEqual(calculate_utc(k, datetime.datetime(2016, 1, 5, 21, 0)), datetime.datetime(2016, 1, 5, 20, 0, tzinfo=pytz.UTC))
+
+        # daylight savings
+        self.assertEqual(calculate_utc(t, datetime.datetime(2017, 5, 21, 11, 30)), datetime.datetime(2017, 5, 21, 18, 30, tzinfo=pytz.UTC))
+        self.assertEqual(calculate_utc(tim, datetime.datetime(2017, 5, 21, 14, 30)), datetime.datetime(2017, 5, 21, 18, 30, tzinfo=pytz.UTC))
+        self.assertEqual(calculate_utc(k, datetime.datetime(2017, 5, 21, 20, 30)), datetime.datetime(2017, 5, 21, 18, 30, tzinfo=pytz.UTC))

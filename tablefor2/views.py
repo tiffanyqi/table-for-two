@@ -4,9 +4,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from tablefor2.forms import *
+from tablefor2.helpers import calculate_utc
 from tablefor2.models import *
-
-import pytz
 
 
 def index(request):
@@ -47,12 +46,7 @@ def save_availability(request):
         if form.is_valid():
             availability = Availability(profile=profile)
             availability.time_available = form.cleaned_data.get('time_available')
-            timezone = dict(TIMEZONES).get(profile.timezone)
-
-            local = pytz.timezone(timezone)
-            local_datetime = availability.time_available.replace(tzinfo=local)
-            availability.time_available_utc = local_datetime.astimezone(pytz.utc)
-
+            availability.time_available_utc = calculate_utc(profile, availability.time_available)
             availability.save()
             return HttpResponseRedirect("/")
 

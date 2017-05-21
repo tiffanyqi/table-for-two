@@ -2,6 +2,8 @@ from django import forms
 
 from datetime import *
 
+from tablefor2 import *
+
 
 DEPARTMENTS = (
     ('--', 'Select a Department'),
@@ -22,12 +24,12 @@ LOCATIONS = (
 
 TIMEZONES = (
     ('--', 'Select your timezone by closest city'),
-    ('EST (New York)', 'America/New_York'),
-    ('CST (Chicago)', 'America/Chicago'),
-    ('MST (Denver, Lehi)', 'America/Denver'),
-    ('PST (San Francisco, Seattle)', 'America/Los_Angeles'),
+    ('EST (New York)', 'US/Eastern'),
+    ('CST (Chicago)', 'US/Central'),
+    ('MST (Denver, Lehi)', 'US/Mountain'),
+    ('PST (San Francisco, Seattle)', 'US/Pacific'),
     ('BST (London)', 'Europe/London'),
-    ('CEST (Barcelona, Madrid, Paris, Amsterdam)', 'Europe/Madrid'),
+    ('CEST (Barcelona, Madrid, Paris, Amsterdam)', 'Europe/Amsterdam'),
 )
 
 BOOLEANS = (
