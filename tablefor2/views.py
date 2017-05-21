@@ -6,6 +6,8 @@ from django.shortcuts import render
 from tablefor2.forms import *
 from tablefor2.models import *
 
+import pytz
+
 
 def index(request):
     try:
@@ -45,6 +47,12 @@ def save_availability(request):
         if form.is_valid():
             availability = Availability(profile=profile)
             availability.time_available = form.cleaned_data.get('time_available')
+            timezone = dict(TIMEZONES).get(profile.timezone)
+
+            local = pytz.timezone(timezone)
+            local_datetime = availability.time_available.replace(tzinfo=local)
+            availability.time_available_utc = local_datetime.astimezone(pytz.utc)
+
             availability.save()
             return HttpResponseRedirect("/")
 
@@ -73,6 +81,7 @@ def edit_profile(request):
             'preferred_name': profile.preferred_name,
             'department': profile.department,
             'location': profile.location,
+            'timezone': profile.timezone,
             'google_hangout': profile.google_hangout,
             'frequency': profile.frequency,
             'date_entered_mixpanel': profile.date_entered_mixpanel
@@ -94,6 +103,7 @@ def save_profile(request):
             profile.department = form.cleaned_data.get('department')
             profile.google_hangout = form.cleaned_data.get('google_hangout')
             profile.location = form.cleaned_data.get('location')
+            profile.timezone = form.cleaned_data.get('timezone')
             profile.frequency = form.cleaned_data.get('frequency')
             profile.date_entered_mixpanel = form.cleaned_data.get('date_entered_mixpanel')
             profile.extra_saved_information = True

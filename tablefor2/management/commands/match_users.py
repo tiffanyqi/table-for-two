@@ -2,19 +2,17 @@ from __future__ import print_function
 from django.core.management.base import BaseCommand
 
 from apiclient import discovery
+from datetime import timedelta
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
 
 from tablefor2.models import *
 
-import httplib2
-from datetime import timedelta
-from dateutil.tz import tzlocal
 import datetime
-import dateutil.parser
-import pytz
+import httplib2
 import os
+import pytz
 
 try:
     import argparse
@@ -43,20 +41,16 @@ class Command(BaseCommand):
     - [ ] (v2) Ensure that their chosen frequency has not yet been satisfied
     - [x] If two users finally fits all all of these criteria, we'll take
     the two Availability models and set the matched_name and matched_email
-    - [ ] Send a calendar invite to both parties
+    - [x] Send a calendar invite to both parties
     '''
 
     def handle(self, *args, **options):
-        today = datetime.date.today()
-        avs = Availability.objects.filter(time_available__gte=today).order_by('time_available', '-profile__date_entered_mixpanel')
+        today = datetime.datetime.utcnow().date()
+        avs = Availability.objects.filter(time_available_utc__gte=today).order_by('time_available_utc', '-profile__date_entered_mixpanel')
 
         # dictionary of availability objects with datetime key
         future_availabilities = self.setup(avs)
-
-        matches = self.runs_matches(future_availabilities)
-        for match in matches:
-            self.send_google_calendar_invite(match[0], match[1], match[2])
-        return matches
+        return self.runs_matches(future_availabilities)
 
     # actually runs the cron job, here for testing purposes
     def runs_matches(self, future_availabilities):
@@ -72,6 +66,10 @@ class Command(BaseCommand):
                     if self.check_match(av1, av2, profile1, profile2):
                         self.match(av1, av2, profile1, profile2)
                         matches.append([timestamp, profile1, profile2])
+        # sends hangouts to each group of matches
+        for match in matches:
+            self.send_google_calendar_invite(match[0], match[1], match[2])
+
         return matches
 
     # check to see that the two profiles should match
@@ -107,19 +105,16 @@ class Command(BaseCommand):
         start_time = datetime.datetime.fromtimestamp(timestamp)
         end_time = start_time + datetime.timedelta(minutes=30)
 
-        # 2017-05-25 12:00:00+00:00 --> 2017-05-25T12:00:00.0z
-        # start_time = datetime.datetime(2017, 5, 22, 19, 0, tzinfo=pytz.UTC)  # UTC? 12:00?
-
         event = {
             'summary': '%s // %s Table for 2' % (profile1.preferred_name, profile2.preferred_name),
             'description': 'Tablefor2!',
             'start': {
                 'dateTime': start_time.isoformat(),
-                'timeZone': 'UTC',  # programmatic?
+                'timeZone': 'UTC',
             },
             'end': {
                 'dateTime': end_time.isoformat(),
-                'timeZone': 'UTC',  # programmatic?
+                'timeZone': 'UTC',
             },
             'attendees': [
                 {'email': profile1.email},
@@ -127,8 +122,11 @@ class Command(BaseCommand):
                 {'email': 'tiffany.qi+tf2test@mixpanel.com'}  # confirm it worked
             ],
         }
-        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
-        print('Event created between %s and %s' % (profile1.preferred_name, profile2.preferred_name))
+
+        print('Event created between %s and %s at %s' % (profile1.preferred_name, profile2.preferred_name, start_time))
+        event = service.events().insert(calendarId='primary', body=event).execute()
+        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        return event.get('id')
 
     # check to see that the google hangouts aren't the same
     def check_google_hangout(self, profile1, profile2):
@@ -154,17 +152,18 @@ class Command(BaseCommand):
 
     # check to see that the frequency has not been matched yet, for now bsased on 1x/wk
     def check_frequency(self, av, profile):
-        av_time = av.time_available
+        av_time = av.time_available_utc
         start_week = av_time - timedelta(days=av_time.weekday())
         end_week = start_week + timedelta(days=6)
-        avs = Availability.objects.filter(profile=profile, time_available__gte=start_week, time_available__lte=end_week).exclude(matched_name=None)
+        avs = Availability.objects.filter(profile=profile, time_available_utc__gte=start_week, time_available_utc__lte=end_week).exclude(matched_name=None)
         return not avs
 
     # sets up dictionary of timestamps to a list of availabilities
     def setup(self, avs):
         future_availabilities = {}
         for availability in avs:
-            timestamp = (availability.time_available-datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)).total_seconds()
+            print(availability.time_available_utc)
+            timestamp = (availability.time_available_utc-datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)).total_seconds()
             if timestamp in future_availabilities:
                 future_availabilities[timestamp].append(availability)
             else:

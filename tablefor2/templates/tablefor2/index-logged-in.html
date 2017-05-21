@@ -16,6 +16,8 @@
         {% endfor %}
         </ul>
         <p>Your frequency: {{ profile.frequency }}</p>
+        <p>Your current location: {{ profile.location }}</p>
+        <p>Your current timezone: {{ profile.timezone }}</p>
 
         <p>Add a time you're available:</p>
         <form action="{% url 'save-availability' %}" method="POST" class="post-form">{% csrf_token %}

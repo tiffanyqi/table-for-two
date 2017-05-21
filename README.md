@@ -26,6 +26,7 @@ Availability
 - [x] Create index-logged-in page
 - [x] Set availabilities in back-end
 - [x] Show you made these availabilities
+- [ ] Edit availabilities
 - [ ] Remove availabilities
 - [ ] Test
 
@@ -33,7 +34,8 @@ Matching
 - [x] Match the people by availability and 1x/wk (frequency V2)
 - [x] Show your future matches
 - [x] Show your previous matches
-- [ ] Send a google calendar invite
+- [x] Send a google calendar invite
+- [ ] Change everything to proper timezone
 - [ ] Run the actual cron job
 - [ ] Test
 
