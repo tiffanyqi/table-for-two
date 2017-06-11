@@ -27,13 +27,8 @@ Availability
 - [x] Set availabilities in back-end
 - [x] Show future availabilities that you've made
 - [x] Edit availabilities
-    - [ ] hit edit and show thing
-    - [X] confirm edit
-    - [ ] cancel edit and go back
-    - [ ] populate edit times
-    - [ ] AJAX
 - [x] Remove availabilities
-	- [ ] AJAX
+- [ ] Get AJAX to work and populate times
 - [ ] Test
 
 Matching

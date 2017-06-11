@@ -15,12 +15,12 @@
             <li>
                 {{ availability.time_available }}
                 <!-- opens the edit dialogue -->
-                <button id="edit-{{ availability.time_available }}" class="save btn btn-default">Edit</button>
+                <button class="save btn btn-default" id="btn-edit-{{ availability.id }}"onclick="editAvailability({{availability.id}})">Edit</button>
                 <!-- confirms deletion, popup -->
                 <!-- <button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" method="POST">Delete</button> -->
-                <button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" method="POST">Delete</button>
+                <button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" id="btn-delete-{{ availability.id }}" method="POST">Delete</button>
                 <!-- edit popup -->
-                <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="edit-availability-{{ availability.time_available }}">{% csrf_token %}
+                <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="form-edit-{{ availability.id }}">{% csrf_token %}
                     {% for field in form %}
                         <div class="fieldWrapper">
                             {{ field.errors }}
@@ -31,8 +31,8 @@
                     <!-- confirms edit -->
                     <button type="submit" class="save btn btn-default">Confirm</button>
                     <!-- cancels edit and hides form -->
-                    <button type="submit" class="save btn btn-default">Cancel</button>
                 </form>
+                <button class="save btn btn-default" onclick="editAvailability({{availability.id}})" id="btn-cancel-{{ availability.id }}" style="display:none">Cancel</button>
             </li>
         {% endfor %}
         </ul>

@@ -14,7 +14,23 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function startEditAvailability() {
+// toggles the time available slot
+function editAvailability(availabilityId) {
+    var availabilityBtnCancel = document.getElementById('btn-cancel-' + availabilityId);
+    var availabilityBtnEdit = document.getElementById('btn-edit-' + availabilityId);
+    var availabilityBtnDelete = document.getElementById('btn-delete-' + availabilityId);
+    var availabilityForm = document.getElementById('form-edit-' + availabilityId);
+    if (availabilityForm.style.display === 'none' || !availabilityForm.style.display) {
+        availabilityForm.style.display = 'block';
+        availabilityBtnCancel.style.display = 'inline';
+        availabilityBtnDelete.style.display = 'none';
+        availabilityBtnEdit.style.display = 'none';
+    } else {
+        availabilityForm.style.display = 'none';
+        availabilityBtnCancel.style.display = 'none';
+        availabilityBtnDelete.style.display = 'inline';
+        availabilityBtnEdit.style.display = 'inline';
+    }
 
 }
 
@@ -22,19 +38,15 @@ function confirmEditAvailability() {
 
 }
 
-function cancelEditAvailability() {
-    
-}
-
 // deletes the availability but first prompts the user
-function deleteAvailability(availability_id) {
+function deleteAvailability(availabilityId) {
     // doesn't work
     if (confirm('Are you sure you want to delete this availability?')) {
         $.ajax({
-            url: "/availability/delete/%s" % (availability_id),
+            url: "/availability/delete/%s" % (availabilityId),
             type: "POST",
             data: {
-                'availability_id': availability_id,
+                'availability_id': availabilityId,
                 'csrfmiddlewaretoken': getCookie('csrftoken')
             },
             success: function(response){
