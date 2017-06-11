@@ -26,8 +26,14 @@ Availability
 - [x] Create index-logged-in page
 - [x] Set availabilities in back-end
 - [x] Show future availabilities that you've made
-- [ ] Edit availabilities
-- [ ] Remove availabilities
+- [x] Edit availabilities
+    - [ ] hit edit and show thing
+    - [X] confirm edit
+    - [ ] cancel edit and go back
+    - [ ] populate edit times
+    - [ ] AJAX
+- [x] Remove availabilities
+	- [ ] AJAX
 - [ ] Test
 
 Matching

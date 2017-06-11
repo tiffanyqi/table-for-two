@@ -14,10 +14,13 @@
         {% for availability in availabilities %}
             <li>
                 {{ availability.time_available }}
-                <button id="edit-{{ availability.time_available }}" class="save btn btn-default">edit</button>
-                <button type="submit" class="save btn btn-default" action="{% url 'delete-availability' availability.id %}" method="POST">Confirm Delete</button>
-
-                <form action="{% url 'edit-availability' availability.id %}" method="POST", class="post-form">{% csrf_token %}
+                <!-- opens the edit dialogue -->
+                <button id="edit-{{ availability.time_available }}" class="save btn btn-default">Edit</button>
+                <!-- confirms deletion, popup -->
+                <!-- <button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" method="POST">Delete</button> -->
+                <button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" method="POST">Delete</button>
+                <!-- edit popup -->
+                <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="edit-availability-{{ availability.time_available }}">{% csrf_token %}
                     {% for field in form %}
                         <div class="fieldWrapper">
                             {{ field.errors }}
@@ -25,8 +28,10 @@
                             {{ field.help_text }}
                         </div>
                     {% endfor %}
-                    <button type="submit" class="save btn btn-default">Confirm Edit</button>
-                    <button type="submit" class="save btn btn-default">Cancel Edit</button>
+                    <!-- confirms edit -->
+                    <button type="submit" class="save btn btn-default">Confirm</button>
+                    <!-- cancels edit and hides form -->
+                    <button type="submit" class="save btn btn-default">Cancel</button>
                 </form>
             </li>
         {% endfor %}
@@ -83,4 +88,7 @@
 
 {% block bottom %}
     {{ block.super }}
+    {% block bottom_js %}
+        <script rel="javascript" type="text/javascript" src="{% static 'js/availability.js' %}"></script>
+    {% endblock %}
 {% endblock %}
