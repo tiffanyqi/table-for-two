@@ -8,13 +8,30 @@
 {% block content %}
     {% load static %}
 
-        <h1>Your Availabilities</h1>
+        <h1>Your Current Availabilities</h1>
 
         <ul>
         {% for availability in availabilities %}
-            <li>{{ availability.time_available }}</li>
+            <li>
+                {{ availability.time_available }}
+                <button id="edit-{{ availability.time_available }}" class="save btn btn-default">edit</button>
+                <button type="submit" class="save btn btn-default" action="{% url 'delete-availability' availability.id %}" method="POST">Confirm Delete</button>
+
+                <form action="{% url 'edit-availability' availability.id %}" method="POST", class="post-form">{% csrf_token %}
+                    {% for field in form %}
+                        <div class="fieldWrapper">
+                            {{ field.errors }}
+                            {{ field.label_tag }} {{ field }}
+                            {{ field.help_text }}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="save btn btn-default">Confirm Edit</button>
+                    <button type="submit" class="save btn btn-default">Cancel Edit</button>
+                </form>
+            </li>
         {% endfor %}
         </ul>
+
         <p>Your frequency: {{ profile.frequency }}</p>
         <p>Your current location: {{ profile.location }}</p>
         <p>Your current timezone: {{ profile.timezone }}</p>
@@ -34,7 +51,7 @@
         <h1>Your Current Matches</h1>
 
         {% if not current_matches %}
-            <p>Go set some availabilities!</p>
+            <p>Go set some availabilities! Thanks for your patience :)</p>
 
         {% else %}
 
@@ -49,7 +66,7 @@
         <h1>Your Past Matches</h1>
 
         {% if not past_matches %}
-            <p>Go set some availabilities!</p>
+            <p>Go set some availabilities! Thanks for your patience :)</p>
 
         {% else %}
 
@@ -58,9 +75,8 @@
             <li>{{ past_match.matched_name}} at {{ past_match.time_available }}</li>
         {% endfor %}
 
-        {% endif %}
-
         </ul>
+        {% endif %}
 
 
     {% endblock %}
