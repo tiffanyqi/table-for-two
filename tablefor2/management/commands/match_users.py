@@ -70,6 +70,7 @@ class Command(BaseCommand):
         for match in matches:
             self.send_google_calendar_invite(match[0], match[1], match[2])
 
+        # print(matches)
         return matches
 
     # check to see that the two profiles should match

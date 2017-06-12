@@ -25,9 +25,10 @@ Signup
 Availability
 - [x] Create index-logged-in page
 - [x] Set availabilities in back-end
-- [x] Show you made these availabilities
-- [ ] Edit availabilities
-- [ ] Remove availabilities
+- [x] Show future availabilities that you've made
+- [x] Edit availabilities
+- [x] Remove availabilities
+- [ ] Get AJAX to work and populate times
 - [ ] Test
 
 Matching

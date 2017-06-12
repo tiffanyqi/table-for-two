@@ -8,13 +8,35 @@
 {% block content %}
     {% load static %}
 
-        <h1>Your Availabilities</h1>
+        <h1>Your Current Availabilities</h1>
 
         <ul>
         {% for availability in availabilities %}
-            <li>{{ availability.time_available }}</li>
+            <li>
+                {{ availability.time_available }}
+                <!-- opens the edit dialogue -->
+                <button class="save btn btn-default" id="btn-edit-{{ availability.id }}"onclick="editAvailability({{availability.id}})">Edit</button>
+                <!-- confirms deletion, popup -->
+                <!-- <button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" method="POST">Delete</button> -->
+                <button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" id="btn-delete-{{ availability.id }}" method="POST">Delete</button>
+                <!-- edit popup -->
+                <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="form-edit-{{ availability.id }}">{% csrf_token %}
+                    {% for field in form %}
+                        <div class="fieldWrapper">
+                            {{ field.errors }}
+                            {{ field.label_tag }} {{ field }}
+                            {{ field.help_text }}
+                        </div>
+                    {% endfor %}
+                    <!-- confirms edit -->
+                    <button type="submit" class="save btn btn-default">Confirm</button>
+                    <!-- cancels edit and hides form -->
+                </form>
+                <button class="save btn btn-default" onclick="editAvailability({{availability.id}})" id="btn-cancel-{{ availability.id }}" style="display:none">Cancel</button>
+            </li>
         {% endfor %}
         </ul>
+
         <p>Your frequency: {{ profile.frequency }}</p>
         <p>Your current location: {{ profile.location }}</p>
         <p>Your current timezone: {{ profile.timezone }}</p>
@@ -34,7 +56,7 @@
         <h1>Your Current Matches</h1>
 
         {% if not current_matches %}
-            <p>Go set some availabilities!</p>
+            <p>Go set some availabilities! Thanks for your patience :)</p>
 
         {% else %}
 
@@ -49,7 +71,7 @@
         <h1>Your Past Matches</h1>
 
         {% if not past_matches %}
-            <p>Go set some availabilities!</p>
+            <p>Go set some availabilities! Thanks for your patience :)</p>
 
         {% else %}
 
@@ -58,13 +80,15 @@
             <li>{{ past_match.matched_name}} at {{ past_match.time_available }}</li>
         {% endfor %}
 
-        {% endif %}
-
         </ul>
+        {% endif %}
 
 
     {% endblock %}
 
 {% block bottom %}
     {{ block.super }}
+    {% block bottom_js %}
+        <script rel="javascript" type="text/javascript" src="{% static 'js/availability.js' %}"></script>
+    {% endblock %}
 {% endblock %}
