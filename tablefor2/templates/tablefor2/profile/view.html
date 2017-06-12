@@ -26,6 +26,22 @@
 
         <p><a href="{% url 'edit-profile' %}">Edit your profile</a></p>
 
+        <h1>Past Matches</h1>
+
+        {% if not past_matches %}
+            <p>Go set some availabilities! Thanks for your patience :)</p>
+
+        {% else %}
+
+        <ul>
+        {% for past_match in past_matches %}
+            <li>{{ past_match.matched_name}} at {{ past_match.time_available }}</li>
+        {% endfor %}
+
+        </ul>
+        {% endif %}
+
+
     {% endblock %}
 
 {% block bottom %}

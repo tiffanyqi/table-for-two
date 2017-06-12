@@ -2,93 +2,95 @@
 {% load staticfiles %}
 
 {% block head %}
-    {{ block.super }}
+  {{ block.super }}
 {% endblock %}
 
 {% block content %}
-    {% load static %}
+  {% load static %}
 
-        <h1>Your Current Availabilities</h1>
+    <div class="container">
 
-        <ul>
-        {% for availability in availabilities %}
-            <li>
-                {{ availability.time_available }}
-                <!-- opens the edit dialogue -->
-                <button class="save btn btn-default" id="btn-edit-{{ availability.id }}"onclick="editAvailability({{availability.id}})">Edit</button>
-                <!-- confirms deletion, popup -->
-                <!-- <button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" method="POST">Delete</button> -->
-                <button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" id="btn-delete-{{ availability.id }}" method="POST">Delete</button>
-                <!-- edit popup -->
-                <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="form-edit-{{ availability.id }}">{% csrf_token %}
-                    {% for field in form %}
+      <div class="row">
+        <div class="col-sm-6">
+
+          <div class="group">
+            <h1>Current Availabilities</h1>
+
+               <ul>{% for availability in availabilities %}
+                  <li>{{ availability.time_available }}
+                    <!-- opens the edit dialogue -->
+                    <button class="save btn btn-default" id="btn-edit-{{ availability.id }}"onclick="editAvailability({{availability.id}})">Edit</button>
+
+                    <!-- confirms deletion, popup -->
+                    <!-- <button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" method="POST">Delete</button> -->
+                    <button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" id="btn-delete-{{ availability.id }}" method="POST">Delete</button>
+
+                    <!-- edit popup -->
+                    <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="form-edit-{{ availability.id }}">{% csrf_token %}
+                      {% for field in form %}
                         <div class="fieldWrapper">
-                            {{ field.errors }}
-                            {{ field.label_tag }} {{ field }}
-                            {{ field.help_text }}
+                          {{ field.errors }}
+                          {{ field.label_tag }} {{ field }}
+                          {{ field.help_text }}
                         </div>
-                    {% endfor %}
-                    <!-- confirms edit -->
-                    <button type="submit" class="save btn btn-default">Confirm</button>
-                    <!-- cancels edit and hides form -->
-                </form>
-                <button class="save btn btn-default" onclick="editAvailability({{availability.id}})" id="btn-cancel-{{ availability.id }}" style="display:none">Cancel</button>
-            </li>
-        {% endfor %}
-        </ul>
+                      {% endfor %}
+                      <!-- confirms edit -->
+                      <button type="submit" class="save btn btn-default">Confirm</button>
+                      <!-- cancels edit and hides form -->
+                    </form>
+                    <button class="save btn btn-default" onclick="editAvailability({{availability.id}})" id="btn-cancel-{{ availability.id }}" style="display:none">Cancel</button>
+                  </li>
+                {% endfor %}</ul>
+          </div>
 
-        <p>Your frequency: {{ profile.frequency }}</p>
-        <p>Your current location: {{ profile.location }}</p>
-        <p>Your current timezone: {{ profile.timezone }}</p>
+          <div class="group">
+            <h1>Current Matches</h1>
 
-        <p>Add a time you're available:</p>
-        <form action="{% url 'save-availability' %}" method="POST" class="post-form">{% csrf_token %}
+              {% if not current_matches %}
+                  <p>Go set some availabilities! Thanks for your patience :)</p>
+              {% else %}
+
+              <ul>{% for current_match in current_matches %}
+                <li>{{ current_match.matched_name}} at {{ current_match.time_available }}</li>
+              {% endfor %}</ul>
+
+              {% endif %}
+          </div>
+        </div>
+            
+        <div class="col-sm-6">
+          <h1>Add an Availability</h1>
+          <form action="{% url 'save-availability' %}" method="POST" class="post-form">{% csrf_token %}
             {% for field in form %}
-                <div class="fieldWrapper">
-                    {{ field.errors }}
-                    {{ field.label_tag }} {{ field }}
-                    {{ field.help_text }}
-                </div>
+              <div class="fieldWrapper">
+                {{ field.errors }}
+                {{ field.label_tag }}
+                <br>
+                {{ field }}
+                <br>
+                {{ field.help_text }}
+              </div>
             {% endfor %}
-            <button type="submit" class="save btn btn-default">Save</button>
-        </form>
+            <button type="submit" class="save btn btn-default">Add</button>
+          </form>
 
-        <h1>Your Current Matches</h1>
+          <ul>
+            <li>Current frequency: {{ profile.frequency }}</li>
+            <li>Current current location: {{ profile.location }}</li>
+            <li>Current current timezone: {{ profile.timezone }}</li>
+          </ul>
+          <p>Not the right information? Change it <a href="{% url 'edit-profile' %}">here</a></p>
 
-        {% if not current_matches %}
-            <p>Go set some availabilities! Thanks for your patience :)</p>
-
-        {% else %}
-
-        <ul>
-        {% for current_match in current_matches %}
-            <li>{{ current_match.matched_name}} at {{ current_match.time_available }}</li>
-        {% endfor %}
-        </ul>
-
-        {% endif %}
-
-        <h1>Your Past Matches</h1>
-
-        {% if not past_matches %}
-            <p>Go set some availabilities! Thanks for your patience :)</p>
-
-        {% else %}
-
-        <ul>
-        {% for past_match in past_matches %}
-            <li>{{ past_match.matched_name}} at {{ past_match.time_available }}</li>
-        {% endfor %}
-
-        </ul>
-        {% endif %}
+        </div>
+      </div>
+    </div>
 
 
-    {% endblock %}
+  {% endblock %}
 
 {% block bottom %}
-    {{ block.super }}
-    {% block bottom_js %}
-        <script rel="javascript" type="text/javascript" src="{% static 'js/availability.js' %}"></script>
-    {% endblock %}
+  {{ block.super }}
+  {% block bottom_js %}
+    <script rel="javascript" type="text/javascript" src="{% static 'js/availability.js' %}"></script>
+  {% endblock %}
 {% endblock %}

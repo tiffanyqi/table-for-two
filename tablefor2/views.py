@@ -22,7 +22,7 @@ def index(request):
             today = date.today()
             past_matches = Availability.objects.filter(profile=profile, time_available__lte=today).exclude(matched_name=None) or None
             current_matches = Availability.objects.filter(profile=profile, time_available__gte=today).exclude(matched_name=None) or None
-            availabilities = Availability.objects.filter(time_available__gte=today).order_by('time_available') or None
+            availabilities = Availability.objects.filter(profile=profile, time_available__gte=today).order_by('time_available') or None
             new_availability_form = AvailabilityForm(request.POST or None, request.FILES or None)
 
             return render(request, 'tablefor2/index-logged-in.html', {
@@ -75,7 +75,6 @@ def edit_availability(request, availability_id):
 # deletes an existing availability
 @login_required
 def delete_availability(request, availability_id):
-    print 'hello'
     availability = Availability.objects.get(pk=availability_id)
     availability.delete()
     return HttpResponseRedirect('/')
@@ -84,13 +83,18 @@ def delete_availability(request, availability_id):
 # view profile
 @login_required
 def profile(request):
+    today = date.today()
     profile = Profile.objects.get(email=request.user.email)
+    past_matches = Availability.objects.filter(profile=profile, time_available__lte=today).exclude(matched_name=None) or None
 
     # force users to add more info
     if not profile.extra_saved_information:
         return HttpResponseRedirect('/profile/edit')
     else:
-        return render(request, 'tablefor2/profile/view.html', {'profile': profile})
+        return render(request, 'tablefor2/profile/view.html', {
+            'profile': profile,
+            'past_matches': past_matches
+        })
 
 
 # prepares the editing screen for a profile
