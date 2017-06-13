@@ -1,6 +1,9 @@
 .edit-availability-form {
 	display: none;
 }
+.availability-list {
+	list-style: none;
+}
 
 html {
   position: relative;

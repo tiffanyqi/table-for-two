@@ -11,43 +11,81 @@
     <div class="container">
 
       <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-8">
 
           <div class="group">
             <h1>Current Availabilities</h1>
 
-               <ul>{% for availability in availabilities %}
-                  <li>{{ availability.time_available }}
-                    <!-- opens the edit dialogue -->
-                    <button class="save btn btn-default" id="btn-edit-{{ availability.id }}"onclick="editAvailability({{availability.id}})">Edit</button>
+            <ul class="availability-list">{% for availability in availabilities %}
+              <li>{{ availability.time_available }} {{ availability.matched_name }}
+                <!-- opens the edit dialogue -->
+                <button class="save btn btn-default" id="btn-edit-{{ availability.id }}"onclick="editAvailability({{availability.id}})">
+                  <span class="glyphicon glyphicon-pencil"></span>
+                </button>
 
-                    <!-- confirms deletion, popup -->
-                    <!-- <button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" method="POST">Delete</button> -->
-                    <button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" id="btn-delete-{{ availability.id }}" method="POST">Delete</button>
+                <!-- confirms deletion, popup -->
+                <!-- <button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" method="POST">Delete</button> -->
+                <button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" id="btn-delete-{{ availability.id }}" method="POST">
+                  <span class="glyphicon glyphicon-trash"></span>
+                </button>
 
-                    <!-- edit popup -->
-                    <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="form-edit-{{ availability.id }}">{% csrf_token %}
-                      {% for field in form %}
-                        <div class="fieldWrapper">
-                          {{ field.errors }}
-                          {{ field.label_tag }} {{ field }}
-                          {{ field.help_text }}
-                        </div>
-                      {% endfor %}
-                      <!-- confirms edit -->
-                      <button type="submit" class="save btn btn-default">Confirm</button>
-                      <!-- cancels edit and hides form -->
-                    </form>
-                    <button class="save btn btn-default" onclick="editAvailability({{availability.id}})" id="btn-cancel-{{ availability.id }}" style="display:none">Cancel</button>
-                  </li>
-                {% endfor %}</ul>
+                <!-- edit popup -->
+                <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="form-edit-{{ availability.id }}">{% csrf_token %}
+                  {% for field in form %}
+                    <div class="fieldWrapper">
+                      {{ field.errors }}
+                      {{ field.label_tag }} {{ field }}
+                      {{ field.help_text }}
+                    </div>
+                  {% endfor %}
+                  <!-- confirms edit -->
+                  <button type="submit" class="save btn btn-default">
+                    <span class="glyphicon glyphicon-ok"></span>
+                  </button>
+                  <!-- cancels edit and hides form -->
+                </form>
+                <button class="save btn btn-default" onclick="editAvailability({{availability.id}})" id="btn-cancel-{{ availability.id }}" style="display:none">
+                  <span class="glyphicon glyphicon-remove"></span>
+                </button>
+              </li>
+            {% endfor %}
+            <form action="{% url 'save-availability' %}" method="POST" class="post-form">{% csrf_token %}
+              {% for field in form %}
+                <li class="fieldWrapper">
+                  {{ field.errors }}
+                  {{ field }} {{ field.help_text }}
+                </li>
+              {% endfor %}
+              <button type="submit" class="save btn btn-default">
+                  <span class="glyphicon glyphicon-plus"></span>
+              </button>
+            </form>
+          </ul>
           </div>
 
+          <div class="group">
+
+            <ul>
+              <li>Current frequency: {{ profile.frequency }}</li>
+              <li>Current location: {{ profile.location }}</li>
+              <li>Current timezone: {{ profile.timezone }}</li>
+            </ul>
+            <p>Not the right information? Change it <a href="{% url 'edit-profile' %}">here</a></p>
+          </div>
+        </div>
+            
+        <div class="col-sm-4">
           <div class="group">
             <h1>Current Matches</h1>
 
               {% if not current_matches %}
-                  <p>Go set some availabilities! Thanks for your patience :)</p>
+                <!-- <p>Go set some availabilities! Thanks for your patience :)</p> -->
+                <!-- test for the real current matches -->
+                <ul>
+                  <li class="match">Test Qi at May 28, 2017, noon</li>
+                  <li class="match">Test Qi at May 28, 2017, noon</li>
+                  <li class="match">Test Qi at May 28, 2017, noon</li>
+                </ul>
               {% else %}
 
               <ul>{% for current_match in current_matches %}
@@ -56,31 +94,6 @@
 
               {% endif %}
           </div>
-        </div>
-            
-        <div class="col-sm-6">
-          <h1>Add an Availability</h1>
-          <form action="{% url 'save-availability' %}" method="POST" class="post-form">{% csrf_token %}
-            {% for field in form %}
-              <div class="fieldWrapper">
-                {{ field.errors }}
-                {{ field.label_tag }}
-                <br>
-                {{ field }}
-                <br>
-                {{ field.help_text }}
-              </div>
-            {% endfor %}
-            <button type="submit" class="save btn btn-default">Add</button>
-          </form>
-
-          <ul>
-            <li>Current frequency: {{ profile.frequency }}</li>
-            <li>Current current location: {{ profile.location }}</li>
-            <li>Current current timezone: {{ profile.timezone }}</li>
-          </ul>
-          <p>Not the right information? Change it <a href="{% url 'edit-profile' %}">here</a></p>
-
         </div>
       </div>
     </div>
