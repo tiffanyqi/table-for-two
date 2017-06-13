@@ -73,6 +73,11 @@ Front-end
 - If that user is matched, then we'll set the name and email equal to the match
 
 
+## New questions for testing
+- if a user deletes their availability, will it delete their match? --> task: hide edit and delete if a user is matched
+- if a user reschedules their availability in a different timezone or location, will it update the match?
+
+
 # V2
 - BambooHR instead?
 - Variable locations?

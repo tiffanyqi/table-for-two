@@ -16,61 +16,79 @@
           <div class="group">
             <h1>Current Availabilities</h1>
 
-            <ul class="availability-list">{% for availability in availabilities %}
-              <li>{{ availability.time_available }} {{ availability.matched_name }}
-                <!-- opens the edit dialogue -->
-                <button class="save btn btn-default" id="btn-edit-{{ availability.id }}"onclick="editAvailability({{availability.id}})">
-                  <span class="glyphicon glyphicon-pencil"></span>
-                </button>
-
-                <!-- confirms deletion, popup -->
-                <!-- <button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" method="POST">Delete</button> -->
-                <button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" id="btn-delete-{{ availability.id }}" method="POST">
-                  <span class="glyphicon glyphicon-trash"></span>
-                </button>
-
-                <!-- edit popup -->
-                <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="form-edit-{{ availability.id }}">{% csrf_token %}
-                  {% for field in form %}
-                    <div class="fieldWrapper">
-                      {{ field.errors }}
-                      {{ field.label_tag }} {{ field }}
-                      {{ field.help_text }}
-                    </div>
-                  {% endfor %}
-                  <!-- confirms edit -->
-                  <button type="submit" class="save btn btn-default">
-                    <span class="glyphicon glyphicon-ok"></span>
-                  </button>
-                  <!-- cancels edit and hides form -->
-                </form>
-                <button class="save btn btn-default" onclick="editAvailability({{availability.id}})" id="btn-cancel-{{ availability.id }}" style="display:none">
-                  <span class="glyphicon glyphicon-remove"></span>
-                </button>
-              </li>
-            {% endfor %}
+            <h4>Add an Availability(?)</h4>
             <form action="{% url 'save-availability' %}" method="POST" class="post-form">{% csrf_token %}
               {% for field in form %}
-                <li class="fieldWrapper">
                   {{ field.errors }}
-                  {{ field }} {{ field.help_text }}
-                </li>
+                  {{ field }}
+                  <button type="submit" class="save btn btn-default">
+                      <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+                  <br>
+                  <p>Please format the time like the following: MM/DD/YYYY HH:MM (military time)</p>
               {% endfor %}
-              <button type="submit" class="save btn btn-default">
-                  <span class="glyphicon glyphicon-plus"></span>
-              </button>
             </form>
-          </ul>
-          </div>
 
-          <div class="group">
+            {% if not availabilities %}
+              <p>Go set some availabilities below!</p>
+            {% else %}
 
-            <ul>
-              <li>Current frequency: {{ profile.frequency }}</li>
-              <li>Current location: {{ profile.location }}</li>
-              <li>Current timezone: {{ profile.timezone }}</li>
-            </ul>
-            <p>Not the right information? Change it <a href="{% url 'edit-profile' %}">here</a></p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Matched?</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for availability in availabilities %}
+                <tr>
+                  <!-- edit popup -->
+                  <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="form-edit-{{ availability.id }}">{% csrf_token %}
+                    {% for field in form %}
+                      <div class="fieldWrapper">
+                        {{ field.errors }}
+                        <td class="availability-edit {{ availability.id }}">{{ field }}</td>
+                        <td class="availability-view {{ availability.id }}">{{ availability.time_available }}</td>
+                        <td class="availability-view {{ availability.id }}">{{ availability.matched_name }}</td>
+                        <td class="availability-edit {{ availability.id }}"> {{ field.help_text }}</td>
+                      </div>
+                    {% endfor %}
+                    <!-- confirms edit -->
+                    <td class="availability-edit {{ availability.id }}"><button type="submit" class="save btn btn-default">
+                      <span class="glyphicon glyphicon-ok"></span>
+                    </button></td>
+                  </form>
+                  
+                  <!-- cancels edit and hides form -->
+                  <td class="availability-edit {{ availability.id }}"><button class="save btn btn-default" onclick="editAvailability({{availability.id}})" id="btn-cancel-{{ availability.id }}">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </button></td>
+
+                  <!-- opens the edit dialogue -->
+                  <td class="availability-view {{ availability.id }}"><button class="save btn btn-default" id="btn-edit-{{ availability.id }}"onclick="editAvailability({{availability.id}})">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </button></td>
+
+                  <!-- confirms deletion, popup -->
+<!--                   <td><button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" id="btn-delete-{{ availability.id }}" method="POST">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button></td> -->
+                  <td class="availability-view {{ availability.id }}"><button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" id="btn-delete-{{ availability.id }}" method="POST">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button></td>
+                </tr>
+
+              {% endfor %}
+                
+              </tbody>
+            </table>
+            {% endif %}
+
+            <p>Moved recently? Change your location or settings <a href="{% url 'edit-profile' %}">here</a></p>
+
           </div>
         </div>
             

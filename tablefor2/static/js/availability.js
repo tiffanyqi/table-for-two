@@ -16,22 +16,25 @@ function getCookie(name) {
 
 // toggles the time available slot
 function editAvailability(availabilityId) {
-    var availabilityBtnCancel = document.getElementById('btn-cancel-' + availabilityId);
-    var availabilityBtnEdit = document.getElementById('btn-edit-' + availabilityId);
-    var availabilityBtnDelete = document.getElementById('btn-delete-' + availabilityId);
+    var availabilityEdits = document.getElementsByClassName("availability-edit " + availabilityId);
+    var availabilityViews = document.getElementsByClassName("availability-view " + availabilityId);
     var availabilityForm = document.getElementById('form-edit-' + availabilityId);
+
+    // if "edit" was pressed, show form
     if (availabilityForm.style.display === 'none' || !availabilityForm.style.display) {
-        availabilityForm.style.display = 'block';
-        availabilityBtnCancel.style.display = 'inline';
-        availabilityBtnDelete.style.display = 'none';
-        availabilityBtnEdit.style.display = 'none';
+        availabilityForm.style.display = 'table-cell';
+        for (var i=0; i < availabilityEdits.length; i++) {
+            availabilityEdits[i].style.display = 'table-cell';
+            availabilityViews[i].style.display = 'none';
+        }
+    // if cancelled, hide form
     } else {
         availabilityForm.style.display = 'none';
-        availabilityBtnCancel.style.display = 'none';
-        availabilityBtnDelete.style.display = 'inline';
-        availabilityBtnEdit.style.display = 'inline';
+        for (var j=0; j < availabilityEdits.length; j++) {
+            availabilityEdits[j].style.display = 'none';
+            availabilityViews[j].style.display = 'table-cell';
+        }
     }
-
 }
 
 function confirmEditAvailability() {
