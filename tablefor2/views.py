@@ -137,7 +137,7 @@ def save_profile(request):
             profile.save()
 
             # add a message here?
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/profile/view')
 
     return render(request, 'tablefor2/profile/edit.html', {'form': form})
 

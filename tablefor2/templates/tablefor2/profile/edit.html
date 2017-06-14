@@ -2,31 +2,49 @@
 {% load staticfiles %}
 
 {% block head %}
-    {{ block.super }}
+  {{ block.super }}
 {% endblock %}
 
 {% block content %}
-    {% load static %}
+  {% load static %}
 
-        <h1>Edit Your Profile</h1>
+    <div class="container">
 
-        {% if not profile.extra_saved_information %}
-            <p>Hello {{ user.first_name }}, thanks for signing up!</p>
-            <p>To make this more comprehensive, please fill out the following things:</p>
-        {% endif %}
+      <h1>Edit Your Profile</h1>
 
-        <form action="{% url 'save-profile' %}" method="POST" class="post-form">{% csrf_token %}
+      {% if not profile.extra_saved_information %}
+        <p>Hello {{ user.first_name }}, thanks for signing up!</p>
+        <p>To make this more comprehensive, please fill out the following things:</p>
+      {% endif %}
+
+      <form action="{% url 'save-profile' %}" method="POST" class="post-form">{% csrf_token %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>          
             {% for field in form %}
-                <div class="fieldWrapper">
-                    {{ field.errors }}
-                    {{ field.label_tag }} {{ field }}
-                    {{ field.help_text }}
-                </div>
+              <div class="fieldWrapper">
+                <tr>
+                  <td>{{ field.label_tag }}</td>
+                  <td><div class="error-message">{{ field.errors }}</div> {{ field }}</td>
+                  <td>{{ field.help_text }}</td>
+                </tr>
+              </div>
             {% endfor %}
-            <button type="submit" class="save btn btn-default">Save</button>
-        </form>
-    {% endblock %}
+          </tbody>
+        </table>
+        <button type="submit" class="save btn btn-success">Save</button>
+      </form>
+
+    </div>
+
+  {% endblock %}
 
 {% block bottom %}
-    {{ block.super }}
+  {{ block.super }}
 {% endblock %}

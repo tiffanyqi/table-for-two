@@ -4,6 +4,9 @@
 .availability-edit {
     display: none;
 }
+.error-message {
+    color: red;
+}
 
 html {
     position: relative;

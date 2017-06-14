@@ -58,6 +58,10 @@ Front-end
 - [ ] index-logged-in
 - [ ] profile
 - [ ] edit-profile
+- [ ] add messages upon form completion
+- [ ] add/edit availabiity based on datetime-local field
+- [ ] when there's errors, don't revert to previous thing
+- [ ] connect to heroku properly
 
 
 ## Matching process
