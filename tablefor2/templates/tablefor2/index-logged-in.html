@@ -16,7 +16,7 @@
           <div class="group">
             <h1>Current Availabilities</h1>
 
-            <h4>Add an Availability(?)</h4>
+            <h4>Add an Availability</h4>
             <form action="{% url 'save-availability' %}" method="POST" class="post-form">{% csrf_token %}
               {% for field in form %}
                   <div class="error-message">{{ field.errors }}</div>
@@ -25,7 +25,7 @@
                       <span class="glyphicon glyphicon-plus"></span>
                   </button>
                   <br>
-                  <p>Please format the time like the following: MM/DD/YYYY HH:MM (military time)</p>
+                  <p>Please format the time like the following: MM/DD/YYYY HH:MM (military time). Each time you place will create a 30 minute timeslot.</p>
               {% endfor %}
             </form>
 
