@@ -2,93 +2,126 @@
 {% load staticfiles %}
 
 {% block head %}
-    {{ block.super }}
+  {{ block.super }}
 {% endblock %}
 
 {% block content %}
-    {% load static %}
+  {% load static %}
 
-        <h1>Your Current Availabilities</h1>
+    <div class="container">
 
-        <ul>
-        {% for availability in availabilities %}
-            <li>
-                {{ availability.time_available }}
-                <!-- opens the edit dialogue -->
-                <button class="save btn btn-default" id="btn-edit-{{ availability.id }}"onclick="editAvailability({{availability.id}})">Edit</button>
-                <!-- confirms deletion, popup -->
-                <!-- <button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" method="POST">Delete</button> -->
-                <button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" id="btn-delete-{{ availability.id }}" method="POST">Delete</button>
-                <!-- edit popup -->
-                <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="form-edit-{{ availability.id }}">{% csrf_token %}
+      <div class="row">
+        <div class="col-sm-8">
+
+          <div class="group">
+            <h1>Current Availabilities</h1>
+
+            <h4>Add an Availability</h4>
+            <form action="{% url 'save-availability' %}" method="POST" class="post-form">{% csrf_token %}
+              {% for field in form %}
+                  <div class="error-message">{{ field.errors }}</div>
+                  {{ field }}
+                  <button type="submit" class="save btn btn-default">
+                      <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+                  <br>
+                  <p>Please format the time like the following: MM/DD/YYYY HH:MM (military time). Each time you place will create a 30 minute timeslot.</p>
+              {% endfor %}
+            </form>
+
+            {% if not availabilities %}
+              <p>Go set some availabilities below!</p>
+            {% else %}
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Matched?</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for availability in availabilities %}
+                <tr>
+                  <!-- edit popup -->
+                  <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="form-edit-{{ availability.id }}">{% csrf_token %}
                     {% for field in form %}
-                        <div class="fieldWrapper">
-                            {{ field.errors }}
-                            {{ field.label_tag }} {{ field }}
-                            {{ field.help_text }}
-                        </div>
+                      <div class="fieldWrapper">
+                        {{ field.errors }}
+                        <td class="availability-edit {{ availability.id }}">{{ field }}</td>
+                        <td class="availability-view {{ availability.id }}">{{ availability.time_available }}</td>
+                        <td class="availability-view {{ availability.id }}">{{ availability.matched_name }}</td>
+                        <td class="availability-edit {{ availability.id }}"> {{ field.help_text }}</td>
+                      </div>
                     {% endfor %}
                     <!-- confirms edit -->
-                    <button type="submit" class="save btn btn-default">Confirm</button>
-                    <!-- cancels edit and hides form -->
-                </form>
-                <button class="save btn btn-default" onclick="editAvailability({{availability.id}})" id="btn-cancel-{{ availability.id }}" style="display:none">Cancel</button>
-            </li>
-        {% endfor %}
-        </ul>
+                    <td class="availability-edit {{ availability.id }}"><button type="submit" class="save btn btn-default">
+                      <span class="glyphicon glyphicon-ok"></span>
+                    </button></td>
+                  </form>
+                  
+                  <!-- cancels edit and hides form -->
+                  <td class="availability-edit {{ availability.id }}"><button class="save btn btn-default" onclick="editAvailability({{availability.id}})" id="btn-cancel-{{ availability.id }}">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </button></td>
 
-        <p>Your frequency: {{ profile.frequency }}</p>
-        <p>Your current location: {{ profile.location }}</p>
-        <p>Your current timezone: {{ profile.timezone }}</p>
+                  <!-- opens the edit dialogue -->
+                  <td class="availability-view {{ availability.id }}"><button class="save btn btn-default" id="btn-edit-{{ availability.id }}"onclick="editAvailability({{availability.id}})">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </button></td>
 
-        <p>Add a time you're available:</p>
-        <form action="{% url 'save-availability' %}" method="POST" class="post-form">{% csrf_token %}
-            {% for field in form %}
-                <div class="fieldWrapper">
-                    {{ field.errors }}
-                    {{ field.label_tag }} {{ field }}
-                    {{ field.help_text }}
-                </div>
-            {% endfor %}
-            <button type="submit" class="save btn btn-default">Save</button>
-        </form>
+                  <!-- confirms deletion, popup -->
+<!--                   <td><button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" id="btn-delete-{{ availability.id }}" method="POST">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button></td> -->
+                  <td class="availability-view {{ availability.id }}"><button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" id="btn-delete-{{ availability.id }}" method="POST">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button></td>
+                </tr>
 
-        <h1>Your Current Matches</h1>
+              {% endfor %}
+                
+              </tbody>
+            </table>
+            {% endif %}
 
-        {% if not current_matches %}
-            <p>Go set some availabilities! Thanks for your patience :)</p>
+            <p>Moved recently? Change your location or settings <a href="{% url 'edit-profile' %}">here</a></p>
 
-        {% else %}
+          </div>
+        </div>
+            
+        <div class="col-sm-4">
+          <div class="group">
+            <h1>Current Matches</h1>
 
-        <ul>
-        {% for current_match in current_matches %}
-            <li>{{ current_match.matched_name}} at {{ current_match.time_available }}</li>
-        {% endfor %}
-        </ul>
+              {% if not current_matches %}
+                <!-- <p>Go set some availabilities! Thanks for your patience :)</p> -->
+                <!-- test for the real current matches -->
+                <ul>
+                  <li class="match">Test Qi at May 28, 2017, noon</li>
+                  <li class="match">Test Qi at May 28, 2017, noon</li>
+                  <li class="match">Test Qi at May 28, 2017, noon</li>
+                </ul>
+              {% else %}
 
-        {% endif %}
+              <ul>{% for current_match in current_matches %}
+                <li>{{ current_match.matched_name}} at {{ current_match.time_available }}</li>
+              {% endfor %}</ul>
 
-        <h1>Your Past Matches</h1>
-
-        {% if not past_matches %}
-            <p>Go set some availabilities! Thanks for your patience :)</p>
-
-        {% else %}
-
-        <ul>
-        {% for past_match in past_matches %}
-            <li>{{ past_match.matched_name}} at {{ past_match.time_available }}</li>
-        {% endfor %}
-
-        </ul>
-        {% endif %}
+              {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
 
 
-    {% endblock %}
+  {% endblock %}
 
 {% block bottom %}
-    {{ block.super }}
-    {% block bottom_js %}
-        <script rel="javascript" type="text/javascript" src="{% static 'js/availability.js' %}"></script>
-    {% endblock %}
+  {{ block.super }}
+  {% block bottom_js %}
+    <script rel="javascript" type="text/javascript" src="{% static 'js/availability.js' %}"></script>
+  {% endblock %}
 {% endblock %}

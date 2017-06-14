@@ -58,6 +58,10 @@ Front-end
 - [ ] index-logged-in
 - [ ] profile
 - [ ] edit-profile
+- [ ] add messages upon form completion
+- [ ] add/edit availabiity based on datetime-local field
+- [ ] when there's errors, don't revert to previous thing
+- [ ] connect to heroku properly
 
 
 ## Matching process
@@ -71,6 +75,11 @@ Front-end
 	- Haven't matched before
 	- Those who are in the same location (last, GHangout)
 - If that user is matched, then we'll set the name and email equal to the match
+
+
+## New questions for testing
+- if a user deletes their availability, will it delete their match? --> task: hide edit and delete if a user is matched
+- if a user reschedules their availability in a different timezone or location, will it update the match?
 
 
 # V2
