@@ -1,5 +1,6 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.forms import formset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
@@ -24,9 +25,23 @@ def index(request):
             availabilities = Availability.objects.filter(profile=profile, time_available__gte=today).order_by('time_available') or None
             new_availability_form = AvailabilityForm(request.POST or None, request.FILES or None)
 
+            AvailabilityFormSet = formset_factory(AvailabilityForm)
+            formset_data = []
+            for availability in availabilities:
+                data = {
+                    'time_available': availability.time_available
+                }
+                formset_data.append(data)
+            formset = AvailabilityFormSet(initial=formset_data)
+
+            availability_forms = []
+            for form, availability in zip(formset, availabilities):
+                availability_forms.append([form, availability])
+
             return render(request, 'tablefor2/index-logged-in.html', {
                 'profile': profile,
-                'form': new_availability_form,
+                'new_availability_form': new_availability_form,
+                'availability_forms': availability_forms,
                 'availabilities': availabilities,
                 'current_matches': current_matches
             })
@@ -57,7 +72,9 @@ def save_availability(request):
 @login_required
 def edit_availability(request, availability_id):
     profile = Profile.objects.get(email=request.user.email)
+    # formset = AvailabilityFormSet(request.POST or None, request.FILES or None)
     form = AvailabilityForm(request.POST or None, request.FILES or None)
+    # formset = formset_factory(AvailabilityForm)
     availability = Availability.objects.get(pk=availability_id)
     if request.method == 'POST':
 

@@ -28,6 +28,7 @@ Availability
 - [x] Show future availabilities that you've made
 - [x] Edit availabilities
 - [x] Remove availabilities
+- [ ] add/edit availabiity based on datetime-local field
 - [ ] Get AJAX to work and populate times
 - [ ] Test
 
@@ -59,7 +60,6 @@ Front-end
 - [ ] profile
 - [ ] edit-profile
 - [ ] add messages upon form completion
-- [ ] add/edit availabiity based on datetime-local field
 - [ ] when there's errors, don't revert to previous thing
 - [ ] connect to heroku properly
 
