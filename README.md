@@ -23,12 +23,9 @@ Signup
 - [ ] Test
 
 Availability
-- [x] Create index-logged-in page
-- [x] Set availabilities in back-end
-- [x] Show future availabilities that you've made
-- [x] Edit availabilities
-- [x] Remove availabilities
-- [ ] Get AJAX to work and populate times
+- [ ] Create front-end for availabilities
+- [ ] Save recurring availabilities in the back-end
+- [ ] Edit availabilities
 - [ ] Test
 
 Matching
