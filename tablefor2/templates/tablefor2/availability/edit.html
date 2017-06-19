@@ -1,0 +1,26 @@
+{% extends "tablefor2/base.html" %}
+{% load staticfiles %}
+
+{% block head %}
+  {{ block.super }}
+{% endblock %}
+
+{% block content %}
+  {% load static %}
+
+    <div class="container">
+
+      <h1>Edit Your Recurring Availability</h1>
+
+      {% if not recurring %}
+        <p>Hello {{ user.preferred_name }}!</p>
+        <p>To make this more comprehensive, please fill out your recurring availability:</p>
+      {% endif %}
+
+    </div>
+
+  {% endblock %}
+
+{% block bottom %}
+  {{ block.super }}
+{% endblock %}

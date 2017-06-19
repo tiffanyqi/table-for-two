@@ -33,6 +33,12 @@ class Profile(AbstractBaseUser):
         return self.is_authenticated
 
 
+class RecurringAvailability(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    day = models.CharField(null=True, max_length=50)
+    time = models.IntegerField(default=0)
+
+
 class Availability(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     matched_name = models.CharField(null=True, max_length=50)

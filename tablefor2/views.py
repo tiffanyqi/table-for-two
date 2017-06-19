@@ -1,5 +1,6 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
@@ -19,6 +20,7 @@ def index(request):
 
         # show profile and availability and matches!
         else:
+            recurring = RecurringAvailability.objects.get(profile=profile)
             today = date.today()
             current_matches = Availability.objects.filter(profile=profile, time_available__gte=today).exclude(matched_name=None) or None
             availabilities = Availability.objects.filter(profile=profile, time_available__gte=today).order_by('time_available') or None
@@ -31,11 +33,26 @@ def index(request):
                 'current_matches': current_matches
             })
 
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect('/availability/edit')
+
     except:
         return render(request, 'tablefor2/index-logged-out.html')
 
 
-# saves and creates a new availability
+# prepares the edit screen for recurring availability
+@login_required
+def edit_availability(request):
+    profile = Profile.objects.get(email=request.user.email)
+    try:
+        recurring = RecurringAvailability.objects.get(profile=profile) or None
+    except:
+        return render(request, 'tablefor2/availability/edit.html', {'profile': profile, 'recurring': None})
+
+    return render(request, 'tablefor2/availability/edit.html', {'profile': profile, 'recurring': recurring})
+
+
+# saves the recurring availability
 @login_required
 def save_availability(request):
     profile = Profile.objects.get(email=request.user.email)
@@ -53,24 +70,7 @@ def save_availability(request):
     return render(request, 'tablefor2/index-logged-in.html', {'form': form})
 
 
-# saves an existing availability
-@login_required
-def edit_availability(request, availability_id):
-    profile = Profile.objects.get(email=request.user.email)
-    form = AvailabilityForm(request.POST or None, request.FILES or None)
-    availability = Availability.objects.get(pk=availability_id)
-    if request.method == 'POST':
-
-        if form.is_valid():
-            availability.time_available = form.cleaned_data.get('time_available')
-            availability.time_available_utc = calculate_utc(profile, availability.time_available)
-            availability.save()
-            return HttpResponseRedirect('/')
-
-    return render(request, 'tablefor2/index-logged-in.html', {'form': form})
-
-
-# deletes an existing availability
+# deletes an existing availability, delete later
 @login_required
 def delete_availability(request, availability_id):
     availability = Availability.objects.get(pk=availability_id)
@@ -78,7 +78,7 @@ def delete_availability(request, availability_id):
     return HttpResponseRedirect('/')
 
 
-# view profile
+# view profile, remove later
 @login_required
 def profile(request):
     today = date.today()
@@ -137,7 +137,7 @@ def save_profile(request):
             profile.save()
 
             # add a message here?
-            return HttpResponseRedirect('/profile/view')
+            return HttpResponseRedirect("/")
 
     return render(request, 'tablefor2/profile/edit.html', {'form': form})
 

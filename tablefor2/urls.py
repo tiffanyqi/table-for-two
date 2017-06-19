@@ -9,7 +9,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     url(r'^availability/delete/(?P<availability_id>\d+)/$', views.delete_availability, name='delete-availability'),
-    url(r'^availability/edit/(?P<availability_id>\d+)/$', views.edit_availability, name='edit-availability'),
+    # url(r'^availability/edit/(?P<availability_id>\d+)/$', views.edit_availability, name='edit-availability'),
+    url(r'^availability/edit/$', views.edit_availability, name='edit-availability'),
     url(r'^availability/save/$', views.save_availability, name='save-availability'),
 
     url(r'^profile/edit/$', views.edit_profile, name='edit-profile'),
