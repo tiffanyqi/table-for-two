@@ -7,6 +7,9 @@
 .error-message {
     color: red;
 }
+table td.highlighted {
+  background-color: green;
+}
 
 html {
     position: relative;

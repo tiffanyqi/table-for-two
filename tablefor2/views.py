@@ -5,9 +5,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from tablefor2.forms import *
-from tablefor2.helpers import calculate_utc
+from tablefor2.helpers import calculate_utc, calculate_ampm
 from tablefor2.models import *
 
+import array
 
 def index(request):
     try:
@@ -44,12 +45,22 @@ def index(request):
 @login_required
 def edit_availability(request):
     profile = Profile.objects.get(email=request.user.email)
+    times = calculate_ampm()
+
     try:
         recurring = RecurringAvailability.objects.get(profile=profile) or None
     except:
-        return render(request, 'tablefor2/availability/edit.html', {'profile': profile, 'recurring': None})
+        return render(request, 'tablefor2/availability/edit.html', {
+            'profile': profile,
+            'recurring': None,
+            'times': times,
+        })
 
-    return render(request, 'tablefor2/availability/edit.html', {'profile': profile, 'recurring': recurring})
+    return render(request, 'tablefor2/availability/edit.html', {
+        'profile': profile,
+        'recurring': recurring,
+        'times': times,
+    })
 
 
 # saves the recurring availability

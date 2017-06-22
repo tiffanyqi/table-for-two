@@ -15,6 +15,55 @@
       {% if not recurring %}
         <p>Hello {{ user.preferred_name }}!</p>
         <p>To make this more comprehensive, please fill out your recurring availability:</p>
+
+        <!-- form? -->
+        <table class="table-bordered table" id="availability-table-edit">
+          <thead>
+            <tr>
+              <th>Day</th>
+              {% for time in times %}
+                <th>{{ time }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>MON</td>
+              {% for time in times %}
+                <td id="mon-{{ time }}"></td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>TUES</td>
+              {% for time in times %}
+                <td id="tue-{{ time }}"></td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>WED</td>
+              {% for time in times %}
+                <td id="wed-{{ time }}"></td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>THU</td>
+              {% for time in times %}
+                <td id="thu-{{ time }}"></td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>FRI</td>
+              {% for time in times %}
+                <td id="fri-{{ time }}"></td>
+              {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+
+
+
+
+
       {% endif %}
 
     </div>

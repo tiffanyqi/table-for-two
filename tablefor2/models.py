@@ -36,7 +36,7 @@ class Profile(AbstractBaseUser):
 class RecurringAvailability(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     day = models.CharField(null=True, max_length=50)
-    time = models.IntegerField(default=0)
+    time = models.CharField(null=True, max_length=50)
 
 
 class Availability(models.Model):

@@ -98,3 +98,6 @@ class AvailabilityForm(forms.Form):
     def clean_time_available(self):
         time_available = self.cleaned_data.get('time_available')
         return time_available
+
+# class RecurringAvailabilityForm(forms.Form):
+#     times_available = forms.
