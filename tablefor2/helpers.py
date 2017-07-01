@@ -1,4 +1,4 @@
-from tablefor2.forms import TIMEZONES
+from tablefor2.forms import *
 from tablefor2.models import *
 
 import datetime
@@ -36,3 +36,15 @@ def calculate_ampm():
         times.append(half)
 
     return times
+
+
+# calculate the output string back into military time
+def determine_ampm(time_string):
+    full_time = time_string[:-2]
+    ampm = time_string[-2:]
+    if ampm == 'AM' or time_string[0:2] == '12':
+        return full_time
+    else:
+        hour, minute = full_time.split(":")
+        hour = int(hour) + 12
+        return '%s:%s' % (str(hour), minute)

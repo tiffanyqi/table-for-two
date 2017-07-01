@@ -5,10 +5,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from tablefor2.forms import *
-from tablefor2.helpers import calculate_utc, calculate_ampm
+from tablefor2.helpers import calculate_utc, calculate_ampm, determine_ampm
 from tablefor2.models import *
 
-import array
 
 def index(request):
     try:
@@ -21,7 +20,7 @@ def index(request):
 
         # show profile and availability and matches!
         else:
-            recurring = RecurringAvailability.objects.get(profile=profile)
+            recurring = RecurringAvailability.objects.filter(profile=profile)
             today = date.today()
             current_matches = Availability.objects.filter(profile=profile, time_available__gte=today).exclude(matched_name=None) or None
             availabilities = Availability.objects.filter(profile=profile, time_available__gte=today).order_by('time_available') or None
@@ -31,7 +30,8 @@ def index(request):
                 'profile': profile,
                 'form': new_availability_form,
                 'availabilities': availabilities,
-                'current_matches': current_matches
+                'current_matches': current_matches,
+                'recurring': recurring
             })
 
     except ObjectDoesNotExist:
@@ -49,6 +49,7 @@ def edit_availability(request):
 
     try:
         recurring = RecurringAvailability.objects.get(profile=profile) or None
+
     except:
         return render(request, 'tablefor2/availability/edit.html', {
             'profile': profile,
@@ -67,18 +68,20 @@ def edit_availability(request):
 @login_required
 def save_availability(request):
     profile = Profile.objects.get(email=request.user.email)
-    form = AvailabilityForm(request.POST or None, request.FILES or None)
+    recurring_availabilities = request.POST.getlist('recurring_availabilities[]')
+    for recurring_availability in recurring_availabilities:
+        string = recurring_availability.split('-')
+        day = string[0]
+        time = determine_ampm(string[1])
+        rec_av = RecurringAvailability(profile=profile, day=day, time=time)
+        print rec_av
+        rec_av.save()
 
-    if request.method == 'POST':
+    # return render(request, 'tablefor2/index-logged-in.html', {
+    #     'profile': profile,
+    # })
 
-        if form.is_valid():
-            availability = Availability(profile=profile)
-            availability.time_available = form.cleaned_data.get('time_available')
-            availability.time_available_utc = calculate_utc(profile, availability.time_available)
-            availability.save()
-            return HttpResponseRedirect("/")
-
-    return render(request, 'tablefor2/index-logged-in.html', {'form': form})
+    return HttpResponseRedirect('/')
 
 
 # deletes an existing availability, delete later

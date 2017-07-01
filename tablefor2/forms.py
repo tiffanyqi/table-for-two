@@ -2,8 +2,6 @@ from django import forms
 
 from datetime import *
 
-from tablefor2 import *
-
 
 DEPARTMENTS = (
     ('--', 'Select a Department'),
@@ -98,6 +96,3 @@ class AvailabilityForm(forms.Form):
     def clean_time_available(self):
         time_available = self.cleaned_data.get('time_available')
         return time_available
-
-# class RecurringAvailabilityForm(forms.Form):
-#     times_available = forms.

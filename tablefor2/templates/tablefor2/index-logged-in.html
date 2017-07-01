@@ -61,6 +61,11 @@
           <div class="group">
             <h2>Availability</h2>
             <p><a href="{% url 'edit-availability' %}">Edit your recurring availability</a></p>
+            {% for av in recurring %}
+                <ul>
+                  <li>{{ av.day }}-{{ av.time }}</li>
+                </ul>
+            {% endfor %}
           </div>
 
         </div>

@@ -10,6 +10,10 @@
 table td.highlighted {
   background-color: green;
 }
+.table-container {
+    overflow: scroll;
+    width: 100%;
+}
 
 html {
     position: relative;
