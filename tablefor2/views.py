@@ -13,6 +13,7 @@ def index(request):
         # does the profile exist?
         profile = Profile.objects.get(email=request.user.email)
         recurring = RecurringAvailability.objects.filter(profile=profile)
+        times = calculate_ampm()
 
         # force users to add more info
         if not profile.extra_saved_information:
@@ -25,16 +26,15 @@ def index(request):
             today = date.today()
             current_matches = Availability.objects.filter(profile=profile, time_available__gte=today).exclude(matched_name=None) or None
             availabilities = Availability.objects.filter(profile=profile, time_available__gte=today).order_by('time_available') or None
-            new_availability_form = AvailabilityForm(request.POST or None, request.FILES or None)
             recurring_values = calculate_recurring_values(recurring)
 
             return render(request, 'tablefor2/index-logged-in.html', {
                 'profile': profile,
-                'form': new_availability_form,
                 'availabilities': availabilities,
                 'current_matches': current_matches,
                 'recurring': recurring,
                 'recurring_values': recurring_values,
+                'times': times,
             })
 
     except:
@@ -66,23 +66,17 @@ def save_availability(request):
         string = recurring_availability.split('-')
         day = string[0]
         time = string[1]
+        # if deleted, remove
         try:
-            RecurringAvailability.objects.get(profile=profile, day=day, time=time)
-
+            rec = RecurringAvailability.objects.get(profile=profile, day=day, time=time)
+            if string[2]:
+                rec.delete()
+        except IndexError:
+            pass
+        # save the rest since they're new
         except:
             rec_av = RecurringAvailability(profile=profile, day=day, time=time)
             rec_av.save()
-
-    deleted_availabilities = request.POST.getlist('deleted_availabilities[]')
-    for deleted_availability in deleted_availabilities:
-        string = deleted_availability.split('-')
-        day = string[0]
-        time = string[1]
-        try:
-            rec = RecurringAvailability.objects.get(profile=profile, day=day, time=time)
-            rec.delete()
-        except:
-            pass
 
     return HttpResponseRedirect('/')
 

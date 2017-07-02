@@ -17,11 +17,6 @@
         <p>To make this more comprehensive, please fill out your recurring availability:</p>
       {% endif %}
 
-      {% for av in recurring %}
-          <ul>
-            <li>{{ av.day }}-{{ av.time }}</li>
-          </ul>
-      {% endfor %}
       <input type="hidden" id="recurring-availabilities" value="{{ recurring_values}}">
       <form method="POST" action="{% url 'save-availability' %}" onsubmit="return saveRecurringAvailabilities()" >{% csrf_token %}
         <div class="table-container">

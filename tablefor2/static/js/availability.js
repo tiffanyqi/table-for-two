@@ -7,7 +7,6 @@ $(function () {
 });
 
 var newAvailabilities = [];
-var deletedAvailabilities = [];
 
 // highlights existing recurring
 function populateTimes() {
@@ -46,7 +45,7 @@ function toggleSelected() {
       } else {
         var index = newAvailabilities.indexOf(this.id);
         newAvailabilities.splice(index, 1);
-        deletedAvailabilities.push(this.id);
+        newAvailabilities.push(this.id + '-deleted');
       }
       return false; // prevent text selection
     })
@@ -70,7 +69,6 @@ function saveRecurringAvailabilities() {
     url: '/availability/save/',
     data: {
       'recurring_availabilities[]': newAvailabilities,
-      'deleted_availabilities[]': deletedAvailabilities,
       'csrfmiddlewaretoken': getCookie('csrftoken')
     }
   });

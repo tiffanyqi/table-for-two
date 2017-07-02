@@ -25,7 +25,7 @@ Signup
 Availability
 - [ ] Create front-end for availabilities
 - [ ] Save recurring availabilities in the back-end
-- [ ] Edit availabilities
+- [x] Edit availabilities
 - [ ] Test
 
 Matching
