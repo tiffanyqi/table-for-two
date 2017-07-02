@@ -23,9 +23,10 @@ Signup
 - [ ] Test
 
 Availability
-- [] Create front-end for availabilities
+- [x] Create front-end for availabilities
 - [ ] Save recurring availabilities in the back-end
 - [x] Edit availabilities
+- [ ] Show EMEA/NYC/SF friendly days and fix table
 - [ ] Test
 
 Matching

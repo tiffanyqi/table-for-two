@@ -1,6 +1,3 @@
-// TODOs:
-// figure out if users drag, it should be saved too
-
 $(function () {
   $('[data-toggle="tooltip"]').tooltip({
     container : 'body'
@@ -32,36 +29,40 @@ function populateTimes() {
 }
 
 
-// makes the highlighted portions toggle, http://jsfiddle.net/few5E/
+// executes highlighting, http://jsfiddle.net/few5E/
 function toggleSelected() {
   var isMouseDown = false;
   $("#availability-table-edit td")
     .mousedown(function () {
       isMouseDown = true;
       $(this).toggleClass("highlighted");
-
-      // add newly highlighted
-      if ($(this).hasClass("highlighted")) {
-        newAvailabilities.push(this.id);
-
-      // remove not highlighted
-      } else {
-        var index = newAvailabilities.indexOf(this.id);
-        newAvailabilities.splice(index, 1);
-        newAvailabilities.push(this.id + '-deleted');
-      }
+      distinguishHighlighted(this);
       return false; // prevent text selection
     })
     .mouseover(function () {
       if (isMouseDown) {
         $(this).toggleClass("highlighted");
+        distinguishHighlighted(this);
       }
     });
-  
+
   $(document)
     .mouseup(function () {
       isMouseDown = false;
     });
+}
+
+
+// adds or removes highlighting from list
+function distinguishHighlighted(element) {
+  if ($(element).hasClass("highlighted")) {
+    newAvailabilities.push(element.id);
+
+  } else {
+    var index = newAvailabilities.indexOf(element.id);
+    newAvailabilities.splice(index, 1);
+    newAvailabilities.push(element.id + '-deleted');
+  }
 }
 
 

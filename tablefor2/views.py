@@ -7,6 +7,8 @@ from tablefor2.forms import *
 from tablefor2.helpers import calculate_ampm, calculate_recurring_values
 from tablefor2.models import *
 
+import time
+
 
 def index(request):
     try:
@@ -61,24 +63,31 @@ def edit_availability(request):
 @login_required
 def save_availability(request):
     profile = Profile.objects.get(email=request.user.email)
-    recurring_availabilities = request.POST.getlist('recurring_availabilities[]')
-    for recurring_availability in recurring_availabilities:
-        string = recurring_availability.split('-')
-        day = string[0]
-        time = string[1]
-        # if deleted, remove
-        try:
-            rec = RecurringAvailability.objects.get(profile=profile, day=day, time=time)
-            if string[2]:
-                rec.delete()
-        except IndexError:
-            pass
-        # save the rest since they're new
-        except:
-            rec_av = RecurringAvailability(profile=profile, day=day, time=time)
-            rec_av.save()
+    if request.method == 'POST':
+        recurring_availabilities = request.POST.getlist('recurring_availabilities[]')
+        for recurring_availability in recurring_availabilities:
+            string = recurring_availability.split('-')
+            day = string[0]
+            time_string = string[1]
 
-    return HttpResponseRedirect('/')
+            # if deleted, remove
+            try:
+                rec = RecurringAvailability.objects.get(profile=profile, day=day, time=time_string)
+                if string[2]:
+                    rec.delete()
+
+            except IndexError:
+                pass
+
+            # save the rest since they're new
+            except:
+                rec_av = RecurringAvailability(profile=profile, day=day, time=time_string)
+                rec_av.save()
+
+        time.sleep(1)  # wait until everything's done saving, hacky
+        return HttpResponseRedirect('/')
+    else:
+        return HttpResponseRedirect('tablefor2/availability/edit.html')
 
 
 # deletes an existing availability, delete later
