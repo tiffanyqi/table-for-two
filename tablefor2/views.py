@@ -1,11 +1,10 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from tablefor2.forms import *
-from tablefor2.helpers import calculate_utc, calculate_ampm, determine_ampm
+from tablefor2.helpers import calculate_ampm, calculate_recurring_values
 from tablefor2.models import *
 
 
@@ -13,29 +12,30 @@ def index(request):
     try:
         # does the profile exist?
         profile = Profile.objects.get(email=request.user.email)
+        recurring = RecurringAvailability.objects.filter(profile=profile)
 
         # force users to add more info
         if not profile.extra_saved_information:
             return HttpResponseRedirect('/profile/edit')
+        if not recurring:
+            return HttpResponseRedirect('/availability/edit')
 
         # show profile and availability and matches!
         else:
-            recurring = RecurringAvailability.objects.filter(profile=profile)
             today = date.today()
             current_matches = Availability.objects.filter(profile=profile, time_available__gte=today).exclude(matched_name=None) or None
             availabilities = Availability.objects.filter(profile=profile, time_available__gte=today).order_by('time_available') or None
             new_availability_form = AvailabilityForm(request.POST or None, request.FILES or None)
+            recurring_values = calculate_recurring_values(recurring)
 
             return render(request, 'tablefor2/index-logged-in.html', {
                 'profile': profile,
                 'form': new_availability_form,
                 'availabilities': availabilities,
                 'current_matches': current_matches,
-                'recurring': recurring
+                'recurring': recurring,
+                'recurring_values': recurring_values,
             })
-
-    except ObjectDoesNotExist:
-        return HttpResponseRedirect('/availability/edit')
 
     except:
         return render(request, 'tablefor2/index-logged-out.html')
@@ -46,20 +46,13 @@ def index(request):
 def edit_availability(request):
     profile = Profile.objects.get(email=request.user.email)
     times = calculate_ampm()
-
-    try:
-        recurring = RecurringAvailability.objects.get(profile=profile) or None
-
-    except:
-        return render(request, 'tablefor2/availability/edit.html', {
-            'profile': profile,
-            'recurring': None,
-            'times': times,
-        })
+    recurring = RecurringAvailability.objects.filter(profile=profile)
+    recurring_values = calculate_recurring_values(recurring)
 
     return render(request, 'tablefor2/availability/edit.html', {
         'profile': profile,
         'recurring': recurring,
+        'recurring_values': recurring_values,
         'times': times,
     })
 
@@ -72,14 +65,24 @@ def save_availability(request):
     for recurring_availability in recurring_availabilities:
         string = recurring_availability.split('-')
         day = string[0]
-        time = determine_ampm(string[1])
-        rec_av = RecurringAvailability(profile=profile, day=day, time=time)
-        print rec_av
-        rec_av.save()
+        time = string[1]
+        try:
+            RecurringAvailability.objects.get(profile=profile, day=day, time=time)
 
-    # return render(request, 'tablefor2/index-logged-in.html', {
-    #     'profile': profile,
-    # })
+        except:
+            rec_av = RecurringAvailability(profile=profile, day=day, time=time)
+            rec_av.save()
+
+    deleted_availabilities = request.POST.getlist('deleted_availabilities[]')
+    for deleted_availability in deleted_availabilities:
+        string = deleted_availability.split('-')
+        day = string[0]
+        time = string[1]
+        try:
+            rec = RecurringAvailability.objects.get(profile=profile, day=day, time=time)
+            rec.delete()
+        except:
+            pass
 
     return HttpResponseRedirect('/')
 

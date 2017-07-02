@@ -48,3 +48,11 @@ def determine_ampm(time_string):
         hour, minute = full_time.split(":")
         hour = int(hour) + 12
         return '%s:%s' % (str(hour), minute)
+
+
+def calculate_recurring_values(recurring):
+    recurring_values = []
+    for r in recurring:
+        rec = "%s-%s" % (r.day, r.time)
+        recurring_values.append(rec)
+    return recurring_values

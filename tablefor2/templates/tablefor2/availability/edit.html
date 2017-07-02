@@ -15,56 +15,61 @@
       {% if not recurring %}
         <p>Hello {{ user.preferred_name }}!</p>
         <p>To make this more comprehensive, please fill out your recurring availability:</p>
-
-        <form method="POST" action="{% url 'save-availability' %}" onsubmit="return saveRecurringAvailabilities()" >{% csrf_token %}
-          <div class="table-container">
-            <table class="table-bordered table" id="availability-table-edit">
-              <thead>
-                <tr>
-                  <th>Day</th>
-                  {% for time in times %}
-                    <th>{{ time }}</th>
-                  {% endfor %}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Mon</td>
-                  {% for time in times %}
-                    <td id="mon-{{ time }}"></td>
-                  {% endfor %}
-                </tr>
-                <tr>
-                  <td>Tue</td>
-                  {% for time in times %}
-                    <td id="tue-{{ time }}"></td>
-                  {% endfor %}
-                </tr>
-                <tr>
-                  <td>Wed</td>
-                  {% for time in times %}
-                    <td id="wed-{{ time }}"></td>
-                  {% endfor %}
-                </tr>
-                <tr>
-                  <td>Thu</td>
-                  {% for time in times %}
-                    <td id="thu-{{ time }}"></td>
-                  {% endfor %}
-                </tr>
-                <tr>
-                  <td>Fri</td>
-                  {% for time in times %}
-                    <td id="fri-{{ time }}"></td>
-                  {% endfor %}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p><--Scroll!--></p>
-          <input type=submit>
-        </form>
       {% endif %}
+
+      {% for av in recurring %}
+          <ul>
+            <li>{{ av.day }}-{{ av.time }}</li>
+          </ul>
+      {% endfor %}
+      <input type="hidden" id="recurring-availabilities" value="{{ recurring_values}}">
+      <form method="POST" action="{% url 'save-availability' %}" onsubmit="return saveRecurringAvailabilities()" >{% csrf_token %}
+        <div class="table-container">
+          <table class="table-bordered table" id="availability-table-edit">
+            <thead>
+              <tr>
+                <th>Day</th>
+                {% for time in times %}
+                  <th>{{ time }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mon</td>
+                {% for time in times %}
+                  <td id="mon-{{ time }}"></td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>Tue</td>
+                {% for time in times %}
+                  <td id="tue-{{ time }}"></td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>Wed</td>
+                {% for time in times %}
+                  <td id="wed-{{ time }}"></td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>Thu</td>
+                {% for time in times %}
+                  <td id="thu-{{ time }}"></td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>Fri</td>
+                {% for time in times %}
+                  <td id="fri-{{ time }}"></td>
+                {% endfor %}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button type="submit" class="save btn btn-success">Save</button>
+      </form>
     </div>
 
   {% endblock %}
