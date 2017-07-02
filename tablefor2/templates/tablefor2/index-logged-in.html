@@ -61,12 +61,10 @@
           <div class="group">
             <h2>Availability</h2>
             <div class="table-container">
-              <table class="table-bordered table" id="availability-table-edit">
+              <table class="table" id="availability-table-view">
                 <thead>
                   <tr>
-                    <th>Day</th>
                     {% for time in times %}
-                      <th>{{ time }}</th>
                     {% endfor %}
                   </tr>
                 </thead>
@@ -74,31 +72,31 @@
                   <tr>
                     <td>Mon</td>
                     {% for time in times %}
-                      <td id="mon-{{ time }}"></td>
+                      <td id="mon-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
                     {% endfor %}
                   </tr>
                   <tr>
                     <td>Tue</td>
                     {% for time in times %}
-                      <td id="tue-{{ time }}"></td>
+                      <td id="tue-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
                     {% endfor %}
                   </tr>
                   <tr>
                     <td>Wed</td>
                     {% for time in times %}
-                      <td id="wed-{{ time }}"></td>
+                      <td id="wed-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
                     {% endfor %}
                   </tr>
                   <tr>
                     <td>Thu</td>
                     {% for time in times %}
-                      <td id="thu-{{ time }}"></td>
+                      <td id="thu-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
                     {% endfor %}
                   </tr>
                   <tr>
                     <td>Fri</td>
                     {% for time in times %}
-                      <td id="fri-{{ time }}"></td>
+                      <td id="fri-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
                     {% endfor %}
                   </tr>
                 </tbody>

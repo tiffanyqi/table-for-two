@@ -2,6 +2,9 @@
 // figure out if users drag, it should be saved too
 
 $(function () {
+  $('[data-toggle="tooltip"]').tooltip({
+    container : 'body'
+  });
   toggleSelected();
   populateTimes();
 });
