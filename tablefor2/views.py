@@ -90,31 +90,6 @@ def save_availability(request):
         return HttpResponseRedirect('tablefor2/availability/edit.html')
 
 
-# deletes an existing availability, delete later
-@login_required
-def delete_availability(request, availability_id):
-    availability = Availability.objects.get(pk=availability_id)
-    availability.delete()
-    return HttpResponseRedirect('/')
-
-
-# view profile, remove later
-@login_required
-def profile(request):
-    today = date.today()
-    profile = Profile.objects.get(email=request.user.email)
-    past_matches = Availability.objects.filter(profile=profile, time_available__lte=today).exclude(matched_name=None) or None
-
-    # force users to add more info
-    if not profile.extra_saved_information:
-        return HttpResponseRedirect('/profile/edit')
-    else:
-        return render(request, 'tablefor2/profile/view.html', {
-            'profile': profile,
-            'past_matches': past_matches
-        })
-
-
 # prepares the editing screen for a profile
 @login_required
 def edit_profile(request):

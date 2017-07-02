@@ -3,7 +3,7 @@ from django import forms
 from datetime import *
 
 
-DEPARTMENTS = (
+DEPARTMENTS = (  # change these departments
     ('--', 'Select a Department'),
     ('Engineering', 'Engineering'),
     ('General & Administrative', 'General & Administrative'),

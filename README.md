@@ -54,16 +54,14 @@ Front-end
 - PRETTIFY
 - [ ] index-logged-out
 - [ ] index-logged-in
-- [ ] profile
-- [ ] edit-profile
+- [x] edit-profile
+- [x] edit-availability
 - [ ] add messages upon form completion
-- [ ] add/edit availabiity based on datetime-local field
-- [ ] when there's errors, don't revert to previous thing
 - [ ] connect to heroku properly
 
 
 ## Matching process
-- For every availability, create an Availability for that user (date and time of beginning 1/2 hour, assuming timeslot is half hour)
+- For every recurring availability, create an Availability for that user (date and time of beginning 1/2 hour, assuming timeslot is half hour)
 - Runs a thing at 3pm the day before
 - First pick are the newer Mixpanel hires
 - Check for:
@@ -85,3 +83,5 @@ Front-end
 - Variable locations?
 - See your Mixpanel calendar
 - Programmatic frequencies
+- [ ] Build in OOOs?
+
