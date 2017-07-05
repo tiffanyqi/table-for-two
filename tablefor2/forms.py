@@ -52,6 +52,8 @@ class ProfileForm(forms.Form):
     google_hangout = forms.ChoiceField(choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to Google Hangout?')
     frequency = forms.ChoiceField(choices=FREQUENCY, help_text='How often do you want to participate?')
     date_entered_mixpanel = forms.DateField(help_text='(MM/DD/YYYY or YYYY-MM-DD)')
+    what_is_your_favorite_animal = forms.CharField(max_length=50)
+    name_a_fun_fact_about_yourself = forms.CharField(max_length=50)
 
     def clean_department(self):
         department = self.cleaned_data.get('department')
