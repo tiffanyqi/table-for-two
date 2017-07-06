@@ -3,10 +3,9 @@
 Table for Two is a web app that allows Mixpanelers the chance to meet with other Mixpanelers from different departments whenever they'd like. It prioritizes new hires, and allows lunch and coffee dates in 30 minute increments.
 
 ## Features
-- Set your own availability
+- Set your own recurring availability
 - Set your own profile settings (location? google hangout?)
 - Matches folks automatically and puts the event on the calendar
-- Sends out weekly email reminders
 
 
 ## TODOs
@@ -35,11 +34,9 @@ Matching
 - [x] Show your previous matches
 - [x] Send a google calendar invite
 - [x] Change everything to proper timezone
+- [ ] Option to turn off matching if you want to stop or you're OOO
 - [ ] Run the actual cron job
 - [x] Test
-
-Notifications
-- [ ] Set notification based on frequency and current matchings
 
 Mixpanel
 - Goal: acquisition
@@ -47,7 +44,6 @@ Mixpanel
 - [ ] Signup flow (index -> signup -> profile -> save)
 - [ ] Set availability
 - [ ] Match made (server-side)
-- [ ] Notification flow (notification sent -> set availability)
 - [ ] People prop: email, dept, etc, number of matches, number of availabilities
 
 Front-end

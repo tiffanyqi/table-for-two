@@ -27,6 +27,15 @@ table td.highlighted {
     border: 1px solid black;
     padding: 0 30;
 }
+.profile {
+    width: 150px;
+    height: 150px;
+    border: 1px solid black;
+    display: inline-block;
+}
+.profile-info {
+    display: inline-block;
+}
 
 html {
     position: relative;

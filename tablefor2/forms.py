@@ -48,12 +48,13 @@ class ProfileForm(forms.Form):
     preferred_name = forms.CharField(max_length=50)
     department = forms.ChoiceField(choices=DEPARTMENTS)
     location = forms.ChoiceField(choices=LOCATIONS)
+    accept_matches = forms.ChoiceField(choices=BOOLEANS, help_text="Choose 'Yes' if you are just starting!")
     timezone = forms.ChoiceField(choices=TIMEZONES, help_text='Choose the closest city in your timezone')
     google_hangout = forms.ChoiceField(choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to Google Hangout?')
     frequency = forms.ChoiceField(choices=FREQUENCY, help_text='How often do you want to participate?')
     date_entered_mixpanel = forms.DateField(help_text='(MM/DD/YYYY or YYYY-MM-DD)')
-    what_is_your_favorite_animal = forms.CharField(max_length=50)
-    name_a_fun_fact_about_yourself = forms.CharField(max_length=50)
+    what_is_your_favorite_animal = forms.CharField(max_length=50, help_text='You have 50 characters!')
+    name_a_fun_fact_about_yourself = forms.CharField(max_length=50, help_text='You have 50 characters!')
 
     def clean_department(self):
         department = self.cleaned_data.get('department')
@@ -78,6 +79,12 @@ class ProfileForm(forms.Form):
         if google_hangout == '--':
             raise forms.ValidationError('Please select your Google Hangout preference.')
         return google_hangout
+
+    def clean_accept_matches(self):
+        accept_matches = self.cleaned_data.get('accept_matches')
+        if accept_matches == '--':
+            raise forms.ValidationError("Please select your matching preference. Select 'Yes' if you're just starting!")
+        return accept_matches
 
     def clean_frequency(self):
         frequency = self.cleaned_data.get('frequency')
