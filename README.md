@@ -34,7 +34,7 @@ Matching
 - [x] Show your previous matches
 - [x] Send a google calendar invite
 - [x] Change everything to proper timezone
-- [ ] Option to turn off matching if you want to stop or you're OOO
+- [x] Option to turn off matching if you want to stop or you're OOO
 - [ ] Run the actual cron job
 - [x] Test
 
@@ -52,7 +52,6 @@ Front-end
 - [ ] index-logged-in
 - [x] edit-profile
 - [x] edit-availability
-- [ ] add messages upon form completion
 - [ ] connect to heroku properly
 
 
@@ -61,6 +60,7 @@ Front-end
 - Runs a thing at 3pm the day before
 - First pick are the newer Mixpanel hires
 - Check for:
+    - If a user is currently accepting matches
 	- Only if fits their frequency of 1x/wk (V2 will be programmatic)
 	- People who are available at the same time
 	- Are in a different department
