@@ -29,7 +29,7 @@ def calculate_ampm():
             ampm = 'PM'
             num -= 12
 
-        hour = '%s%s' % (num, ampm)
+        hour = '%s:00%s' % (num, ampm)
         half = '%s:30%s' % (num, ampm)
 
         times.append(hour)
@@ -56,3 +56,12 @@ def calculate_recurring_values(recurring):
         rec = "%s-%s" % (r.day, r.time)
         recurring_values.append(rec)
     return recurring_values
+
+
+# find the next weekday after a given day
+# https://stackoverflow.com/questions/6558535/find-the-date-for-the-first-monday-after-a-given-a-date
+def get_next_weekday(d, weekday):
+    days_ahead = int(weekday) - d.weekday()
+    if days_ahead <= 0:  # Target day already happened this week
+        days_ahead += 7
+    return d + datetime.timedelta(days_ahead)

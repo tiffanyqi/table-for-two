@@ -44,6 +44,7 @@ Mixpanel
 - [ ] Signup flow (index -> signup -> profile -> save)
 - [ ] Set availability
 - [ ] Match made (server-side)
+- [ ] Notifications - onboarding, OOO
 - [ ] People prop: email, dept, etc, number of matches, number of availabilities
 
 Front-end

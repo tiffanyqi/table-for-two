@@ -8,6 +8,7 @@ from oauth2client import tools
 from oauth2client.file import Storage
 
 from tablefor2.models import *
+from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
 
 import datetime
 import httplib2
@@ -39,20 +40,43 @@ class Command(BaseCommand):
     - [x] Checks same location first, else if both open to a google_hangout
     - [x] Ensure that the 1x/wk frequency has not yet been satisifed
     - [ ] (v2) Ensure that their chosen frequency has not yet been satisfied
-    - [x] If two users finally fits all all of these criteria, we'll take
-    the two Availability models and set the matched_name and matched_email
+    - [x] If two users finally fits all of these criteria, we'll take the two
+    Availability models and set the matched_name and matched_email
     - [x] Send a calendar invite to both parties
     '''
 
     def handle(self, *args, **options):
         today = datetime.datetime.utcnow().date()
+        self.create_availabilities()
         avs = Availability.objects.filter(time_available_utc__gte=today).order_by('time_available_utc', '-profile__date_entered_mixpanel')
 
         # dictionary of availability objects with datetime key
         future_availabilities = self.setup(avs)
-        return self.runs_matches(future_availabilities)
+        # return self.runs_matches(future_availabilities)
 
-    # actually runs the cron job, here for testing purposes
+    # creates availabilities from recurring availabilies
+    def create_availabilities(self):
+        today = datetime.datetime.utcnow().date()
+        week = datetime.timedelta(days=7)
+
+        recurrings = RecurringAvailability.objects.all()
+        for rec_av in recurrings:
+            if rec_av.profile.accept_matches == "Yes":
+                day = rec_av.day  # num of week
+                time = determine_ampm(rec_av.time)  # HH:MM, miltary
+                time_string = time.split(':')
+                next_weekday = get_next_weekday(today, day)
+
+                # create the availability or check if it's there
+                time_available = datetime.datetime.combine(next_weekday, datetime.time(int(time_string[0]), int(time_string[1])))
+                utc = calculate_utc(rec_av.profile, time_available)
+                try:
+                    av = Availability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                except:
+                    av = Availability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                    av.save()
+
+    # actually runs the cron job
     def runs_matches(self, future_availabilities):
         matches = []
         # actually do the matching from here
@@ -75,11 +99,14 @@ class Command(BaseCommand):
 
     # check to see that the two profiles should match
     def check_match(self, av1, av2, profile1, profile2):
-        if self.check_frequency(av1, profile1) and self.check_frequency(av2, profile2):
-            if self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2):
-                if self.check_previous_matches(profile1, profile2):
-                    if self.check_departments(profile1, profile2):
-                        return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
+        if self.check_accept_matches(profile1, profile2):
+            if self.check_frequency(av1, profile1) and self.check_frequency(av2, profile2):
+                if self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2):
+                    if self.check_previous_matches(profile1, profile2):
+                        if self.check_departments(profile1, profile2):
+                            return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
+                        else:
+                            return False
                     else:
                         return False
                 else:
@@ -128,6 +155,10 @@ class Command(BaseCommand):
         event = service.events().insert(calendarId='primary', body=event).execute()
         # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         return event.get('id')
+
+    # check to see that the profiles can accept matches:
+    def check_accept_matches(self, profile1, profile2):
+        return profile1.accept_matches == 'Yes' and profile2.accept_matches == 'Yes'
 
     # check to see that the google hangouts aren't the same
     def check_google_hangout(self, profile1, profile2):
