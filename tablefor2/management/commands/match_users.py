@@ -47,6 +47,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         today = datetime.datetime.utcnow().date()
+        self.delete_availabilities()
         self.create_availabilities()
         avs = Availability.objects.filter(time_available_utc__gte=today).order_by('time_available_utc', '-profile__date_entered_mixpanel')
 
@@ -54,10 +55,11 @@ class Command(BaseCommand):
         future_availabilities = self.setup(avs)
         # return self.runs_matches(future_availabilities)
 
-    # creates availabilities from recurring availabilies
+    # creates availabilities from recurring availabilities
     def create_availabilities(self):
         today = datetime.datetime.utcnow().date()
         week = datetime.timedelta(days=7)
+        availabilities = []
 
         recurrings = RecurringAvailability.objects.all()
         for rec_av in recurrings:
@@ -65,16 +67,40 @@ class Command(BaseCommand):
                 day = rec_av.day  # num of week
                 time = determine_ampm(rec_av.time)  # HH:MM, miltary
                 time_string = time.split(':')
-                next_weekday = get_next_weekday(today, day)
 
-                # create the availability or check if it's there
-                time_available = datetime.datetime.combine(next_weekday, datetime.time(int(time_string[0]), int(time_string[1])))
-                utc = calculate_utc(rec_av.profile, time_available)
-                try:
-                    av = Availability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
-                except:
-                    av = Availability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
-                    av.save()
+                for i in range(0, 2):  # loop for now and in the next two weeks
+                    if i == 0:
+                        next_weekday = get_next_weekday(today, day)
+                    else:
+                        next_weekday += week
+
+                    # create the availability or check if it's there
+                    time_available = datetime.datetime.combine(next_weekday, datetime.time(int(time_string[0]), int(time_string[1])))
+                    utc = calculate_utc(rec_av.profile, time_available)
+                    try:
+                        av = Availability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                    except:
+                        av = Availability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                        av.save()
+                    availabilities.append(av)
+        return availabilities
+
+    # delete availabilities that were there before but not in recurrings anymore
+    def delete_availabilities(self):
+        today = datetime.datetime.utcnow().date()
+        availabilities = Availability.objects.filter(time_available_utc__gte=today)
+        deleted = []
+        for av in availabilities:
+            profile = av.profile
+            day = av.time_available.weekday()
+            time = av.time_available.strftime("%-I:%M%p")
+
+            try:
+                RecurringAvailability.objects.get(profile=profile, day=day, time=time)
+            except:
+                deleted.append(av)
+                av.delete()
+        return deleted
 
     # actually runs the cron job
     def runs_matches(self, future_availabilities):
@@ -152,11 +178,10 @@ class Command(BaseCommand):
         }
 
         print('Event created between %s and %s at %s' % (profile1.preferred_name, profile2.preferred_name, start_time))
-        event = service.events().insert(calendarId='primary', body=event).execute()
+        # event = service.events().insert(calendarId='primary', body=event).execute()
         # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
-        return event.get('id')
 
-    # check to see that the profiles can accept matches:
+    # check to see that the profiles can accept matches
     def check_accept_matches(self, profile1, profile2):
         return profile1.accept_matches == 'Yes' and profile2.accept_matches == 'Yes'
 

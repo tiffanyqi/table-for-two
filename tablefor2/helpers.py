@@ -12,7 +12,7 @@ def calculate_utc(profile, time_available):
     string = time_available.strftime("%Y-%m-%d %H:%M:%S")
     naive = datetime.datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
     local_datetime = local.localize(naive)
-    return local_datetime.astimezone(pytz.utc)
+    return local_datetime.astimezone(pytz.utc)  # 2017-07-19 12:00:00+00:00
 
 
 # calculate individual times from 8AM to 6PM
@@ -47,9 +47,10 @@ def determine_ampm(time_string):
     else:
         hour, minute = full_time.split(":")
         hour = int(hour) + 12
-        return '%s:%s' % (str(hour), minute)
+        return '%s:%s' % (str(hour), minute)  # 13:00
 
 
+# adds values for recurring in tables
 def calculate_recurring_values(recurring):
     recurring_values = []
     for r in recurring:
@@ -64,4 +65,4 @@ def get_next_weekday(d, weekday):
     days_ahead = int(weekday) - d.weekday()
     if days_ahead <= 0:  # Target day already happened this week
         days_ahead += 7
-    return d + datetime.timedelta(days_ahead)
+    return d + datetime.timedelta(days_ahead)  # 2017-07-19 12:00:00+00:00

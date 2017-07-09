@@ -21,12 +21,11 @@ Signup
 - [x] Show existing profile in form
 - [ ] Test
 
-Availability
+Availability / Recurring Availability
 - [x] Create front-end for availabilities
-- [ ] Save recurring availabilities in the back-end
+- [x] Save recurring availabilities in the back-end
 - [x] Edit availabilities
-- [ ] Show EMEA/NYC/SF friendly days and fix table
-- [ ] Test
+- [x] Test
 
 Matching
 - [x] Match the people by availability and 1x/wk (frequency V2)
@@ -53,6 +52,8 @@ Front-end
 - [ ] index-logged-in
 - [x] edit-profile
 - [x] edit-availability
+- [ ] Show EMEA/NYC/SF friendly days and fix table
+- [ ] tool tips to onboard users about things
 - [ ] connect to heroku properly
 
 
@@ -68,11 +69,6 @@ Front-end
 	- Haven't matched before
 	- Those who are in the same location (last, GHangout)
 - If that user is matched, then we'll set the name and email equal to the match
-
-
-## New questions for testing
-- if a user deletes their availability, will it delete their match? --> task: hide edit and delete if a user is matched
-- if a user reschedules their availability in a different timezone or location, will it update the match?
 
 
 # V2
