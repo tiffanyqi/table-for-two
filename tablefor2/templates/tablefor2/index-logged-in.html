@@ -122,40 +122,25 @@
             <h2>Current Matches</h2>
 
             {% if not current_matches %}
-              <!-- <p>You don't have any current matches yet! Sit tight, we'll have some for you shortly :)</p> -->
-              <div class="profile-container">
-                <div class="profile"></div>
-                <div class="profile-info">
-                  <ul>
-                    <li>Name: Sample Name</li>
-                    <li>Time (PST (San Francisco, Seattle)): 7/17/2017 5PM</li>
-                    <li>Department: Sample Department</li>
-                    <li>Google Hangout or In Person: Google Hangout</li>
-                    <li>Fun Fact: I like to code and eat dirt and something somethin</li>
-                    <li>Favorite Animal: Dogs</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div class="profile-container">
-                <div class="profile"></div>
-                <div class="profile-info">
-                  <ul>
-                    <li>Name: Match</li>
-                    <li>Time (timezone): Match</li>
-                    <li>Department: Match</li>
-                    <li>Google Hangout or In Person: Match</li>
-                    <li>Fun Fact: Match</li>
-                    <li>Favorite Animal: Match</li>
-                  </ul>
-                </div>
-              </div>
+              <p>You don't have any current matches yet! Sit tight, we'll have some for you shortly :)</p>
 
             {% else %}
 
-            <ul>{% for current_match in current_matches %}
-              <li>{{ current_match.matched_name}} at {{ current_match.time_available }}</li>
-            {% endfor %}</ul>
+              {% for current_match in current_matches %}
+                <div class="profile-container">
+                  <div class="profile"></div>
+                  <div class="profile-info">
+                    <ul>
+                      <li>Name: {{ current_match.matched_name }} </li>
+                      <li>Time ({{ current_match.timezone }}): {{ current_match.time_available }} </li>
+                      <li>Department: {{ current_match.department }} </li>
+                      <li>Google Hangout or In Person: {{ current_match.google_hangout }}</li>
+                      <li>Favorite Animal: {{ current_match.what_is_your_favorite_animal }} </li>
+                      <li>Fun Fact: {{ current_match.name_a_fun_fact_about_yourself }}</li>
+                    </ul>
+                  </div>
+                </div>
+              {% endfor %}
 
             {% endif %}
           </div>
@@ -165,15 +150,14 @@
 
             {% if not past_matches %}
               <p>You haven't had any matches yet!</p>
-              <div class="profile-container">
-                <div class="profile"></div>
-                <div class="profile-name">Match</div>
-              </div>
 
             {% else %}
-            <ul>{% for past_match in past_matches %}
-              <li>{{ past_match.matched_name}} at {{ past_match.time_available }}</li>
-            {% endfor %}</ul>
+              {% for past_match in past_matches %}
+                <div class="profile-container">
+                  <div class="profile"></div>
+                  <div class="profile-name">{{ past_match.matched_name}}</div>
+                </div>
+              {% endfor %}
 
             {% endif %}
           </div>
@@ -181,7 +165,6 @@
 
       </div>
     </div>
-
 
   {% endblock %}
 

@@ -53,7 +53,7 @@ class Command(BaseCommand):
 
         # dictionary of availability objects with datetime key
         future_availabilities = self.setup(avs)
-        # return self.runs_matches(future_availabilities)
+        return self.runs_matches(future_availabilities)
 
     # creates availabilities from recurring availabilities
     def create_availabilities(self):
@@ -89,7 +89,6 @@ class Command(BaseCommand):
     def delete_availabilities(self):
         today = datetime.datetime.utcnow().date()
         availabilities = Availability.objects.filter(time_available_utc__gte=today)
-        deleted = []
         for av in availabilities:
             profile = av.profile
             day = av.time_available.weekday()
@@ -98,9 +97,8 @@ class Command(BaseCommand):
             try:
                 RecurringAvailability.objects.get(profile=profile, day=day, time=time)
             except:
-                deleted.append(av)
+                print('deleted %s' % profile)
                 av.delete()
-        return deleted
 
     # actually runs the cron job
     def runs_matches(self, future_availabilities):
@@ -146,8 +144,25 @@ class Command(BaseCommand):
     def match(self, av1, av2, profile1, profile2):
         av1.matched_name = profile2.preferred_name + ' ' + profile2.last_name
         av1.matched_email = profile2.email
+        av1.picture_url = profile2.picture_url
+        av1.what_is_your_favorite_animal = profile2.what_is_your_favorite_animal
+        av1.name_a_fun_fact_about_yourself = profile2.name_a_fun_fact_about_yourself
+        av1.department = profile2.department
+        av1.timezone = profile2.timezone
+
         av2.matched_name = profile1.preferred_name + ' ' + profile1.last_name
         av2.matched_email = profile1.email
+        av2.picture_url = profile1.picture_url
+        av2.what_is_your_favorite_animal = profile1.what_is_your_favorite_animal
+        av2.name_a_fun_fact_about_yourself = profile1.name_a_fun_fact_about_yourself
+        av2.department = profile1.department
+        av2.timezone = profile1.timezone
+
+        if profile1.location == profile2.location:
+            av1.google_hangout = av2.google_hangout = "In Person"
+        else:
+            av1.google_hangout = av2.google_hangout = "Google Hangout"
+
         av1.save()
         av2.save()
 
@@ -179,7 +194,7 @@ class Command(BaseCommand):
 
         print('Event created between %s and %s at %s' % (profile1.preferred_name, profile2.preferred_name, start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
 
     # check to see that the profiles can accept matches
     def check_accept_matches(self, profile1, profile2):
