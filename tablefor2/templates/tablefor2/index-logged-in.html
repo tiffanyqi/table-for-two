@@ -11,111 +11,165 @@
     <div class="container">
 
       <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-4">
 
-          <div class="group">
-            <h1>Current Availabilities</h1>
-
-            <h4>Add an Availability</h4>
-            <form action="{% url 'save-availability' %}" method="POST" class="post-form">{% csrf_token %}
-              {% for field in form %}
-                  <div class="error-message">{{ field.errors }}</div>
-                  {{ field }}
-                  <button type="submit" class="save btn btn-default">
-                      <span class="glyphicon glyphicon-plus"></span>
-                  </button>
-                  <br>
-                  <p>Please format the time like the following: MM/DD/YYYY HH:MM (military time). Each time you place will create a 30 minute timeslot.</p>
-              {% endfor %}
-            </form>
-
-            {% if not availabilities %}
-              <p>Go set some availabilities below!</p>
-            {% else %}
-
+          <div class="group-scroll">
             <table class="table">
               <thead>
                 <tr>
-                  <th>Time</th>
-                  <th>Matched?</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
+                  <th></th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                {% for availability in availabilities %}
                 <tr>
-                  <!-- edit popup -->
-                  <form action="{% url 'edit-availability' availability.id %}" method="POST", class="edit-availability-form" id="form-edit-{{ availability.id }}">{% csrf_token %}
-                    {% for field in form %}
-                      <div class="fieldWrapper">
-                        {{ field.errors }}
-                        <td class="availability-edit {{ availability.id }}">{{ field }}</td>
-                        <td class="availability-view {{ availability.id }}">{{ availability.time_available }}</td>
-                        <td class="availability-view {{ availability.id }}">{{ availability.matched_name }}</td>
-                        <td class="availability-edit {{ availability.id }}"> {{ field.help_text }}</td>
-                      </div>
-                    {% endfor %}
-                    <!-- confirms edit -->
-                    <td class="availability-edit {{ availability.id }}"><button type="submit" class="save btn btn-default">
-                      <span class="glyphicon glyphicon-ok"></span>
-                    </button></td>
-                  </form>
-                  
-                  <!-- cancels edit and hides form -->
-                  <td class="availability-edit {{ availability.id }}"><button class="save btn btn-default" onclick="editAvailability({{availability.id}})" id="btn-cancel-{{ availability.id }}">
-                    <span class="glyphicon glyphicon-remove"></span>
-                  </button></td>
-
-                  <!-- opens the edit dialogue -->
-                  <td class="availability-view {{ availability.id }}"><button class="save btn btn-default" id="btn-edit-{{ availability.id }}"onclick="editAvailability({{availability.id}})">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                  </button></td>
-
-                  <!-- confirms deletion, popup -->
-<!--                   <td><button type="submit" class="save btn btn-default" onclick="deleteAvailability({{availability.id}})" id="btn-delete-{{ availability.id }}" method="POST">
-                    <span class="glyphicon glyphicon-trash"></span>
-                  </button></td> -->
-                  <td class="availability-view {{ availability.id }}"><button type="submit" class="save btn btn-default" onclick="location.href='{% url 'delete-availability' availability.id %}'" id="btn-delete-{{ availability.id }}" method="POST">
-                    <span class="glyphicon glyphicon-trash"></span>
-                  </button></td>
+                  <td>Preferred Name</td>
+                  <td>{{ profile.preferred_name }}</td>
                 </tr>
-
-              {% endfor %}
-                
+                <tr>
+                  <td>Accepting Matches?</td>
+                  <td>{{ profile.accept_matches }}</td>
+                </tr>
+                <tr>
+                  <td>Department</td>
+                  <td>{{ profile.department }}</td>
+                </tr>
+                <tr>
+                  <td>Location</td>
+                  <td>{{ profile.location }}</td>
+                </tr> 
+                <tr>
+                  <td>Timezone</td>
+                  <td>{{ profile.timezone }}</td>
+                </tr>
+                <tr>
+                  <td>Frequency</td>
+                  <td>{{ profile.frequency }}</td>
+                </tr>
+                <tr>
+                  <td>Want to Google Hangout?</td>
+                  <td>{{ profile.google_hangout }}</td>
+                </tr>
+                <tr>
+                  <td>Date Entered Mixpanel</td>
+                  <td>{{ profile.date_entered_mixpanel }}</td>
+                </tr>
+                <tr>
+                  <td>Your Favorite Animal</td>
+                  <td>{{ profile.what_is_your_favorite_animal }}</td>
+                </tr>
+                <tr>
+                  <td>Your Fun Fact</td>
+                  <td>{{ profile.name_a_fun_fact_about_yourself }}</td>
+                </tr>
+                <tr>
+                  <td>Number of Matches</td>
+                  <td>{{ profile.number_of_matches }}</td>
+                </tr>
               </tbody>
             </table>
+                        
+            <a href="{% url 'edit-profile' %}"><button class="save btn btn-success">Edit</button></a>
+          </div>
+
+          <div class="group-scroll">
+            <h2>Availability</h2>
+            <div class="table-container">
+              <table class="table" id="availability-table-view">
+                <thead>
+                  <tr>
+                    {% for time in times %}
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Mon</td>
+                    {% for time in times %}
+                      <td id="0-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
+                    {% endfor %}
+                  </tr>
+                  <tr>
+                    <td>Tue</td>
+                    {% for time in times %}
+                      <td id="1-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
+                    {% endfor %}
+                  </tr>
+                  <tr>
+                    <td>Wed</td>
+                    {% for time in times %}
+                      <td id="2-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
+                    {% endfor %}
+                  </tr>
+                  <tr>
+                    <td>Thu</td>
+                    {% for time in times %}
+                      <td id="3-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
+                    {% endfor %}
+                  </tr>
+                  <tr>
+                    <td>Fri</td>
+                    {% for time in times %}
+                      <td id="4-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
+                    {% endfor %}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <input type="hidden" id="recurring-availabilities" value="{{ recurring_values}}">
+            <a href="{% url 'edit-availability' %}"><button class="save btn btn-success">Edit</button></a>
+          </div>
+
+        </div>
+
+        <div class="col-sm-8">
+          <div class="group-match">
+            <h2>Current Matches</h2>
+
+            {% if not current_matches %}
+              <p>You don't have any current matches yet! Sit tight, we'll have some for you shortly :)</p>
+
+            {% else %}
+
+              {% for current_match in current_matches %}
+                <div class="profile-container">
+                  <div class="profile"></div>
+                  <div class="profile-info">
+                    <ul>
+                      <li>Name: {{ current_match.matched_name }} </li>
+                      <li>Time ({{ current_match.timezone }}): {{ current_match.time_available }} </li>
+                      <li>Department: {{ current_match.department }} </li>
+                      <li>Google Hangout or In Person: {{ current_match.google_hangout }}</li>
+                      <li>Favorite Animal: {{ current_match.what_is_your_favorite_animal }} </li>
+                      <li>Fun Fact: {{ current_match.name_a_fun_fact_about_yourself }}</li>
+                    </ul>
+                  </div>
+                </div>
+              {% endfor %}
+
             {% endif %}
+          </div>
 
-            <p>Moved recently? Change your location or settings <a href="{% url 'edit-profile' %}">here</a></p>
+          <div class="group-match">
+            <h2>Past Matches</h2>
 
+            {% if not past_matches %}
+              <p>You haven't had any matches yet!</p>
+
+            {% else %}
+              {% for past_match in past_matches %}
+                <div class="profile-container">
+                  <div class="profile"></div>
+                  <div class="profile-name">{{ past_match.matched_name}}</div>
+                </div>
+              {% endfor %}
+
+            {% endif %}
           </div>
         </div>
-            
-        <div class="col-sm-4">
-          <div class="group">
-            <h1>Current Matches</h1>
 
-              {% if not current_matches %}
-                <!-- <p>Go set some availabilities! Thanks for your patience :)</p> -->
-                <!-- test for the real current matches -->
-                <ul>
-                  <li class="match">Test Qi at May 28, 2017, noon</li>
-                  <li class="match">Test Qi at May 28, 2017, noon</li>
-                  <li class="match">Test Qi at May 28, 2017, noon</li>
-                </ul>
-              {% else %}
-
-              <ul>{% for current_match in current_matches %}
-                <li>{{ current_match.matched_name}} at {{ current_match.time_available }}</li>
-              {% endfor %}</ul>
-
-              {% endif %}
-          </div>
-        </div>
       </div>
     </div>
-
 
   {% endblock %}
 

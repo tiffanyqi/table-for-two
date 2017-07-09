@@ -7,6 +7,35 @@
 .error-message {
     color: red;
 }
+table td.highlighted {
+  background-color: #428bca;
+}
+.table-container {
+    overflow: scroll;
+    width: 100%;
+}
+.group-scroll {
+    overflow: scroll;
+    width: 100%;
+    height: 45%;
+    border: 1px solid black;
+    margin: 20px;
+    padding: 0 30 10 30;
+}
+.group-match {
+    margin: 20px;
+    border: 1px solid black;
+    padding: 0 30;
+}
+.profile {
+    width: 150px;
+    height: 150px;
+    border: 1px solid black;
+    display: inline-block;
+}
+.profile-info {
+    display: inline-block;
+}
 
 html {
     position: relative;

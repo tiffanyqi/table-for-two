@@ -27,10 +27,21 @@ class Profile(AbstractBaseUser):
     number_of_matches = models.IntegerField(default=0)
     date_entered_mixpanel = models.DateField(null=True)
 
+    picture_url = models.CharField(null=True, max_length=255)
+    what_is_your_favorite_animal = models.CharField(null=True, max_length=50)
+    name_a_fun_fact_about_yourself = models.CharField(null=True, max_length=50)
+    accept_matches = models.CharField(null=True, max_length=50)
+
     objects = UserManager()
 
     def is_authenticated(self):
         return self.is_authenticated
+
+
+class RecurringAvailability(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    day = models.CharField(null=True, max_length=50)
+    time = models.CharField(null=True, max_length=50)
 
 
 class Availability(models.Model):
@@ -39,3 +50,9 @@ class Availability(models.Model):
     matched_email = models.CharField(null=True, max_length=50)
     time_available = models.DateTimeField()
     time_available_utc = models.DateTimeField()
+    picture_url = models.CharField(null=True, max_length=255)
+    what_is_your_favorite_animal = models.CharField(null=True, max_length=50)
+    name_a_fun_fact_about_yourself = models.CharField(null=True, max_length=50)
+    department = models.CharField(null=True, max_length=50)
+    timezone = models.CharField(null=True, max_length=50)
+    google_hangout = models.CharField(null=True, max_length=50)

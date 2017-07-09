@@ -3,10 +3,9 @@
 Table for Two is a web app that allows Mixpanelers the chance to meet with other Mixpanelers from different departments whenever they'd like. It prioritizes new hires, and allows lunch and coffee dates in 30 minute increments.
 
 ## Features
-- Set your own availability
+- Set your own recurring availability
 - Set your own profile settings (location? google hangout?)
 - Matches folks automatically and puts the event on the calendar
-- Sends out weekly email reminders
 
 
 ## TODOs
@@ -22,14 +21,11 @@ Signup
 - [x] Show existing profile in form
 - [ ] Test
 
-Availability
-- [x] Create index-logged-in page
-- [x] Set availabilities in back-end
-- [x] Show future availabilities that you've made
+Availability / Recurring Availability
+- [x] Create front-end for availabilities
+- [x] Save recurring availabilities in the back-end
 - [x] Edit availabilities
-- [x] Remove availabilities
-- [ ] Get AJAX to work and populate times
-- [ ] Test
+- [x] Test
 
 Matching
 - [x] Match the people by availability and 1x/wk (frequency V2)
@@ -37,11 +33,9 @@ Matching
 - [x] Show your previous matches
 - [x] Send a google calendar invite
 - [x] Change everything to proper timezone
+- [x] Option to turn off matching if you want to stop or you're OOO
 - [ ] Run the actual cron job
 - [x] Test
-
-Notifications
-- [ ] Set notification based on frequency and current matchings
 
 Mixpanel
 - Goal: acquisition
@@ -49,26 +43,26 @@ Mixpanel
 - [ ] Signup flow (index -> signup -> profile -> save)
 - [ ] Set availability
 - [ ] Match made (server-side)
-- [ ] Notification flow (notification sent -> set availability)
+- [ ] Notifications - onboarding, OOO
 - [ ] People prop: email, dept, etc, number of matches, number of availabilities
 
 Front-end
 - PRETTIFY
 - [ ] index-logged-out
 - [ ] index-logged-in
-- [ ] profile
-- [ ] edit-profile
-- [ ] add messages upon form completion
-- [ ] add/edit availabiity based on datetime-local field
-- [ ] when there's errors, don't revert to previous thing
+- [x] edit-profile
+- [x] edit-availability
+- [ ] Show EMEA/NYC/SF friendly days and fix table
+- [ ] tool tips to onboard users about things
 - [ ] connect to heroku properly
 
 
 ## Matching process
-- For every availability, create an Availability for that user (date and time of beginning 1/2 hour, assuming timeslot is half hour)
+- For every recurring availability, create an Availability for that user (date and time of beginning 1/2 hour, assuming timeslot is half hour)
 - Runs a thing at 3pm the day before
 - First pick are the newer Mixpanel hires
 - Check for:
+    - If a user is currently accepting matches
 	- Only if fits their frequency of 1x/wk (V2 will be programmatic)
 	- People who are available at the same time
 	- Are in a different department
@@ -77,13 +71,10 @@ Front-end
 - If that user is matched, then we'll set the name and email equal to the match
 
 
-## New questions for testing
-- if a user deletes their availability, will it delete their match? --> task: hide edit and delete if a user is matched
-- if a user reschedules their availability in a different timezone or location, will it update the match?
-
-
 # V2
 - BambooHR instead?
 - Variable locations?
 - See your Mixpanel calendar
 - Programmatic frequencies
+- [ ] Build in OOOs?
+

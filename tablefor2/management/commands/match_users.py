@@ -8,6 +8,7 @@ from oauth2client import tools
 from oauth2client.file import Storage
 
 from tablefor2.models import *
+from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
 
 import datetime
 import httplib2
@@ -39,20 +40,67 @@ class Command(BaseCommand):
     - [x] Checks same location first, else if both open to a google_hangout
     - [x] Ensure that the 1x/wk frequency has not yet been satisifed
     - [ ] (v2) Ensure that their chosen frequency has not yet been satisfied
-    - [x] If two users finally fits all all of these criteria, we'll take
-    the two Availability models and set the matched_name and matched_email
+    - [x] If two users finally fits all of these criteria, we'll take the two
+    Availability models and set the matched_name and matched_email
     - [x] Send a calendar invite to both parties
     '''
 
     def handle(self, *args, **options):
         today = datetime.datetime.utcnow().date()
+        self.delete_availabilities()
+        self.create_availabilities()
         avs = Availability.objects.filter(time_available_utc__gte=today).order_by('time_available_utc', '-profile__date_entered_mixpanel')
 
         # dictionary of availability objects with datetime key
         future_availabilities = self.setup(avs)
         return self.runs_matches(future_availabilities)
 
-    # actually runs the cron job, here for testing purposes
+    # creates availabilities from recurring availabilities
+    def create_availabilities(self):
+        today = datetime.datetime.utcnow().date()
+        week = datetime.timedelta(days=7)
+        availabilities = []
+
+        recurrings = RecurringAvailability.objects.all()
+        for rec_av in recurrings:
+            if rec_av.profile.accept_matches == "Yes":
+                day = rec_av.day  # num of week
+                time = determine_ampm(rec_av.time)  # HH:MM, miltary
+                time_string = time.split(':')
+
+                for i in range(0, 2):  # loop for now and in the next two weeks
+                    if i == 0:
+                        next_weekday = get_next_weekday(today, day)
+                    else:
+                        next_weekday += week
+
+                    # create the availability or check if it's there
+                    time_available = datetime.datetime.combine(next_weekday, datetime.time(int(time_string[0]), int(time_string[1])))
+                    utc = calculate_utc(rec_av.profile, time_available)
+                    try:
+                        av = Availability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                    except:
+                        av = Availability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                        av.save()
+                    availabilities.append(av)
+        return availabilities
+
+    # delete availabilities that were there before but not in recurrings anymore
+    def delete_availabilities(self):
+        today = datetime.datetime.utcnow().date()
+        availabilities = Availability.objects.filter(time_available_utc__gte=today)
+        for av in availabilities:
+            profile = av.profile
+            day = av.time_available.weekday()
+            time = av.time_available.strftime("%-I:%M%p")
+
+            try:
+                RecurringAvailability.objects.get(profile=profile, day=day, time=time)
+            except:
+                print('deleted %s' % profile)
+                av.delete()
+
+    # actually runs the cron job
     def runs_matches(self, future_availabilities):
         matches = []
         # actually do the matching from here
@@ -75,11 +123,14 @@ class Command(BaseCommand):
 
     # check to see that the two profiles should match
     def check_match(self, av1, av2, profile1, profile2):
-        if self.check_frequency(av1, profile1) and self.check_frequency(av2, profile2):
-            if self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2):
-                if self.check_previous_matches(profile1, profile2):
-                    if self.check_departments(profile1, profile2):
-                        return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
+        if self.check_accept_matches(profile1, profile2):
+            if self.check_frequency(av1, profile1) and self.check_frequency(av2, profile2):
+                if self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2):
+                    if self.check_previous_matches(profile1, profile2):
+                        if self.check_departments(profile1, profile2):
+                            return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
+                        else:
+                            return False
                     else:
                         return False
                 else:
@@ -93,10 +144,31 @@ class Command(BaseCommand):
     def match(self, av1, av2, profile1, profile2):
         av1.matched_name = profile2.preferred_name + ' ' + profile2.last_name
         av1.matched_email = profile2.email
+        av1.picture_url = profile2.picture_url
+        av1.what_is_your_favorite_animal = profile2.what_is_your_favorite_animal
+        av1.name_a_fun_fact_about_yourself = profile2.name_a_fun_fact_about_yourself
+        av1.department = profile2.department
+        av1.timezone = profile2.timezone
+        profile1.number_of_matches += 1
+
         av2.matched_name = profile1.preferred_name + ' ' + profile1.last_name
         av2.matched_email = profile1.email
+        av2.picture_url = profile1.picture_url
+        av2.what_is_your_favorite_animal = profile1.what_is_your_favorite_animal
+        av2.name_a_fun_fact_about_yourself = profile1.name_a_fun_fact_about_yourself
+        av2.department = profile1.department
+        av2.timezone = profile1.timezone
+        profile2.number_of_matches += 1
+
+        if profile1.location == profile2.location:
+            av1.google_hangout = av2.google_hangout = "In Person"
+        else:
+            av1.google_hangout = av2.google_hangout = "Google Hangout"
+
         av1.save()
         av2.save()
+        profile1.save()
+        profile2.save()
 
     def send_google_calendar_invite(self, timestamp, profile1, profile2):
         credentials = self.get_credentials()
@@ -125,9 +197,12 @@ class Command(BaseCommand):
         }
 
         print('Event created between %s and %s at %s' % (profile1.preferred_name, profile2.preferred_name, start_time))
-        event = service.events().insert(calendarId='primary', body=event).execute()
-        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
-        return event.get('id')
+        # event = service.events().insert(calendarId='primary', body=event).execute()
+        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+
+    # check to see that the profiles can accept matches
+    def check_accept_matches(self, profile1, profile2):
+        return profile1.accept_matches == 'Yes' and profile2.accept_matches == 'Yes'
 
     # check to see that the google hangouts aren't the same
     def check_google_hangout(self, profile1, profile2):
