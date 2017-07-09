@@ -149,6 +149,7 @@ class Command(BaseCommand):
         av1.name_a_fun_fact_about_yourself = profile2.name_a_fun_fact_about_yourself
         av1.department = profile2.department
         av1.timezone = profile2.timezone
+        profile1.number_of_matches += 1
 
         av2.matched_name = profile1.preferred_name + ' ' + profile1.last_name
         av2.matched_email = profile1.email
@@ -157,6 +158,7 @@ class Command(BaseCommand):
         av2.name_a_fun_fact_about_yourself = profile1.name_a_fun_fact_about_yourself
         av2.department = profile1.department
         av2.timezone = profile1.timezone
+        profile2.number_of_matches += 1
 
         if profile1.location == profile2.location:
             av1.google_hangout = av2.google_hangout = "In Person"
@@ -165,6 +167,8 @@ class Command(BaseCommand):
 
         av1.save()
         av2.save()
+        profile1.save()
+        profile2.save()
 
     def send_google_calendar_invite(self, timestamp, profile1, profile2):
         credentials = self.get_credentials()
