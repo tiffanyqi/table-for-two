@@ -22,11 +22,6 @@ class Migration(migrations.Migration):
             field=models.CharField(max_length=50, null=True),
         ),
         migrations.AlterField(
-            model_name='availability',
-            name='time_available',
-            field=models.DateTimeField(),
-        ),
-        migrations.AlterField(
             model_name='profile',
             name='date_entered_mixpanel',
             field=models.DateField(),
