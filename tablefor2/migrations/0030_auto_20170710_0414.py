@@ -2,19 +2,18 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import datetime
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tablefor2', '0016_auto_20170505_0554'),
+        ('tablefor2', '0029_auto_20170709_0713'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='availability',
-            name='time_available',
+            model_name='profile',
+            name='date_joined',
             field=models.DateTimeField(),
         ),
     ]

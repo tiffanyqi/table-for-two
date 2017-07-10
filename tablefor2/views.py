@@ -19,6 +19,7 @@ def index(request):
 
         # force users to add more info
         if not profile.extra_saved_information:
+            profile.date_joined = date.today()
             profile.number_of_matches = 0
             profile.save()
             return HttpResponseRedirect('/profile/edit')
