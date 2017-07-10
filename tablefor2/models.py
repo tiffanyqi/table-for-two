@@ -46,7 +46,7 @@ class Availability(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     matched_name = models.CharField(null=True, max_length=50)
     matched_email = models.CharField(null=True, max_length=50)
-    time_available = models.DateTimeField()
+    # time_available = models.DateTimeField()
     time_available_utc = models.DateTimeField()
     picture_url = models.CharField(null=True, max_length=255)
     what_is_your_favorite_animal = models.CharField(null=True, max_length=50)
