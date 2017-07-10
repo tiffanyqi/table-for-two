@@ -21,6 +21,7 @@ ratings:
   - "**.py"
   - "**.rb"
 exclude_paths:
+  - "**/forms.py"
   - "**/tests.py"
   - "**/views.py"
   - "**/migrations/**"
