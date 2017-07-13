@@ -3,12 +3,12 @@ from django.core.management.base import BaseCommand
 
 from apiclient import discovery
 from datetime import timedelta
-from oauth2client import client
-from oauth2client import tools
+from oauth2client import client, tools
 from oauth2client.file import Storage
 
-from tablefor2.models import *
 from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
+from tablefor2.models import *
+from tablefor2.settings import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
 
 import datetime
 import httplib2
@@ -22,9 +22,7 @@ except ImportError:
     flags = None
 
 # If modifying these scopes, delete your previously saved credentials
-# at ~/.credentials/calendar-python-quickstart.json
-SCOPES = 'https://www.googleapis.com/auth/calendar'
-CLIENT_SECRET_FILE = 'calendar_secret.json'
+# at ~/.credentials/X.json
 APPLICATION_NAME = 'Table for 2'
 
 
@@ -264,7 +262,11 @@ class Command(BaseCommand):
         store = Storage(credential_path)
         credentials = store.get()
         if not credentials or credentials.invalid:
-            flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
+            flow = client.OAuth2WebServerFlow(client_id=SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
+                                              client_secret=SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
+                                              scope='https://www.googleapis.com/auth/calendar',
+                                              redirect_uris='http://localhost, https://frozen-harbor-29806.herokuapp')
+
             flow.user_agent = APPLICATION_NAME
             if flags:
                 credentials = tools.run_flow(flow, store, flags)
