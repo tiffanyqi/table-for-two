@@ -50,11 +50,11 @@ Front-end
 - PRETTIFY
 - [ ] index-logged-out
 - [ ] index-logged-in
-- [x] edit-profile
-- [x] edit-availability
+- [ ] edit-profile
+- [ ] edit-availability
 - [ ] Show EMEA/NYC/SF friendly days and fix table
 - [ ] tool tips to onboard users about things
-- [ ] connect to heroku properly
+- [X] connect to heroku properly
 
 
 ## Matching process
