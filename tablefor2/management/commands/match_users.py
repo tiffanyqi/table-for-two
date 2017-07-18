@@ -6,6 +6,8 @@ from datetime import timedelta
 from oauth2client import client, tools
 from oauth2client.file import Storage
 
+from mixpanel import Mixpanel
+
 from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
 from tablefor2.models import *
 from tablefor2.settings import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
@@ -24,6 +26,7 @@ except ImportError:
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/X.json
 APPLICATION_NAME = 'Table for 2'
+mp = Mixpanel("1bba7a08bce236bed9588d02e2387bd1")  # Dev
 
 
 class Command(BaseCommand):
@@ -47,6 +50,7 @@ class Command(BaseCommand):
         today = datetime.datetime.utcnow().date()
         self.delete_availabilities()
         self.create_availabilities()
+        # somehow incorporate user_request_type
         avs = Availability.objects.filter(time_available_utc__gte=today).order_by('time_available_utc', '-profile__date_entered_mixpanel')
 
         # dictionary of availability objects with datetime key
@@ -167,6 +171,26 @@ class Command(BaseCommand):
         av2.save()
         profile1.save()
         profile2.save()
+        mp.track(profile1.distinct_id, 'Match Created', {
+            'Current User Department': profile1.department,
+            'Current User Location': profile1.location,
+            'Other User Department': profile2.department,
+            'Other User Location': profile2.location,
+            'Google Hangout or In Person': av1.google_hangout,
+        })
+        mp.track(profile2.distinct_id, 'Match Created', {
+            'Current User Department': profile2.department,
+            'Current User Location': profile2.location,
+            'Other User Department': profile1.department,
+            'Other User Location': profile1.location,
+            'Google Hangout or In Person': av1.google_hangout
+        })
+        mp.people_set(profile1.distinct_id, {
+            'Number of Matches': profile1.number_of_matches + 1
+        })
+        mp.people_set(profile2.distinct_id, {
+            'Number of Matches': profile1.number_of_matches + 1
+        })
 
     def send_google_calendar_invite(self, timestamp, profile1, profile2):
         credentials = self.get_credentials()
@@ -197,6 +221,14 @@ class Command(BaseCommand):
         print('Event created between %s and %s at %s' % (profile1.preferred_name, profile2.preferred_name, start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
         event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        mp.track(profile1.distinct_id, 'Calendar Invite Sent', {
+            'Time': start_time.isoformat(),
+            'Timezone': profile1.timezone
+        })
+        mp.track(profile2.distinct_id, 'Calendar Invite Sent', {
+            'Time': start_time.isoformat(),
+            'Timezone': profile2.timezone
+        })
 
     # check to see that the profiles can accept matches
     def check_accept_matches(self, profile1, profile2):

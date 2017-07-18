@@ -7,6 +7,7 @@ class Profile(AbstractBaseUser):
     first_name = models.CharField(null=True, max_length=50)
     last_name = models.CharField(null=True, max_length=50)
     email = models.CharField(null=True, max_length=50)
+    distinct_id = models.CharField(null=True, max_length=50)
 
     USERNAME_FIELD = 'email'
     username = models.CharField(null=True, max_length=50)
@@ -25,6 +26,7 @@ class Profile(AbstractBaseUser):
     frequency = models.CharField(null=True, max_length=50)
     number_of_matches = models.IntegerField(default=0)
     date_entered_mixpanel = models.DateField(null=True)
+    # user_request_type = models.CharField(null=True, max_length=50)
 
     picture_url = models.CharField(null=True, max_length=255)
     what_is_your_favorite_animal = models.CharField(null=True, max_length=50)

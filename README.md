@@ -39,12 +39,12 @@ Matching
 
 Mixpanel
 - Goal: acquisition
-- [ ] Alias/identify
 - [ ] Signup flow (index -> signup -> profile -> save)
-- [ ] Set availability
-- [ ] Match made (server-side)
+- [ ] Alias/identify
+- [ ] Save recurring availability
+- [ ] Match made / invite sent (server-side)
+- [X] People prop: email, dept, etc, number of matches, number of availabilities
 - [ ] Notifications - onboarding, OOO
-- [ ] People prop: email, dept, etc, number of matches, number of availabilities
 
 Front-end
 - PRETTIFY
@@ -68,7 +68,56 @@ Front-end
 	- Are in a different department
 	- Haven't matched before
 	- Those who are in the same location (last, GHangout)
+	- User can choose between veterans or new hires
 - If that user is matched, then we'll set the name and email equal to the match
+
+
+## Mixpanel Implementation
+
+### Events
+- Page Viewed
+	- Index-logged-out (home page)
+	- Index-logged-in (dashboard)
+	- Edit-availability (edit availability)
+	- Edit-profile (edit profile)
+- Profile Created
+- Recurring Availability Saved
+- Match Created
+- Calendar Invite Sent
+
+### Properties
+- [ ] Page Viewed
+	- [ ] Page
+- [ ] Profile Created
+- [ ] Recurring Availability Saved
+- [ ] Match Created (2)
+	- [ ] Current User Department
+	- [ ] Current User Location
+	- [ ] Other User Department
+	- [ ] Other User Location
+	- [ ] Google Hangout or In Person
+- [ ] Calendar Invite Sent (2)
+	- [ ] Time
+	- [ ] Timezone
+- [ ] People
+	- [X] $first_name
+	- [X] $last_name
+	- [X] Preferred Name
+	- [X] $email
+	- [X] Department
+	- [X] Accepting Matches
+	- [X] Location
+	- [X] Timezone
+	- [X] Frequency
+	- [X] Date Entered Mixpanel
+	- [X] Number of Matches
+	- [X] Number of Recurring Availabilities
+	- [ ] User Request Type
+
+### Other Implementation Details
+- [ ] saving of get_distinct_id
+- [ ] save useful cookie things into python (referring, browser)
+- [ ] alias / identify?
 
 
 # V2

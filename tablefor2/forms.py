@@ -98,6 +98,9 @@ class ProfileForm(forms.Form):
             raise forms.ValidationError("Please enter a valid Mixpanel start time! (You started in the future?)")
         return date_entered_mixpanel
 
+    # def clean_distinct_id(self):
+    #     return self.cleaned_data.get('distinct_id')
+
 
 class AvailabilityForm(forms.Form):
     time_available = forms.DateTimeField(help_text='(MM/DD/YYYY HH:MM (military time) )')
