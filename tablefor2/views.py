@@ -144,6 +144,9 @@ def save_profile(request):
                     'Number of Matches': 0
                 })
                 profile.distinct_id = distinct_id
+                # mixpanel stuff
+                profile.initial_referrer = form.cleaned_data.get('initial_referrer')
+                profile.initial_referring_domain = form.cleaned_data.get('initial_referring_domain')
                 profile.save()
             else:
                 mp.track(profile.distinct_id, 'Profile Saved')
@@ -173,7 +176,9 @@ def save_profile(request):
                 'Timezone': profile.timezone,
                 'Frequency': profile.frequency,
                 'Date Entered Mixpanel': str(profile.date_entered_mixpanel),
-                'Number of Matches': profile.number_of_matches
+                'Number of Matches': profile.number_of_matches,
+                '$initial_referrer': profile.initial_referrer,
+                '$initial_referring_domain': profile.initial_referring_domain
             })
 
             # add a message here?

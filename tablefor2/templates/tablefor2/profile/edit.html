@@ -17,7 +17,7 @@
         <p>To make this more comprehensive, please fill out the following things:</p>
       {% endif %}
 
-      <form method="POST" action="{% url 'save-profile' %}" onsubmit="return setDistinctId()" class="post-form" id="profile-form">{% csrf_token %}
+      <form method="POST" action="{% url 'save-profile' %}" onsubmit="return setProperties()" class="post-form" id="profile-form">{% csrf_token %}
         <table class="table">
           <thead>
             <tr>

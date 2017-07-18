@@ -186,10 +186,12 @@ class Command(BaseCommand):
             'Google Hangout or In Person': av1.google_hangout
         })
         mp.people_set(profile1.distinct_id, {
-            'Number of Matches': profile1.number_of_matches + 1
+            'Number of Matches': profile1.number_of_matches + 1,
+            'Last Match Created': datetime.datetime.utcnow()
         })
         mp.people_set(profile2.distinct_id, {
-            'Number of Matches': profile1.number_of_matches + 1
+            'Number of Matches': profile1.number_of_matches + 1,
+            'Last Match Created': datetime.datetime.utcnow()
         })
 
     def send_google_calendar_invite(self, timestamp, profile1, profile2):

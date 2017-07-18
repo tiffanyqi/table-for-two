@@ -86,10 +86,10 @@ Front-end
 - Calendar Invite Sent
 
 ### Properties
-- [ ] Page Viewed
-	- [ ] Page
-- [ ] Profile Created
-- [ ] Recurring Availability Saved
+- [X] Page Viewed
+	- [X] Page
+- [X] Profile Created
+- [X] Recurring Availability Saved
 - [ ] Match Created (2)
 	- [ ] Current User Department
 	- [ ] Current User Location
@@ -113,11 +113,12 @@ Front-end
 	- [X] Number of Matches
 	- [X] Number of Recurring Availabilities
 	- [ ] User Request Type
+	- [ ] Last Match Created
 
 ### Other Implementation Details
 - [X] saving of get_distinct_id
-- [ ] save useful cookie things into python (referring, browser)
-- [ ] alias / identify?
+- [ ] identify
+- [X] clear cookie upon logout
 
 
 # V2
