@@ -12,6 +12,7 @@ from tablefor2.models import *
 import time
 
 mp = Mixpanel("1bba7a08bce236bed9588d02e2387bd1")  # Dev
+distinct_id = ''
 
 
 def index(request):
@@ -135,17 +136,15 @@ def save_profile(request):
 
         if form.is_valid():
             profile = Profile.objects.get(email=request.user.email)
-            hi = request.POST.getlist('hi')
-            print(hi)
 
             if not profile.extra_saved_information:
-                # distinct_id = request.POST.getlist('distinctId')
-                profile.distinct_id.save()
-                mp.track(profile.distinct_id, 'Profile Created')
-                mp.people_set(profile.distinct_id, {
+                distinct_id = form.cleaned_data.get('distinct_id')
+                mp.track(distinct_id, 'Profile Created')
+                mp.people_set(distinct_id, {
                     'Number of Matches': 0
                 })
-
+                profile.distinct_id = distinct_id
+                profile.save()
             else:
                 mp.track(profile.distinct_id, 'Profile Saved')
 

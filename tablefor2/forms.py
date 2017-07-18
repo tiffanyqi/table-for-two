@@ -55,6 +55,7 @@ class ProfileForm(forms.Form):
     date_entered_mixpanel = forms.DateField(help_text='(MM/DD/YYYY or YYYY-MM-DD)')
     what_is_your_favorite_animal = forms.CharField(max_length=50, help_text='You have 50 characters!')
     name_a_fun_fact_about_yourself = forms.CharField(max_length=50, help_text='You have 50 characters!')
+    distinct_id = forms.CharField(widget=forms.HiddenInput(), label='')
 
     def clean_department(self):
         department = self.cleaned_data.get('department')
@@ -97,14 +98,3 @@ class ProfileForm(forms.Form):
         if date_entered_mixpanel > date.today():
             raise forms.ValidationError("Please enter a valid Mixpanel start time! (You started in the future?)")
         return date_entered_mixpanel
-
-    # def clean_distinct_id(self):
-    #     return self.cleaned_data.get('distinct_id')
-
-
-class AvailabilityForm(forms.Form):
-    time_available = forms.DateTimeField(help_text='(MM/DD/YYYY HH:MM (military time) )')
-
-    def clean_time_available(self):
-        time_available = self.cleaned_data.get('time_available')
-        return time_available

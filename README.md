@@ -115,7 +115,7 @@ Front-end
 	- [ ] User Request Type
 
 ### Other Implementation Details
-- [ ] saving of get_distinct_id
+- [X] saving of get_distinct_id
 - [ ] save useful cookie things into python (referring, browser)
 - [ ] alias / identify?
 

@@ -2,15 +2,8 @@
 mixpanel.track('Page Viewed');
 // make the page name properties
 
+
 // makes an AJAX request to send recurring over to django
-function getDistinctId() {
-  $.ajax({
-    type: 'POST',
-    url: '/profile/save/',
-    data: {
-      'distinctId': mixpanel.get_distinct_id(),
-      'csrfmiddlewaretoken': getCookie('csrftoken'),
-      'hi': 'hi'
-    }
-  });
+function setDistinctId() {
+  document.getElementById("id_distinct_id").value = mixpanel.get_distinct_id();
 }

@@ -17,7 +17,7 @@
         <p>To make this more comprehensive, please fill out the following things:</p>
       {% endif %}
 
-      <form action="{% url 'save-profile' %}" onsubmit="return getDistinctId()" method="POST" class="post-form">{% csrf_token %}
+      <form method="POST" action="{% url 'save-profile' %}" onsubmit="return setDistinctId()" class="post-form" id="profile-form">{% csrf_token %}
         <table class="table">
           <thead>
             <tr>
@@ -34,7 +34,6 @@
                   <td><div class="error-message">{{ field.errors }}</div> {{ field }}</td>
                   <td>{{ field.help_text }}</td>
                 </tr>
-                <input type="hidden" id="distinct-id">
               </div>
             {% endfor %}
           </tbody>
