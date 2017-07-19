@@ -299,7 +299,7 @@ class Command(BaseCommand):
             flow = client.OAuth2WebServerFlow(client_id=SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
                                               client_secret=SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
                                               scope='https://www.googleapis.com/auth/calendar',
-                                              redirect_uris='http://localhost, https://frozen-harbor-29806.herokuapp')
+                                              redirect_uris='http://localhost, https://frozen-harbor-29806.herokuapp, http://frozen-harbor-29806.herokuapp')
 
             flow.user_agent = APPLICATION_NAME
             if flags:
