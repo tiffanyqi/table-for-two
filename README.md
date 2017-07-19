@@ -54,7 +54,7 @@ Front-end
 - [ ] edit-availability
 - [ ] Show EMEA/NYC/SF friendly days and fix table
 - [ ] tool tips to onboard users about things
-- [X] connect to heroku properly
+- [ ] connect to heroku properly
 
 
 ## Matching process
@@ -86,40 +86,39 @@ Front-end
 - Calendar Invite Sent
 
 ### Properties
-- [X] Page Viewed
-	- [X] Page
-- [X] Profile Created
-- [X] Recurring Availability Saved
-- [X] Match Created (2)
-	- [X] Current User Department
-	- [X] Current User Location
-	- [X] Other User Department
-	- [X] Other User Location
-	- [X] Google Hangout or In Person
-- [X] Calendar Invite Sent (2)
-	- [X] Time
-	- [X] Timezone
-- [ ] People
-	- [X] $first_name
-	- [X] $last_name
-	- [X] Preferred Name
-	- [X] $email
-	- [X] Department
-	- [X] Accepting Matches
-	- [X] Location
-	- [X] Timezone
-	- [X] Frequency
-	- [X] Date Entered Mixpanel
-	- [X] Number of Matches
-	- [X] Number of Recurring Availabilities
-	- [ ] User Request Type
-	- [X] Last Match Created
-	- [ ] Date Joined
+- Page Viewed
+	- Page
+- Profile Created
+- Recurring Availability Saved
+- Match Created (2)
+	- Current User Department
+	- Current User Location
+	- Other User Department
+	- Other User Location
+	- Google Hangout or In Person
+- Calendar Invite Sent (2)
+	- Time
+	- Timezone
+- People
+	- $first_name
+	- $last_name
+	- Preferred Name
+	- $email
+	- Department
+	- Accepting Matches
+	- Location
+	- Timezone
+	- Frequency
+	- Date Entered Mixpanel
+	- Number of Matches
+	- Number of Recurring Availabilities
+	- Last Match Created
+	- Date Joined
 
 ### Other Implementation Details
-- [X] saving of get_distinct_id
-- [X] identify
-- [X] clear cookie upon logout
+- saving of distinct_id
+- identify on db's distinct_id
+- clear cookie upon logout
 
 
 # V2
@@ -128,4 +127,5 @@ Front-end
 - See your Mixpanel calendar
 - Programmatic frequencies
 - [ ] Build in OOOs?
+- User request types?
 
