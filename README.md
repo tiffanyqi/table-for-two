@@ -39,12 +39,12 @@ Matching
 
 Mixpanel
 - Goal: acquisition
-- [ ] Alias/identify
-- [ ] Signup flow (index -> signup -> profile -> save)
-- [ ] Set availability
-- [ ] Match made (server-side)
+- [X] Signup flow (index -> signup -> profile -> save)
+- [X] identify
+- [X] Save recurring availability
+- [X] Match made / invite sent (server-side)
+- [X] People prop: email, dept, etc, number of matches, number of availabilities
 - [ ] Notifications - onboarding, OOO
-- [ ] People prop: email, dept, etc, number of matches, number of availabilities
 
 Front-end
 - PRETTIFY
@@ -54,7 +54,7 @@ Front-end
 - [ ] edit-availability
 - [ ] Show EMEA/NYC/SF friendly days and fix table
 - [ ] tool tips to onboard users about things
-- [X] connect to heroku properly
+- [ ] connect to heroku properly
 
 
 ## Matching process
@@ -68,7 +68,57 @@ Front-end
 	- Are in a different department
 	- Haven't matched before
 	- Those who are in the same location (last, GHangout)
+	- User can choose between veterans or new hires
 - If that user is matched, then we'll set the name and email equal to the match
+
+
+## Mixpanel Implementation
+
+### Events
+- Page Viewed
+	- Index-logged-out (home page)
+	- Index-logged-in (dashboard)
+	- Edit-availability (edit availability)
+	- Edit-profile (edit profile)
+- Profile Created
+- Recurring Availability Saved
+- Match Created
+- Calendar Invite Sent
+
+### Properties
+- Page Viewed
+	- Page
+- Profile Created
+- Recurring Availability Saved
+- Match Created (2)
+	- Current User Department
+	- Current User Location
+	- Other User Department
+	- Other User Location
+	- Google Hangout or In Person
+- Calendar Invite Sent (2)
+	- Time
+	- Timezone
+- People
+	- $first_name
+	- $last_name
+	- Preferred Name
+	- $email
+	- Department
+	- Accepting Matches
+	- Location
+	- Timezone
+	- Frequency
+	- Date Entered Mixpanel
+	- Number of Matches
+	- Number of Recurring Availabilities
+	- Last Match Created
+	- Date Joined
+
+### Other Implementation Details
+- saving of distinct_id
+- identify on db's distinct_id
+- clear cookie upon logout
 
 
 # V2
@@ -77,4 +127,5 @@ Front-end
 - See your Mixpanel calendar
 - Programmatic frequencies
 - [ ] Build in OOOs?
+- User request types?
 

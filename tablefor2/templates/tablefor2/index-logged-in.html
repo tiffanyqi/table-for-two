@@ -9,6 +9,8 @@
   {% load static %}
 
     <div class="container">
+      <h1>Table for Two Dashboard</h1>
+      <input type="hidden" id="distinct-id" value="{{ profile.distinct_id }}">
 
       <div class="row">
         <div class="col-sm-4">
@@ -175,7 +177,4 @@
 
 {% block bottom %}
   {{ block.super }}
-  {% block bottom_js %}
-    <script rel="javascript" type="text/javascript" src="{% static 'js/availability.js' %}"></script>
-  {% endblock %}
 {% endblock %}

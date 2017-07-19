@@ -3,11 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
+from mixpanel import Mixpanel
+
 from tablefor2.forms import *
 from tablefor2.helpers import calculate_ampm, calculate_recurring_values
 from tablefor2.models import *
 
 import time
+
+mp = Mixpanel("1bba7a08bce236bed9588d02e2387bd1")  # Dev
 
 
 def index(request):
@@ -23,7 +27,7 @@ def index(request):
             profile.number_of_matches = 0
             profile.save()
             return HttpResponseRedirect('/profile/edit')
-        if not recurring:
+        elif not recurring:
             return HttpResponseRedirect('/availability/edit')
 
         # show profile and availability and matches!
@@ -88,6 +92,10 @@ def save_availability(request):
                 rec_av.save()
 
         time.sleep(1)  # wait until everything's done saving, hacky
+        mp.track(profile.distinct_id, 'Recurring Availability Saved')
+        mp.people_set(profile.distinct_id, {
+            'Number of Recurring Availabilities': len(RecurringAvailability.objects.filter(profile=profile))
+        })
         return HttpResponseRedirect('/')
     else:
         return HttpResponseRedirect('tablefor2/availability/edit.html')
@@ -106,6 +114,7 @@ def edit_profile(request):
             'department': profile.department,
             'accept_matches': profile.accept_matches,
             'department': profile.department,
+            'location': profile.location,
             'timezone': profile.timezone,
             'google_hangout': profile.google_hangout,
             'frequency': profile.frequency,
@@ -126,6 +135,18 @@ def save_profile(request):
 
         if form.is_valid():
             profile = Profile.objects.get(email=request.user.email)
+
+            if not profile.extra_saved_information:
+                distinct_id = form.cleaned_data.get('distinct_id')
+                mp.track(distinct_id, 'Profile Created')
+                mp.people_set(distinct_id, {
+                    'Number of Matches': 0
+                })
+                profile.distinct_id = distinct_id
+                profile.save()
+            else:
+                mp.track(profile.distinct_id, 'Profile Saved')
+
             # save the form info to this profile
             profile.preferred_name = form.cleaned_data.get('preferred_name')
             profile.department = form.cleaned_data.get('department')
@@ -139,6 +160,21 @@ def save_profile(request):
             profile.name_a_fun_fact_about_yourself = form.cleaned_data.get('name_a_fun_fact_about_yourself')
             profile.extra_saved_information = True
             profile.save()
+
+            mp.people_set(profile.distinct_id, {
+                '$first_name': profile.first_name,
+                '$last_name': profile.last_name,
+                'Preferred Name': profile.preferred_name,
+                '$email': profile.email,
+                'Department': profile.department,
+                'Accepting Matches': profile.accept_matches,
+                'Location': profile.location,
+                'Timezone': profile.timezone,
+                'Frequency': profile.frequency,
+                'Date Entered Mixpanel': str(profile.date_entered_mixpanel),
+                'Number of Matches': profile.number_of_matches,
+                'Dated Joined': str(profile.date_joined)
+            })
 
             # add a message here?
             return HttpResponseRedirect("/")

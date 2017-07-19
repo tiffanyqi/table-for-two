@@ -78,7 +78,6 @@ function saveRecurringAvailabilities() {
   });
 }
 
-
 // Helper function to grab cookies, mostly for csrf
 function getCookie(name) {
   var cookieValue = null;
