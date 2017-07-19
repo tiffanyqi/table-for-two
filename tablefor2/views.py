@@ -91,11 +91,11 @@ def save_availability(request):
                 rec_av = RecurringAvailability(profile=profile, day=day, time=time_string)
                 rec_av.save()
 
-        time.sleep(1)  # wait until everything's done saving, hacky
         mp.track(profile.distinct_id, 'Recurring Availability Saved')
         mp.people_set(profile.distinct_id, {
             'Number of Recurring Availabilities': len(RecurringAvailability.objects.filter(profile=profile))
         })
+        time.sleep(1)  # wait until everything's done saving, hacky
         return HttpResponseRedirect('/')
     else:
         return HttpResponseRedirect('tablefor2/availability/edit.html')
