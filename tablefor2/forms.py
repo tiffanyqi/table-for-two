@@ -56,8 +56,6 @@ class ProfileForm(forms.Form):
     what_is_your_favorite_animal = forms.CharField(max_length=50, help_text='You have 50 characters!')
     name_a_fun_fact_about_yourself = forms.CharField(max_length=50, help_text='You have 50 characters!')
     distinct_id = forms.CharField(widget=forms.HiddenInput(), label='')
-    initial_referrer = forms.CharField(widget=forms.HiddenInput(), label='')
-    initial_referring_domain = forms.CharField(widget=forms.HiddenInput(), label='')
 
     def clean_department(self):
         department = self.cleaned_data.get('department')

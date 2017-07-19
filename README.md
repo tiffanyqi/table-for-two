@@ -39,10 +39,10 @@ Matching
 
 Mixpanel
 - Goal: acquisition
-- [ ] Signup flow (index -> signup -> profile -> save)
-- [ ] Alias/identify
-- [ ] Save recurring availability
-- [ ] Match made / invite sent (server-side)
+- [X] Signup flow (index -> signup -> profile -> save)
+- [X] identify
+- [X] Save recurring availability
+- [X] Match made / invite sent (server-side)
 - [X] People prop: email, dept, etc, number of matches, number of availabilities
 - [ ] Notifications - onboarding, OOO
 
@@ -90,15 +90,15 @@ Front-end
 	- [X] Page
 - [X] Profile Created
 - [X] Recurring Availability Saved
-- [ ] Match Created (2)
-	- [ ] Current User Department
-	- [ ] Current User Location
-	- [ ] Other User Department
-	- [ ] Other User Location
-	- [ ] Google Hangout or In Person
-- [ ] Calendar Invite Sent (2)
-	- [ ] Time
-	- [ ] Timezone
+- [X] Match Created (2)
+	- [X] Current User Department
+	- [X] Current User Location
+	- [X] Other User Department
+	- [X] Other User Location
+	- [X] Google Hangout or In Person
+- [X] Calendar Invite Sent (2)
+	- [X] Time
+	- [X] Timezone
 - [ ] People
 	- [X] $first_name
 	- [X] $last_name
@@ -113,11 +113,12 @@ Front-end
 	- [X] Number of Matches
 	- [X] Number of Recurring Availabilities
 	- [ ] User Request Type
-	- [ ] Last Match Created
+	- [X] Last Match Created
+	- [ ] Date Joined
 
 ### Other Implementation Details
 - [X] saving of get_distinct_id
-- [ ] identify
+- [X] identify
 - [X] clear cookie upon logout
 
 

@@ -12,7 +12,6 @@ from tablefor2.models import *
 import time
 
 mp = Mixpanel("1bba7a08bce236bed9588d02e2387bd1")  # Dev
-distinct_id = ''
 
 
 def index(request):
@@ -144,9 +143,6 @@ def save_profile(request):
                     'Number of Matches': 0
                 })
                 profile.distinct_id = distinct_id
-                # mixpanel stuff
-                profile.initial_referrer = form.cleaned_data.get('initial_referrer')
-                profile.initial_referring_domain = form.cleaned_data.get('initial_referring_domain')
                 profile.save()
             else:
                 mp.track(profile.distinct_id, 'Profile Saved')
@@ -177,8 +173,7 @@ def save_profile(request):
                 'Frequency': profile.frequency,
                 'Date Entered Mixpanel': str(profile.date_entered_mixpanel),
                 'Number of Matches': profile.number_of_matches,
-                '$initial_referrer': profile.initial_referrer,
-                '$initial_referring_domain': profile.initial_referring_domain
+                'Dated Joined': str(profile.date_joined)
             })
 
             # add a message here?

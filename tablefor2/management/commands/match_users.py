@@ -186,11 +186,11 @@ class Command(BaseCommand):
             'Google Hangout or In Person': av1.google_hangout
         })
         mp.people_set(profile1.distinct_id, {
-            'Number of Matches': profile1.number_of_matches + 1,
+            'Number of Matches': profile1.number_of_matches,
             'Last Match Created': datetime.datetime.utcnow()
         })
         mp.people_set(profile2.distinct_id, {
-            'Number of Matches': profile1.number_of_matches + 1,
+            'Number of Matches': profile2.number_of_matches,
             'Last Match Created': datetime.datetime.utcnow()
         })
 
@@ -224,11 +224,11 @@ class Command(BaseCommand):
         # event = service.events().insert(calendarId='primary', body=event).execute()
         event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         mp.track(profile1.distinct_id, 'Calendar Invite Sent', {
-            'Time': start_time.isoformat(),
+            'Meeting Time': start_time.isoformat(),
             'Timezone': profile1.timezone
         })
         mp.track(profile2.distinct_id, 'Calendar Invite Sent', {
-            'Time': start_time.isoformat(),
+            'Meeting Time': start_time.isoformat(),
             'Timezone': profile2.timezone
         })
 
