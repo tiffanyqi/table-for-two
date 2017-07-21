@@ -42,7 +42,7 @@ Mixpanel
 - Goal: acquisition
 - [X] Signup flow (index -> signup -> profile -> save)
 - [X] identify
-- [X] Save recurring availability
+- [ ] Save recurring availability --> double, weird
 - [X] Match made / invite sent (server-side)
 - [X] People prop: email, dept, etc, number of matches, number of availabilities
 - [ ] Notifications - onboarding, OOO
@@ -55,7 +55,7 @@ Front-end
 - [ ] edit-availability
 - [ ] Show EMEA/NYC/SF friendly days and fix table
 - [ ] tool tips to onboard users about things
-- [ ] connect to heroku properly
+- [ ] connect to heroku properly --> calendar still weird
 
 
 ## Matching process

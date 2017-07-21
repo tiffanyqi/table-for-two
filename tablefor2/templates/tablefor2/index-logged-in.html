@@ -8,10 +8,6 @@
 {% block content %}
   {% load static %}
 
-    <div class="container">
-      <h1>Table for Two Dashboard</h1>
-      <input type="hidden" id="distinct-id" value="{{ profile.distinct_id }}">
-
       <div class="row">
         <div class="col-sm-4">
 
@@ -27,10 +23,6 @@
                 <tr>
                   <td>Preferred Name</td>
                   <td>{{ profile.preferred_name }}</td>
-                </tr>
-                <tr>
-                  <td>Accepting Matches?</td>
-                  <td>{{ profile.accept_matches }}</td>
                 </tr>
                 <tr>
                   <td>Department</td>
@@ -68,14 +60,15 @@
                   <td>Number of Matches</td>
                   <td>{{ profile.number_of_matches }}</td>
                 </tr>
+                <input type="hidden" id="distinct-id" value="{{ profile.distinct_id }}">
               </tbody>
             </table>
                         
-            <a href="{% url 'edit-profile' %}"><button class="save btn btn-success">Edit</button></a>
+            <a href="{% url 'edit-profile' %}"><button class="save btn btn-default">EDIT</button></a>
           </div>
 
           <div class="group-scroll">
-            <h2>Availability</h2>
+            <p>Accepting Matches? - {{ profile.accept_matches }}</p>
             <div class="table-container">
               <table class="table" id="availability-table-view">
                 <thead>
@@ -119,23 +112,22 @@
               </table>
             </div>
             <input type="hidden" id="recurring-availabilities" value="{{ recurring_values}}">
-            <a href="{% url 'edit-availability' %}"><button class="save btn btn-success">Edit</button></a>
+            <a href="{% url 'edit-availability' %}"><button class="save btn btn-default">EDIT</button></a>   
           </div>
-
         </div>
 
         <div class="col-sm-8">
-          <div class="group-match">
-            <h2>Current Matches</h2>
-
+          <div class="group-header">
+            <h1>Table for Two Dashboard</h1>
+          </div>
+          <div>
             {% if not current_matches %}
-              <p>You don't have any current matches yet! Sit tight, we'll have some for you shortly :)</p>
+              <!-- <div class="current-match">You don't have any current matches yet! Sit tight, we'll have some for you shortly :)</div> -->
 
             {% else %}
 
               {% for current_match in current_matches %}
-                <div class="profile-container">
-                  <div class="profile"></div>
+                <div class="current-match">
                   <div class="profile-info">
                     <ul>
                       <li>Name: {{ current_match.matched_name }} </li>
@@ -150,19 +142,32 @@
               {% endfor %}
 
             {% endif %}
-          </div>
-
-          <div class="group-match">
-            <h2>Past Matches</h2>
 
             {% if not past_matches %}
-              <p>You haven't had any matches yet!</p>
+              <div class="past-match">You haven't had any matches yet!</div>
 
             {% else %}
               {% for past_match in past_matches %}
-                <div class="profile-container">
-                  <div class="profile"></div>
-                  <div class="profile-name">{{ past_match.matched_name}}</div>
+                <div class="current-match">
+                  <h4 class="highlight">Upcoming Match</h4>
+                  <div class="profile-info">
+                    <p>You have an upcoming match with <span class="highlight">{{ past_match.matched_name }}</span> on <span class="highlight">{{ past_match.time_available }}</span> via {{ past_match.google_hangout }}! They are from {{ past_match.department }}, and a fun fact is that "{{ past_match.name_a_fun_fact_about_yourself }}". They love {{ past_match.what_is_your_favorite_animal }}.</p>
+                  </div>
+                </div>
+                <div class="past-match">
+                  <div>{{ past_match.matched_name}}</div>
+                  <div>{{ past_match.department }}</div>
+                  <div>{{ past_match.time_available}}</div>
+                </div>
+                <div class="past-match">
+                  <div>{{ past_match.matched_name}}</div>
+                  <div>{{ past_match.department }}</div>
+                  <div>{{ past_match.time_available}}</div>
+                </div>
+                <div class="past-match">
+                  <div>{{ past_match.matched_name}}</div>
+                  <div>{{ past_match.department }}</div>
+                  <div>{{ past_match.time_available}}</div>
                 </div>
               {% endfor %}
 
@@ -171,7 +176,6 @@
         </div>
 
       </div>
-    </div>
 
   {% endblock %}
 
