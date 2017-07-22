@@ -63,12 +63,24 @@
                 <input type="hidden" id="distinct-id" value="{{ profile.distinct_id }}">
               </tbody>
             </table>
-                        
-            <a href="{% url 'edit-profile' %}"><button class="save btn btn-default">EDIT</button></a>
+            <div class="text-center">
+              <a href="{% url 'edit-profile' %}"><button class="save btn btn-default">EDIT</button></a>
+            </div>
           </div>
 
           <div class="group-scroll">
-            <p>Accepting Matches? - {{ profile.accept_matches }}</p>
+            <!-- add tooltip -->
+            {% if profile.accept_matches == "Yes" %}
+              <div class="match-package">
+                <img class="match-icon" src="{% static "img/green_icon.png" %}">
+                Accepting Matches!
+              </div>
+            {% else %}
+              <div class="match-package">
+                <img class="match-icon" src="{% static "img/red_icon.png" %}">
+                Not Accepting Matches
+              </div>
+            {% endif %}
             <div class="table-container">
               <table class="table" id="availability-table-view">
                 <thead>
@@ -79,31 +91,31 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Mon</td>
+                    <td>MON</td>
                     {% for time in times %}
                       <td id="0-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
                     {% endfor %}
                   </tr>
                   <tr>
-                    <td>Tue</td>
+                    <td>TUE</td>
                     {% for time in times %}
                       <td id="1-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
                     {% endfor %}
                   </tr>
                   <tr>
-                    <td>Wed</td>
+                    <td>WED</td>
                     {% for time in times %}
                       <td id="2-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
                     {% endfor %}
                   </tr>
                   <tr>
-                    <td>Thu</td>
+                    <td>THU</td>
                     {% for time in times %}
                       <td id="3-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
                     {% endfor %}
                   </tr>
                   <tr>
-                    <td>Fri</td>
+                    <td>FRI</td>
                     {% for time in times %}
                       <td id="4-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
                     {% endfor %}
@@ -112,7 +124,7 @@
               </table>
             </div>
             <input type="hidden" id="recurring-availabilities" value="{{ recurring_values}}">
-            <a href="{% url 'edit-availability' %}"><button class="save btn btn-default">EDIT</button></a>   
+            <a href="{% url 'edit-availability' %}"><button class="save btn btn-default pull-right">EDIT</button></a>
           </div>
         </div>
 
@@ -122,21 +134,15 @@
           </div>
           <div>
             {% if not current_matches %}
-              <!-- <div class="current-match">You don't have any current matches yet! Sit tight, we'll have some for you shortly :)</div> -->
+            <!-- add tooltip -->
+              <div class="past-match">You don't have any current matches yet! Sit tight, we'll have some for you shortly :)</div>
 
             {% else %}
 
               {% for current_match in current_matches %}
                 <div class="current-match">
                   <div class="profile-info">
-                    <ul>
-                      <li>Name: {{ current_match.matched_name }} </li>
-                      <li>Time ({{ current_match.timezone }}): {{ current_match.time_available }} </li>
-                      <li>Department: {{ current_match.department }} </li>
-                      <li>Google Hangout or In Person: {{ current_match.google_hangout }}</li>
-                      <li>Favorite Animal: {{ current_match.what_is_your_favorite_animal }} </li>
-                      <li>Fun Fact: {{ current_match.name_a_fun_fact_about_yourself }}</li>
-                    </ul>
+                    <p>You have an upcoming match with <span class="highlight">{{ past_match.matched_name }}</span> on <span class="highlight">{{ past_match.time_available }}</span> via {{ past_match.google_hangout }}! They are from {{ past_match.department }}, and a fun fact is that "{{ past_match.name_a_fun_fact_about_yourself }}". They love {{ past_match.what_is_your_favorite_animal }}.</p>
                   </div>
                 </div>
               {% endfor %}
@@ -148,24 +154,8 @@
 
             {% else %}
               {% for past_match in past_matches %}
-                <div class="current-match">
-                  <h4 class="highlight">Upcoming Match</h4>
-                  <div class="profile-info">
-                    <p>You have an upcoming match with <span class="highlight">{{ past_match.matched_name }}</span> on <span class="highlight">{{ past_match.time_available }}</span> via {{ past_match.google_hangout }}! They are from {{ past_match.department }}, and a fun fact is that "{{ past_match.name_a_fun_fact_about_yourself }}". They love {{ past_match.what_is_your_favorite_animal }}.</p>
-                  </div>
-                </div>
                 <div class="past-match">
-                  <div>{{ past_match.matched_name}}</div>
-                  <div>{{ past_match.department }}</div>
-                  <div>{{ past_match.time_available}}</div>
-                </div>
-                <div class="past-match">
-                  <div>{{ past_match.matched_name}}</div>
-                  <div>{{ past_match.department }}</div>
-                  <div>{{ past_match.time_available}}</div>
-                </div>
-                <div class="past-match">
-                  <div>{{ past_match.matched_name}}</div>
+                  <div><strong>{{ past_match.matched_name}}</strong></div>
                   <div>{{ past_match.department }}</div>
                   <div>{{ past_match.time_available}}</div>
                 </div>

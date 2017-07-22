@@ -8,7 +8,11 @@
     color: red;
 }
 table td.highlighted {
-  background-color: #00B4FF;
+  background-color: #48BFC6;
+}
+#availability-table-view {
+    margin: 10px;
+    font-size: 8px;
 }
 .table-container {
     overflow: scroll;
@@ -24,7 +28,8 @@ table td.highlighted {
     background-color: white;
 }
 .group-header {
-    margin: 10 5;
+    margin: 5px;
+    margin-top: 20px;
     padding: 0 30 10 30;
     border: 1px solid #F0F4F7;
     background-color: white;
@@ -39,7 +44,7 @@ table td.highlighted {
 .current-match {
     margin: 5px;
     padding: 30px;
-    background: #00B4FF;
+    background: #48BFC6;
     float: left;
     width: 35%;
 }
@@ -62,6 +67,14 @@ table td.highlighted {
 .nav {
     background-color: #2B3A4F;
     border: 1px solid #2B3A4F;
+}
+.match-icon {
+    width: 50px;
+    display: inline-block;
+}
+.match-package {
+    padding: 5px;
+    margin: 5px;
 }
 
 html {
