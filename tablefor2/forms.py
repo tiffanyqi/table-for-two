@@ -48,13 +48,13 @@ class ProfileForm(forms.Form):
     preferred_name = forms.CharField(max_length=50)
     department = forms.ChoiceField(choices=DEPARTMENTS)
     location = forms.ChoiceField(choices=LOCATIONS)
-    accept_matches = forms.ChoiceField(choices=BOOLEANS, help_text="Choose 'Yes' if you are just starting!")
     timezone = forms.ChoiceField(choices=TIMEZONES, help_text='Choose the closest city in your timezone')
-    google_hangout = forms.ChoiceField(choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to Google Hangout?')
+    date_entered_mixpanel = forms.DateField()
+    accept_matches = forms.ChoiceField(choices=BOOLEANS, help_text="Choose 'Yes' if you are just starting!")
     frequency = forms.ChoiceField(choices=FREQUENCY, help_text='How often do you want to participate?')
-    date_entered_mixpanel = forms.DateField(help_text='(MM/DD/YYYY or YYYY-MM-DD)')
-    what_is_your_favorite_animal = forms.CharField(max_length=50, help_text='You have 50 characters!')
-    name_a_fun_fact_about_yourself = forms.CharField(max_length=50, help_text='You have 50 characters!')
+    google_hangout = forms.ChoiceField(choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to Google Hangout?')
+    what_is_your_favorite_animal = forms.CharField(max_length=50, help_text='You have 50 characters!', widget=forms.TextInput(attrs={'maxlength': 50}))
+    name_a_fun_fact_about_yourself = forms.CharField(max_length=50, help_text='You have 50 characters!', widget=forms.TextInput(attrs={'maxlength': 50}))
     distinct_id = forms.CharField(widget=forms.HiddenInput(), label='')
 
     def clean_department(self):

@@ -44,6 +44,11 @@ table td.highlighted {
     display: inline-block;
     text-align: center;
 }
+.table-holder {
+    margin: 5px;
+    padding: 20px;
+    background-color: white;
+}
 .current-match {
     margin: 5px;
     padding: 30px;
@@ -83,7 +88,7 @@ table td.highlighted {
     background-image: none
 }
 .profile-table {
-    font-size: 15px;
+    font-size: 14px;
 }
 
 html {
@@ -104,6 +109,9 @@ h2 {
 }
 a {
     color: black;
+}
+select, input {
+    width: 100%;
 }
 .footer {
     position: absolute;

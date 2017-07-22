@@ -35,6 +35,7 @@ Matching
 - [x] Change everything to proper timezone
 - [x] Option to turn off matching if you want to stop or you're OOO
 - [ ] Refactor to add user_request_type
+- [ ] Refactor to once a month
 - [ ] Run the actual cron job
 - [x] Test
 
@@ -50,8 +51,8 @@ Mixpanel
 Front-end
 - PRETTIFY
 - [ ] index-logged-out
-- [ ] index-logged-in
-- [ ] edit-profile
+- [X] index-logged-in
+- [X] edit-profile
 - [ ] edit-availability
 - [ ] Show EMEA/NYC/SF friendly days and fix table
 - [ ] tool tips to onboard users about things
