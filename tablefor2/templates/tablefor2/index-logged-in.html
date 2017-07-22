@@ -12,57 +12,88 @@
         <div class="col-sm-4">
 
           <div class="group-scroll">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Preferred Name</td>
-                  <td>{{ profile.preferred_name }}</td>
-                </tr>
-                <tr>
-                  <td>Department</td>
-                  <td>{{ profile.department }}</td>
-                </tr>
-                <tr>
-                  <td>Location</td>
-                  <td>{{ profile.location }}</td>
-                </tr> 
-                <tr>
-                  <td>Timezone</td>
-                  <td>{{ profile.timezone }}</td>
-                </tr>
-                <tr>
-                  <td>Frequency</td>
-                  <td>{{ profile.frequency }}</td>
-                </tr>
-                <tr>
-                  <td>Want to Google Hangout?</td>
-                  <td>{{ profile.google_hangout }}</td>
-                </tr>
-                <tr>
-                  <td>Date Entered Mixpanel</td>
-                  <td>{{ profile.date_entered_mixpanel }}</td>
-                </tr>
-                <tr>
-                  <td>Your Favorite Animal</td>
-                  <td>{{ profile.what_is_your_favorite_animal }}</td>
-                </tr>
-                <tr>
-                  <td>Your Fun Fact</td>
-                  <td>{{ profile.name_a_fun_fact_about_yourself }}</td>
-                </tr>
-                <tr>
-                  <td>Number of Matches</td>
-                  <td>{{ profile.number_of_matches }}</td>
-                </tr>
-                <input type="hidden" id="distinct-id" value="{{ profile.distinct_id }}">
-              </tbody>
-            </table>
+            <input type="hidden" id="distinct-id" value="{{ profile.distinct_id }}">
+            <div id="text-carousel" class="carousel slide" data-ride="carousel" data-interval="false">
+              <div class="row">
+                <div class="carousel-inner">
+                  <div class="item active">
+                    <div class="carousel-content">
+                      <table class="table profile-table">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td># of Total Matches</td>
+                            <td>{{ profile.number_of_matches }}</td>
+                          </tr>
+                          <tr>
+                            <td>Frequency</td>
+                            <td>{{ profile.frequency }}</td>
+                          </tr>
+                          <tr>
+                            <td>GHangout?</td>
+                            <td>{{ profile.google_hangout }}</td>
+                          </tr>
+                          <tr>
+                            <td>Favorite Animal</td>
+                            <td>{{ profile.what_is_your_favorite_animal }}</td>
+                          </tr>
+                          <tr>
+                            <td>Fun Fact</td>
+                            <td>{{ profile.name_a_fun_fact_about_yourself }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="carousel-content">
+                      <table class="table profile-table">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Preferred Name</td>
+                            <td>{{ profile.preferred_name }}</td>
+                          </tr>
+                          <tr>
+                            <td>Department</td>
+                            <td>{{ profile.department }}</td>
+                          </tr>
+                          <tr>
+                            <td>Location</td>
+                            <td>{{ profile.location }}</td>
+                          </tr> 
+                          <tr>
+                            <td>Timezone</td>
+                            <td>{{ profile.timezone }}</td>
+                          </tr>
+                          <tr>
+                            <td>Date Entered Mixpanel</td>
+                            <td>{{ profile.date_entered_mixpanel }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <a class="left carousel-control" href="#text-carousel" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+              </a>
+              <a class="right carousel-control" href="#text-carousel" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </a>
+            </div>
+
             <div class="text-center">
               <a href="{% url 'edit-profile' %}"><button class="save btn btn-default">EDIT</button></a>
             </div>

@@ -27,6 +27,9 @@ table td.highlighted {
     border: 1px solid #F0F4F7;
     background-color: white;
 }
+#text-carousel {
+    font-size: 8px;
+}
 .group-header {
     margin: 5px;
     margin-top: 20px;
@@ -75,6 +78,12 @@ table td.highlighted {
 .match-package {
     padding: 5px;
     margin: 5px;
+}
+.carousel-control.left, .carousel-control.right {
+    background-image: none
+}
+.profile-table {
+    font-size: 15px;
 }
 
 html {
