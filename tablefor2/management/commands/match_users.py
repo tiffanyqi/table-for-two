@@ -222,7 +222,7 @@ class Command(BaseCommand):
 
         print('Event created between %s and %s at %s' % (profile1.preferred_name, profile2.preferred_name, start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         mp.track(profile1.distinct_id, 'Calendar Invite Sent', {
             'Meeting Time': start_time.isoformat(),
             'Timezone': profile1.timezone
