@@ -9,7 +9,7 @@
   {% load static %}
 
       <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-4 profile-background">
 
           <div class="group-scroll">
             <input type="hidden" id="distinct-id" value="{{ profile.distinct_id }}">
@@ -173,7 +173,7 @@
               {% for current_match in current_matches %}
                 <div class="current-match">
                   <div class="profile-info">
-                    <p>You have an upcoming match with <span class="highlight">{{ past_match.matched_name }}</span> on <span class="highlight">{{ past_match.time_available }}</span> via {{ past_match.google_hangout }}! They are from {{ past_match.department }}, and a fun fact is that "{{ past_match.name_a_fun_fact_about_yourself }}". They love {{ past_match.what_is_your_favorite_animal }}.</p>
+                    <p>You have an upcoming match with <span class="highlight">{{ current_match.matched_name }}</span> on <span class="highlight">{{ current_match.time_available }}</span> via {{ current_match.google_hangout }}! They are from {{ current_match.department }}, and a fun fact is that "{{ current_match.name_a_fun_fact_about_yourself }}". They love {{ current_match.what_is_your_favorite_animal }}.</p>
                   </div>
                 </div>
               {% endfor %}

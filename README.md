@@ -50,12 +50,13 @@ Mixpanel
 
 Front-end
 - PRETTIFY
-- [ ] index-logged-out
+- [X] index-logged-out
 - [X] index-logged-in
 - [X] edit-profile
-- [ ] edit-availability
+- [X] edit-availability
 - [ ] Show EMEA/NYC/SF friendly days and fix table
 - [ ] tool tips to onboard users about things
+- [ ] make sure each display and browser is good
 - [ ] connect to heroku properly --> calendar still weird
 
 
