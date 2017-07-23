@@ -1,9 +1,21 @@
-$(function () {
+$(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip({
     container : 'body'
   });
   toggleSelected();
   populateTimes();
+
+  // makes an AJAX request to send recurring over to django
+  $('#availability-btn').click(function() {
+    $.ajax({
+      type: 'POST',
+      url: '/availability/save/',
+      data: {
+        'recurring_availabilities[]': newAvailabilities,
+        'csrfmiddlewaretoken': getCookie('csrftoken')
+      }
+    });
+  });
 });
 
 var newAvailabilities = [];
@@ -28,7 +40,6 @@ function populateTimes() {
   }
 }
 
-
 // executes highlighting, http://jsfiddle.net/few5E/
 function toggleSelected() {
   var isMouseDown = false;
@@ -52,7 +63,6 @@ function toggleSelected() {
     });
 }
 
-
 // adds or removes highlighting from list
 function distinguishHighlighted(element) {
   if ($(element).hasClass("highlighted")) {
@@ -63,19 +73,6 @@ function distinguishHighlighted(element) {
     newAvailabilities.splice(index, 1);
     newAvailabilities.push(element.id + '-deleted');
   }
-}
-
-
-// makes an AJAX request to send recurring over to django
-function saveRecurringAvailabilities() {
-  $.ajax({
-    type: 'POST',
-    url: '/availability/save/',
-    data: {
-      'recurring_availabilities[]': newAvailabilities,
-      'csrfmiddlewaretoken': getCookie('csrftoken')
-    }
-  });
 }
 
 // Helper function to grab cookies, mostly for csrf
