@@ -7,18 +7,43 @@
 
 {% block content %}
     {% load static %}
-        <div class="container">
-            <h1>Welcome to Table for Two!</h1>
+        <div class="index-header">
+            <div class="col-sm-6 box">
+                <h1 class="highlight">Welcome to Table for Two!</h1>
+                <p class="highlight">Grabbing coffee or lunch with another Mixpaneler from another team is even easier than before.</p>
+                <p class="highlight"><em>#BeSocialMakeFriendships</em></p>
+                <br>
+                <div class="text-center">
+                    <button class="save btn btn-default"><a href="{% url "social:begin" "google-oauth2" %}">GET STARTED</a></button>
+                </div>
+            </div>
+            <div class="col-sm-6 table-padding">
+                <img id="header-img" src="{% static "img/full-set.png" %}">
+            </div>
+        </div>
+        <div class="index-box">
+            <h2>What's Table for Two?</h2>
+            <p>Table for two is a lunch program where you are randomly matched with someone outside of your team to have a 1:1 lunch with- either in the Cafe or offsite, the choice is yours!</p>
+            <div class="text-center">
+                <img id="chair-img" src="{% static "img/chairs-original.png" %}">
+            </div>
+        </div>
 
-            <p>We consistently hear that MPers would like more opportunities to meet and connect with people on other teams or departments. Any Mixpaneler can now grab lunch, coffee, or do a Google Hangout with someone from a different division.</p>
+        <div class="index-box">Just fill out your information and preferences, and select when you're generally available. Our algorithms will match you with another Mixpaneler once a month based on your availability, team, and tenure at Mixpanel. Each month, you'll meet with someone new!
+            <div class="text-center">
+                <img id="availability-img" src="{% static "img/availability.png" %}">
+            </div>
+        </div>
 
-            <p>What is Table for Two? Table for two is a lunch program where you are randomly matched with someone outside of your team to have a 1:1 lunch with- either in the Cafe or offsite, the choice is yours!</p>
+        <div class="index-box">If you choose to Google Hangout, you'll also be able to meet other Mixpanelers in a location other than your own.
+            <div class="text-center">
+                <img id="availability-img" src="{% static "img/dashboard.png" %}">
+            </div>
+        </div>
 
-            <p>Instead of having Kate doing the program manually, you can now choose to opt in, whenever you want, to meet people from other departments on your own time. You could even have a Google Hangout with someone from a different city!</p>
-
-            <p>Want to try it out? <a href="{% url "social:begin" "google-oauth2" %}">Sign up</a>.</p>
-
-            <p>#BeSocialMakeFriendships</p>
+        <div class="index-box text-center">
+            Interested?
+            <button class="save btn btn-default"><a href="{% url "social:begin" "google-oauth2" %}">GET STARTED</a></button>
         </div>
     {% endblock %}
 

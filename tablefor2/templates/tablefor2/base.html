@@ -9,6 +9,7 @@
         {% block head_css %}
             <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
             <link rel="stylesheet" href="{% static "css/style.css" %}">
+            <link href="https://fonts.googleapis.com/css?family=Lato|Open+Sans:700" rel="stylesheet">
         {% endblock %}
         {% block head_js %}
             <script rel="javascript" type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
@@ -25,7 +26,7 @@
 
     <body>
         <ul class="nav nav-tabs">
-            <li role="presentation"><a class="nav-link" href="/"><strong>MP Table for Two</strong></a></li>
+            <li role="presentation"><a class="nav-link" href="/"><strong>Table for Two</strong></a></li>
             {% if user.is_authenticated %}
                 <li role="presentation" class="navbar-right"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
             {% else %}
@@ -38,9 +39,7 @@
             {% endblock %}
         </div>
         <footer class="footer">
-            <div class="container">
-                <p class="footer-text">Made with &#9829 by Tiffany</span>
-            </div>
+            <img class="footer-img" src="https://mixpanel.com/wp-content/uploads/2017/07/logo-white.png">
         </footer>
         {% block bottom_js %}
             <script src="{% static "js/availability.js" %}"></script>

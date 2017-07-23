@@ -10,16 +10,21 @@
 
     <div class="container">
 
-      <h1>Edit Your Recurring Availability</h1>
+      <div class="group-header">
+        <h1>Edit Your Recurring Availability</h1>
+      </div>
 
       {% if not recurring %}
-        <p>Hello {{ user.preferred_name }}!</p>
-        <p>To make this more comprehensive, please fill out your recurring availability:</p>
+        <div class="table-holder">
+          <p>Hello {{ user.preferred_name }}!</p>
+          <p>To make this more comprehensive, please fill out your recurring availability:</p>
+        </div>
       {% endif %}
 
       <input type="hidden" id="recurring-availabilities" value="{{ recurring_values}}">
-      <form method="POST" action="{% url 'save-availability' %}" onsubmit="return saveRecurringAvailabilities()" >{% csrf_token %}
+      <form method="POST" action="{% url 'save-availability' %}" onsubmit="return saveRecurringAvailabilities()" class="table-holder" >{% csrf_token %}
         <div class="table-container">
+          <!-- tool tips -->
           <table class="table-bordered table" id="availability-table-edit">
             <thead>
               <tr>
@@ -31,31 +36,31 @@
             </thead>
             <tbody>
               <tr>
-                <td>Mon</td>
+                <td>MON</td>
                 {% for time in times %}
                   <td id="0-{{ time }}"></td>
                 {% endfor %}
               </tr>
               <tr>
-                <td>Tue</td>
+                <td>TUE</td>
                 {% for time in times %}
                   <td id="1-{{ time }}"></td>
                 {% endfor %}
               </tr>
               <tr>
-                <td>Wed</td>
+                <td>WED</td>
                 {% for time in times %}
                   <td id="2-{{ time }}"></td>
                 {% endfor %}
               </tr>
               <tr>
-                <td>Thu</td>
+                <td>THU</td>
                 {% for time in times %}
                   <td id="3-{{ time }}"></td>
                 {% endfor %}
               </tr>
               <tr>
-                <td>Fri</td>
+                <td>FRI</td>
                 {% for time in times %}
                   <td id="4-{{ time }}"></td>
                 {% endfor %}
@@ -63,7 +68,9 @@
             </tbody>
           </table>
         </div>
-        <button type="submit" class="save btn btn-success">Save</button>
+        <div class="text-center">
+          <button class="save btn btn-default">SAVE</button>
+        </div>      
       </form>
     </div>
 

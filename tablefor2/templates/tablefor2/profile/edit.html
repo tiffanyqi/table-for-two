@@ -10,14 +10,18 @@
 
     <div class="container">
 
-      <h1>Edit Your Profile</h1>
+      <div class="group-header">
+        <h1>Edit Your Profile</h1>
+      </div>
 
       {% if not profile.extra_saved_information %}
+      <div class="table-holder">
         <p>Hello {{ user.first_name }}, thanks for signing up!</p>
         <p>To make this more comprehensive, please fill out the following things:</p>
+      </div>
       {% endif %}
 
-      <form method="POST" action="{% url 'save-profile' %}" onsubmit="return setProperties()" class="post-form" id="profile-form">{% csrf_token %}
+      <form method="POST" action="{% url 'save-profile' %}" onsubmit="return setProperties()" class="post-form table-holder" id="profile-form">{% csrf_token %}
         <table class="table">
           <thead>
             <tr>
@@ -30,15 +34,18 @@
             {% for field in form %}
               <div class="fieldWrapper">
                 <tr>
+                  <!-- tool tip -->
                   <td>{{ field.label_tag }}</td>
                   <td><div class="error-message">{{ field.errors }}</div> {{ field }}</td>
-                  <td>{{ field.help_text }}</td>
+                  <!-- <td>{{ field.help_text }}</td> -->
                 </tr>
               </div>
             {% endfor %}
           </tbody>
         </table>
-        <button type="submit" class="save btn btn-success">Save</button>
+        <div class="text-center">
+          <button class="save btn btn-default">SAVE</button>
+        </div>
       </form>
     </div>
 

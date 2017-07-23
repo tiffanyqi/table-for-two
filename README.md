@@ -35,6 +35,7 @@ Matching
 - [x] Change everything to proper timezone
 - [x] Option to turn off matching if you want to stop or you're OOO
 - [ ] Refactor to add user_request_type
+- [ ] Refactor to once a month
 - [ ] Run the actual cron job
 - [x] Test
 
@@ -42,20 +43,21 @@ Mixpanel
 - Goal: acquisition
 - [X] Signup flow (index -> signup -> profile -> save)
 - [X] identify
-- [X] Save recurring availability
+- [ ] Save recurring availability --> double, weird
 - [X] Match made / invite sent (server-side)
 - [X] People prop: email, dept, etc, number of matches, number of availabilities
 - [ ] Notifications - onboarding, OOO
 
 Front-end
 - PRETTIFY
-- [ ] index-logged-out
-- [ ] index-logged-in
-- [ ] edit-profile
-- [ ] edit-availability
+- [X] index-logged-out
+- [X] index-logged-in
+- [X] edit-profile
+- [X] edit-availability
 - [ ] Show EMEA/NYC/SF friendly days and fix table
 - [ ] tool tips to onboard users about things
-- [ ] connect to heroku properly
+- [ ] make sure each display and browser is good
+- [ ] connect to heroku properly --> calendar still weird
 
 
 ## Matching process
