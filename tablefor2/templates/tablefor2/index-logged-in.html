@@ -9,8 +9,47 @@
   {% load static %}
 
       <div class="row">
-        <div class="col-sm-4 profile-background">
+        <div class="col-sm-8 col-sm-push-4">
+          <div class="group-header">
+            <h1>Table for Two Dashboard</h1>
+          </div>
+          <div class="dashboard">
+            {% if not current_matches %}
+            <!-- add tooltip -->
+              <div class="past-match">You don't have any current matches yet! Sit tight, we'll have some for you shortly :)</div>
 
+            {% else %}
+
+              {% for current_match in current_matches %}
+                <div class="current-match">
+                  <div class="profile-info">
+                    <p>You have an upcoming match with <span class="highlight">{{ current_match.matched_name }}</span> on <span class="highlight">{{ current_match.time_available }}</span> via {{ current_match.google_hangout }}! They are from {{ current_match.department }}, and a fun fact is that "{{ current_match.name_a_fun_fact_about_yourself }}". They love {{ current_match.what_is_your_favorite_animal }}.</p>
+                  </div>
+                </div>
+              {% endfor %}
+
+            {% endif %}
+
+            {% if not past_matches %}
+              <div class="past-match">You haven't had any matches yet!</div>
+
+            {% else %}
+              {% for past_match in past_matches %}
+                <div class="past-match">
+                  <div><strong>{{ past_match.matched_name}}</strong></div>
+                  <div>{{ past_match.department }}</div>
+                  <div>{{ past_match.time_available}}</div>
+                </div>
+              {% endfor %}
+
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="col-sm-4 col-sm-pull-8 profile-background">
+          <div class="group-header visible-xs">
+            <h2>Profile and Preferences</h2>
+          </div>
           <div class="group-scroll">
             <input type="hidden" id="distinct-id" value="{{ profile.distinct_id }}">
             <div id="text-carousel" class="carousel slide" data-ride="carousel" data-interval="false">
@@ -99,19 +138,21 @@
             </div>
           </div>
 
-          <div class="group-scroll">
+          <div class="group-scroll" style="padding: 0px">
             <!-- add tooltip -->
-            {% if profile.accept_matches == "Yes" %}
-              <div class="match-package">
-                <img class="match-icon" src="{% static "img/green_icon.png" %}">
-                Accepting Matches!
-              </div>
-            {% else %}
-              <div class="match-package">
-                <img class="match-icon" src="{% static "img/red_icon.png" %}">
-                Not Accepting Matches
-              </div>
-            {% endif %}
+            <div class="text-center">
+              {% if profile.accept_matches == "Yes" %}
+                <div class="match-package">
+                  <img class="match-icon" src="{% static "img/green_icon.png" %}">
+                  Accepting Matches!
+                </div>
+              {% else %}
+                <div class="match-package">
+                  <img class="match-icon" src="{% static "img/red_icon.png" %}">
+                  Not Accepting Matches
+                </div>
+              {% endif %}
+            </div>
             <div class="table-container">
               <table class="table" id="availability-table-view">
                 <thead>
@@ -155,47 +196,11 @@
               </table>
             </div>
             <input type="hidden" id="recurring-availabilities" value="{{ recurring_values}}">
-            <a href="{% url 'edit-availability' %}"><button class="save btn btn-default pull-right">EDIT</button></a>
+            <div class="text-center">
+              <a href="{% url 'edit-availability' %}"><button class="save btn btn-default">EDIT</button></a>
+            </div>
           </div>
         </div>
-
-        <div class="col-sm-8">
-          <div class="group-header">
-            <h1>Table for Two Dashboard</h1>
-          </div>
-          <div>
-            {% if not current_matches %}
-            <!-- add tooltip -->
-              <div class="past-match">You don't have any current matches yet! Sit tight, we'll have some for you shortly :)</div>
-
-            {% else %}
-
-              {% for current_match in current_matches %}
-                <div class="current-match">
-                  <div class="profile-info">
-                    <p>You have an upcoming match with <span class="highlight">{{ current_match.matched_name }}</span> on <span class="highlight">{{ current_match.time_available }}</span> via {{ current_match.google_hangout }}! They are from {{ current_match.department }}, and a fun fact is that "{{ current_match.name_a_fun_fact_about_yourself }}". They love {{ current_match.what_is_your_favorite_animal }}.</p>
-                  </div>
-                </div>
-              {% endfor %}
-
-            {% endif %}
-
-            {% if not past_matches %}
-              <div class="past-match">You haven't had any matches yet!</div>
-
-            {% else %}
-              {% for past_match in past_matches %}
-                <div class="past-match">
-                  <div><strong>{{ past_match.matched_name}}</strong></div>
-                  <div>{{ past_match.department }}</div>
-                  <div>{{ past_match.time_available}}</div>
-                </div>
-              {% endfor %}
-
-            {% endif %}
-          </div>
-        </div>
-
       </div>
 
   {% endblock %}

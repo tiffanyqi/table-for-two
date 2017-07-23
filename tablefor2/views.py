@@ -34,7 +34,7 @@ def index(request):
         else:
             today = date.today()
             current_matches = Availability.objects.filter(profile=profile, time_available__gt=today).exclude(matched_name=None) or None
-            past_matches = Availability.objects.filter(profile=profile, time_available__lte=today).exclude(matched_name=None) or None
+            past_matches = Availability.objects.filter(profile=profile, time_available__lte=today).exclude(matched_name=None).order_by('-time_available_utc') or None
             availabilities = Availability.objects.filter(profile=profile, time_available__gte=today).order_by('time_available') or None
             recurring_values = calculate_recurring_values(recurring)
 

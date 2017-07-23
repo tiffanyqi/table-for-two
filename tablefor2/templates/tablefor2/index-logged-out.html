@@ -8,7 +8,7 @@
 {% block content %}
     {% load static %}
         <div class="index-header">
-            <div class="col-sm-6 box">
+            <div class="col-sm-4 box">
                 <h1 class="highlight">Welcome to Table for Two!</h1>
                 <p class="highlight">Grabbing coffee or lunch with another Mixpaneler from another team is even easier than before.</p>
                 <p class="highlight"><em>#BeSocialMakeFriendships</em></p>
@@ -17,7 +17,7 @@
                     <button class="save btn btn-default"><a href="{% url "social:begin" "google-oauth2" %}">GET STARTED</a></button>
                 </div>
             </div>
-            <div class="col-sm-6 table-padding">
+            <div class="col-sm-4 table-padding hidden-xs hidden-sm col-sm-offset-2">
                 <img id="header-img" src="{% static "img/full-set.png" %}">
             </div>
         </div>

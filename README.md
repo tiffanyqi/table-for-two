@@ -34,7 +34,6 @@ Matching
 - [x] Send a google calendar invite
 - [x] Change everything to proper timezone
 - [x] Option to turn off matching if you want to stop or you're OOO
-- [ ] Refactor to add user_request_type
 - [ ] Refactor to once a month
 - [ ] Run the actual cron job
 - [x] Test
@@ -54,9 +53,8 @@ Front-end
 - [X] index-logged-in
 - [X] edit-profile
 - [X] edit-availability
-- [ ] Show EMEA/NYC/SF friendly days and fix table
+- [X] make sure each display and browser is good
 - [ ] tool tips to onboard users about things
-- [ ] make sure each display and browser is good
 - [ ] connect to heroku properly --> calendar still weird
 
 
@@ -129,6 +127,6 @@ Front-end
 - Variable locations?
 - See your Mixpanel calendar
 - Programmatic frequencies
-- [ ] Build in OOOs?
+- Build in OOOs?
 - User request types?
-
+- Show EMEA/NYC/SF friendly days and fix table?
