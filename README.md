@@ -54,7 +54,7 @@ Front-end
 - [X] edit-profile
 - [X] edit-availability
 - [X] make sure each display and browser is good
-- [ ] tool tips to onboard users about things
+- [X] tool tips to onboard users about things
 - [ ] connect to heroku properly --> calendar still weird
 
 
@@ -129,4 +129,4 @@ Front-end
 - Programmatic frequencies
 - Build in OOOs?
 - User request types?
-- Show EMEA/NYC/SF friendly days and fix table?
+- Show EMEA/NYC/SF friendly days?

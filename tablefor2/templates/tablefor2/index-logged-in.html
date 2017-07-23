@@ -14,12 +14,14 @@
             <h1>Table for Two Dashboard</h1>
           </div>
           <div class="dashboard">
-            {% if not current_matches %}
-            <!-- add tooltip -->
-              <div class="past-match">You don't have any current matches yet! Sit tight, we'll have some for you shortly :)</div>
-
+            <div class="matches">
+              {% if not current_matches %}
+                <div class="past-match">
+                  <div class="glyphicon glyphicon-question-sign pull-right" data-toggle="tooltip" data-placement="right" title="Our matching algorithms run once a day and goes through everyone's availability. If there's someone there who's available at the same time as you and fulfills your matching critiera, we'll match you up! Sit tight, we'll have some for you shortly ☺"></div>
+                  <br>
+                  <p>You don't have any upcoming matches yet!</p>
+                </div>
             {% else %}
-
               {% for current_match in current_matches %}
                 <div class="current-match">
                   <div class="profile-info">
@@ -27,13 +29,9 @@
                   </div>
                 </div>
               {% endfor %}
-
             {% endif %}
 
-            {% if not past_matches %}
-              <div class="past-match">You haven't had any matches yet!</div>
-
-            {% else %}
+            {% if past_matches %}
               {% for past_match in past_matches %}
                 <div class="past-match">
                   <div><strong>{{ past_match.matched_name}}</strong></div>
@@ -41,8 +39,9 @@
                   <div>{{ past_match.time_available}}</div>
                 </div>
               {% endfor %}
-
+            </div>
             {% endif %}
+
           </div>
         </div>
 
@@ -139,17 +138,17 @@
           </div>
 
           <div class="group-scroll" style="padding: 0px">
-            <!-- add tooltip -->
+            <div class="glyphicon glyphicon-question-sign pull-right" data-toggle="tooltip" data-placement="top" title="Your recurring availability -- scroll right inside the rows to see more. If you're accepting matches, you will continue to be matched. If you're not, turn it back on when you're ready in your profile!"></div>
             <div class="text-center">
               {% if profile.accept_matches == "Yes" %}
                 <div class="match-package">
                   <img class="match-icon" src="{% static "img/green_icon.png" %}">
-                  Accepting Matches!
+                  <span data-toggle="tooltip" data-placement="top" title="You're ready to match! If you're OOO, turn this off by editing your profile.">Ready to Match!</span>
                 </div>
               {% else %}
                 <div class="match-package">
                   <img class="match-icon" src="{% static "img/red_icon.png" %}">
-                  Not Accepting Matches
+                  <span data-toggle="tooltip" data-placement="top" title="You're not currently set to match. When you're ready turn this back on by editing your profile!.">Not Matching</span>
                 </div>
               {% endif %}
             </div>

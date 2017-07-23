@@ -34,10 +34,11 @@
             {% for field in form %}
               <div class="fieldWrapper">
                 <tr>
-                  <!-- tool tip -->
                   <td>{{ field.label_tag }}</td>
-                  <td><div class="error-message">{{ field.errors }}</div> {{ field }}</td>
-                  <!-- <td>{{ field.help_text }}</td> -->
+                  <td>
+                    <div class="error-message">{{ field.errors }}</div>
+                    <div data-toggle="tooltip" data-placement="top" title="{{ field.help_text }}">{{ field }}</div>
+                  </td>
                 </tr>
               </div>
             {% endfor %}

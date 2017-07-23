@@ -17,14 +17,15 @@
       {% if not recurring %}
         <div class="table-holder">
           <p>Hello {{ user.preferred_name }}!</p>
-          <p>To make this more comprehensive, please fill out your recurring availability:</p>
+          <p>To start being matched, fill out your recurring availability below. Each box represents a 30 minute time slot on a certain day that you will be able to match up with. For example, if you're available on 12PM on Mondays, turning a box green on the Monday row of the 12:00PM column will mark you as available during that time. Feel free to place as many slots are you're available, as we'll only match you for your preferred frequency!</p>
         </div>
       {% endif %}
 
       <input type="hidden" id="recurring-availabilities" value="{{ recurring_values}}">
       <form method="POST" action="{% url 'save-availability' %}" class="table-holder" >{% csrf_token %}
         <div class="table-container">
-          <!-- tool tips -->
+          <div class="glyphicon glyphicon-question-sign pull-right" data-toggle="tooltip" data-placement="top" title="Each box represents a 30 minute time slot."></div>
+          <br>
           <table class="table-bordered table" id="availability-table-edit">
             <thead>
               <tr>
