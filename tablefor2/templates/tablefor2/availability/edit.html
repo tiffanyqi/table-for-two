@@ -22,7 +22,7 @@
       {% endif %}
 
       <input type="hidden" id="recurring-availabilities" value="{{ recurring_values}}">
-      <form method="POST" action="{% url 'save-availability' %}" onsubmit="return saveRecurringAvailabilities()" class="table-holder" >{% csrf_token %}
+      <form method="POST" action="{% url 'save-availability' %}" class="table-holder" >{% csrf_token %}
         <div class="table-container">
           <!-- tool tips -->
           <table class="table-bordered table" id="availability-table-edit">
@@ -69,7 +69,7 @@
           </table>
         </div>
         <div class="text-center">
-          <button class="save btn btn-default">SAVE</button>
+          <button id="availability-btn" class="save btn btn-default">SAVE</button>
         </div>      
       </form>
     </div>

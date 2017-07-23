@@ -3,7 +3,6 @@
     overflow: scroll;
     height: 42%;
     margin: 20px;
-    /*margin-right: 0px;*/
     padding: 0 30 10 30;
     border: 1px solid #F0F4F7;
     background-color: white;
@@ -17,7 +16,7 @@
     text-align: center;
 }
 .table-holder {
-    margin: 5px;
+    margin: 20px;
     padding: 20px;
     background-color: white;
 }
@@ -168,9 +167,3 @@ select, input {
     padding-top: 20px;
     width: 100px;
 }
-
-/*@media only screen and (min-width: 1060) {
-    #header-img {
-
-    }
-}*/
