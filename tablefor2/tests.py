@@ -848,35 +848,20 @@ class RecurringAvailabilityTest(TestCase):
         t = Profile.objects.get(first_name='tiffany')
         av1 = Availability.objects.create(
             profile=t,
-            time_available=datetime.datetime(2017, 7, 24, 13, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 24, 20, 0, tzinfo=pytz.UTC),
-        )
-        av2 = Availability.objects.create(
-            profile=t,
             time_available=datetime.datetime(2017, 7, 31, 13, 0, tzinfo=pytz.UTC),
             time_available_utc=datetime.datetime(2017, 7, 31, 20, 0, tzinfo=pytz.UTC),
         )
-        av3 = Availability.objects.create(
+        av2 = Availability.objects.create(
             profile=t,
             time_available=datetime.datetime(2017, 7, 26, 12, 0, tzinfo=pytz.UTC),
             time_available_utc=datetime.datetime(2017, 7, 26, 19, 0, tzinfo=pytz.UTC),
         )
-        av4 = Availability.objects.create(
-            profile=t,
-            time_available=datetime.datetime(2017, 8, 2, 12, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 8, 2, 19, 0, tzinfo=pytz.UTC),
-        )
-        av5 = Availability.objects.create(
+        av3 = Availability.objects.create(
             profile=t,
             time_available=datetime.datetime(2017, 7, 28, 10, 0, tzinfo=pytz.UTC),
             time_available_utc=datetime.datetime(2017, 7, 28, 17, 0, tzinfo=pytz.UTC),
         )
-        av6 = Availability.objects.create(
-            profile=t,
-            time_available=datetime.datetime(2017, 8, 4, 10, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 8, 4, 17, 0, tzinfo=pytz.UTC),
-        )
-        self.assertEqual([av1, av2, av3, av4, av5, av6], Command.create_availabilities(Command()))
+        self.assertEqual([av1, av2, av3], Command.create_availabilities(Command()))
 
     # you'll have to change this
     def test_delete_availabilities(self):
@@ -967,6 +952,6 @@ class HelpersTest(TestCase):
     # you'll have to change this
     def test_get_next_weekday(self):
         today = datetime.datetime.utcnow().date()
-        self.assertEqual(get_next_weekday(today, '0'), datetime.date(2017, 7, 24))
-        self.assertEqual(get_next_weekday(today, '1'), datetime.date(2017, 7, 25))
+        self.assertEqual(get_next_weekday(today, '0'), datetime.date(2017, 7, 31))
+        self.assertEqual(get_next_weekday(today, '1'), datetime.date(2017, 8, 1))
         self.assertEqual(get_next_weekday(today, '4'), datetime.date(2017, 7, 28))
