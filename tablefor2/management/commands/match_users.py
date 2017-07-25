@@ -59,32 +59,20 @@ class Command(BaseCommand):
 
     # creates availabilities from recurring availabilities
     def create_availabilities(self):
-        today = datetime.datetime.utcnow().date()
-        week = datetime.timedelta(days=7)
         availabilities = []
-
         recurrings = RecurringAvailability.objects.all()
         for rec_av in recurrings:
             if rec_av.profile.accept_matches == "Yes":
                 day = rec_av.day  # num of week
                 time = determine_ampm(rec_av.time)  # HH:MM, miltary
-                time_string = time.split(':')
-
-                for i in range(0, 2):  # loop for now and in the next two weeks
-                    if i == 0:
-                        next_weekday = get_next_weekday(today, day)
-                    else:
-                        next_weekday += week
-
-                    # create the availability or check if it's there
-                    time_available = datetime.datetime.combine(next_weekday, datetime.time(int(time_string[0]), int(time_string[1])))
-                    utc = calculate_utc(rec_av.profile, time_available)
-                    try:
-                        av = Availability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
-                    except:
-                        av = Availability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
-                        av.save()
-                    availabilities.append(av)
+                time_available = get_next_weekday(day, time)
+                utc = calculate_utc(rec_av.profile, time_available)
+                try:
+                    av = Availability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                except:
+                    av = Availability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                    av.save()
+                availabilities.append(av)
         return availabilities
 
     # delete availabilities that were there before but not in recurrings anymore
@@ -222,7 +210,7 @@ class Command(BaseCommand):
 
         print('Event created between %s and %s at %s' % (profile1.preferred_name, profile2.preferred_name, start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         mp.track(profile1.distinct_id, 'Calendar Invite Sent', {
             'Meeting Time': start_time.isoformat(),
             'Timezone': profile1.timezone
@@ -258,12 +246,12 @@ class Command(BaseCommand):
     def check_not_currently_matched(self, av):
         return av.matched_name is None
 
-    # check to see that the frequency has not been matched yet, for now bsased on 1x/wk
+    # check to see that the frequency has not been matched yet, for now based on 1x/mo
     def check_frequency(self, av, profile):
         av_time = av.time_available_utc
         start_week = av_time - timedelta(days=av_time.weekday())
-        end_week = start_week + timedelta(days=6)
-        avs = Availability.objects.filter(profile=profile, time_available_utc__gte=start_week, time_available_utc__lte=end_week).exclude(matched_name=None)
+        end_four_weeks = start_week + timedelta(days=28)
+        avs = Availability.objects.filter(profile=profile, time_available_utc__gte=start_week, time_available_utc__lte=end_four_weeks).exclude(matched_name=None)
         return not avs
 
     # sets up dictionary of timestamps to a list of availabilities

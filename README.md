@@ -34,7 +34,7 @@ Matching
 - [x] Send a google calendar invite
 - [x] Change everything to proper timezone
 - [x] Option to turn off matching if you want to stop or you're OOO
-- [ ] Refactor to once a month
+- [X] Refactor to once a month
 - [ ] Run the actual cron job
 - [x] Test
 

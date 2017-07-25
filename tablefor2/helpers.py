@@ -59,10 +59,12 @@ def calculate_recurring_values(recurring):
     return recurring_values
 
 
-# find the next weekday after a given day
+# find the next weekday after a given day, plus 7
 # https://stackoverflow.com/questions/6558535/find-the-date-for-the-first-monday-after-a-given-a-date
-def get_next_weekday(d, weekday):
-    days_ahead = int(weekday) - d.weekday()
-    if days_ahead <= 0:  # Target day already happened this week
-        days_ahead += 7
-    return d + datetime.timedelta(days_ahead)  # 2017-07-19 12:00:00+00:00
+def get_next_weekday(day, time):
+    today = datetime.datetime.utcnow().date()
+    days_ahead = int(day) - today.weekday()
+    next_weekday = today + datetime.timedelta(days_ahead+7)  # 2017-07-19 12:00:00+00:00
+
+    time_string = time.split(':')
+    return datetime.datetime.combine(next_weekday, datetime.time(int(time_string[0]), int(time_string[1])))

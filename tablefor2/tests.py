@@ -30,7 +30,8 @@ class MatchTestCase(TestCase):
             google_hangout='No',
             frequency='Once a week',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2016, 10, 31)
+            date_entered_mixpanel=datetime.datetime(2016, 10, 31),
+            distinct_id='tiffany'
         )
         # andrew, Engineering, SF, No, once a week
         Profile.objects.create(
@@ -44,7 +45,8 @@ class MatchTestCase(TestCase):
             google_hangout='No',
             frequency='Once a week',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2016, 11, 01)
+            date_entered_mixpanel=datetime.datetime(2016, 11, 01),
+            distinct_id='andrew'
         )
         # PJ, Success, SF, Yes, once a week
         Profile.objects.create(
@@ -58,7 +60,8 @@ class MatchTestCase(TestCase):
             google_hangout='Yes',
             frequency='Once a week',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2015, 11, 01)
+            date_entered_mixpanel=datetime.datetime(2015, 11, 01),
+            distinct_id='pj'
         )
         # Karima, Success, Other, Yes, once a week
         Profile.objects.create(
@@ -72,7 +75,8 @@ class MatchTestCase(TestCase):
             timezone='CEST (Barcelona, Madrid, Paris, Amsterdam)',
             frequency='Once a week',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2016, 06, 01)
+            date_entered_mixpanel=datetime.datetime(2016, 06, 01),
+            distinct_id='karima'
         )
         # Tim, Engineering, New York, Yes, once a week
         Profile.objects.create(
@@ -86,7 +90,8 @@ class MatchTestCase(TestCase):
             timezone='EST (New York)',
             frequency='Once a week',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2013, 06, 01)
+            date_entered_mixpanel=datetime.datetime(2013, 06, 01),
+            distinct_id='tim'
         )
         # Mike, Sales, SF, Yes, once a week
         Profile.objects.create(
@@ -100,7 +105,8 @@ class MatchTestCase(TestCase):
             google_hangout='Yes',
             frequency='Once a week',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2016, 01, 01)
+            date_entered_mixpanel=datetime.datetime(2016, 01, 01),
+            distinct_id='mike'
         )
         # Poop, Engineering, SF, Yes, once a week
         Profile.objects.create(
@@ -114,7 +120,8 @@ class MatchTestCase(TestCase):
             google_hangout='Yes',
             frequency='Once a week',
             accept_matches='No',
-            date_entered_mixpanel=datetime.datetime(2016, 01, 01)
+            date_entered_mixpanel=datetime.datetime(2016, 01, 01),
+            distinct_id='poop'
         )
 
     def fresh_setup(self):
@@ -813,7 +820,8 @@ class RecurringAvailabilityTest(TestCase):
             google_hangout='No',
             frequency='Once a week',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2016, 10, 31)
+            date_entered_mixpanel=datetime.datetime(2016, 10, 31),
+            distinct_id='tiffany'
         )
 
     def setup_recurring(self):
@@ -834,54 +842,41 @@ class RecurringAvailabilityTest(TestCase):
             time="10:00AM"
         )
 
+    # you'll have to change this
     def test_create_availabilities(self):
         self.setup_recurring()
         t = Profile.objects.get(first_name='tiffany')
         av1 = Availability.objects.create(
             profile=t,
-            time_available=datetime.datetime(2017, 7, 10, 13, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 10, 20, 0, tzinfo=pytz.UTC),
+            time_available=datetime.datetime(2017, 7, 31, 13, 0, tzinfo=pytz.UTC),
+            time_available_utc=datetime.datetime(2017, 7, 31, 20, 0, tzinfo=pytz.UTC),
         )
         av2 = Availability.objects.create(
             profile=t,
-            time_available=datetime.datetime(2017, 7, 17, 13, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 17, 20, 0, tzinfo=pytz.UTC),
+            time_available=datetime.datetime(2017, 8, 2, 12, 0, tzinfo=pytz.UTC),
+            time_available_utc=datetime.datetime(2017, 8, 2, 19, 0, tzinfo=pytz.UTC),
         )
         av3 = Availability.objects.create(
             profile=t,
-            time_available=datetime.datetime(2017, 7, 12, 12, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 12, 19, 0, tzinfo=pytz.UTC),
+            time_available=datetime.datetime(2017, 8, 4, 10, 0, tzinfo=pytz.UTC),
+            time_available_utc=datetime.datetime(2017, 8, 4, 17, 0, tzinfo=pytz.UTC),
         )
-        av4 = Availability.objects.create(
-            profile=t,
-            time_available=datetime.datetime(2017, 7, 19, 12, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 19, 19, 0, tzinfo=pytz.UTC),
-        )
-        av5 = Availability.objects.create(
-            profile=t,
-            time_available=datetime.datetime(2017, 7, 14, 10, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 14, 17, 0, tzinfo=pytz.UTC),
-        )
-        av6 = Availability.objects.create(
-            profile=t,
-            time_available=datetime.datetime(2017, 7, 21, 10, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 21, 17, 0, tzinfo=pytz.UTC),
-        )
-        self.assertEqual([av1, av2, av3, av4, av5, av6], Command.create_availabilities(Command()))
+        self.assertEqual([av1, av2, av3], Command.create_availabilities(Command()))
 
+    # you'll have to change this
     def test_delete_availabilities(self):
         self.setup_recurring()
         t = Profile.objects.get(first_name='tiffany')
         RecurringAvailability.objects.get(profile=t, day="0", time="1:00PM").delete()
         av1 = Availability(
             profile=t,
-            time_available=datetime.datetime(2017, 7, 10, 13, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 10, 20, 0, tzinfo=pytz.UTC),
+            time_available=datetime.datetime(2017, 7, 24, 13, 0, tzinfo=pytz.UTC),
+            time_available_utc=datetime.datetime(2017, 7, 24, 20, 0, tzinfo=pytz.UTC),
         )
         av2 = Availability(
             profile=t,
-            time_available=datetime.datetime(2017, 7, 17, 13, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 17, 20, 0, tzinfo=pytz.UTC),
+            time_available=datetime.datetime(2017, 7, 31, 13, 0, tzinfo=pytz.UTC),
+            time_available_utc=datetime.datetime(2017, 7, 31, 20, 0, tzinfo=pytz.UTC),
         )
         # self.assertEqual([av1, av2], Command.delete_availabilities(Command()))  # why not equal??
 
@@ -899,7 +894,8 @@ class HelpersTest(TestCase):
             timezone='PST (San Francisco, Seattle)',
             google_hangout='No',
             frequency='Once a week',
-            date_entered_mixpanel=datetime.datetime(2016, 10, 31)
+            date_entered_mixpanel=datetime.datetime(2016, 10, 31),
+            distinct_id='tiffany'
         )
         # Tim, Engineering, New York, Yes, once a week
         Profile.objects.create(
@@ -912,7 +908,8 @@ class HelpersTest(TestCase):
             google_hangout='Yes',
             timezone='EST (New York)',
             frequency='Once a week',
-            date_entered_mixpanel=datetime.datetime(2013, 06, 01)
+            date_entered_mixpanel=datetime.datetime(2013, 06, 01),
+            distinct_id='tim'
         )
         # Karima, Success, Other, Yes, once a week
         Profile.objects.create(
@@ -925,7 +922,8 @@ class HelpersTest(TestCase):
             google_hangout='Yes',
             timezone='CEST (Barcelona, Madrid, Paris, Amsterdam)',
             frequency='Once a week',
-            date_entered_mixpanel=datetime.datetime(2016, 06, 01)
+            date_entered_mixpanel=datetime.datetime(2016, 06, 01),
+            distinct_id='karima'
         )
 
     def test_calculate_utc(self):
@@ -951,8 +949,8 @@ class HelpersTest(TestCase):
         self.assertEqual(determine_ampm('10:00AM'), '10:00')
         self.assertEqual(determine_ampm('9:30AM'), '9:30')
 
+    # you'll have to change this
     def test_get_next_weekday(self):
-        today = datetime.datetime.utcnow().date()
-        self.assertEqual(get_next_weekday(today, '0'), datetime.date(2017, 7, 10))
-        self.assertEqual(get_next_weekday(today, '1'), datetime.date(2017, 7, 11))
-        self.assertEqual(get_next_weekday(today, '4'), datetime.date(2017, 7, 14))
+        self.assertEqual(get_next_weekday('0', '12:00'), datetime.datetime(2017, 7, 31, 12, 0))
+        self.assertEqual(get_next_weekday('1', '1:00'), datetime.datetime(2017, 8, 1, 1, 0))
+        self.assertEqual(get_next_weekday('4', '15:30'), datetime.datetime(2017, 8, 4, 15, 30))
