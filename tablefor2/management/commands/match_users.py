@@ -59,20 +59,13 @@ class Command(BaseCommand):
 
     # creates availabilities from recurring availabilities
     def create_availabilities(self):
-        today = datetime.datetime.utcnow().date()
         availabilities = []
-
         recurrings = RecurringAvailability.objects.all()
         for rec_av in recurrings:
             if rec_av.profile.accept_matches == "Yes":
                 day = rec_av.day  # num of week
                 time = determine_ampm(rec_av.time)  # HH:MM, miltary
-                # time_available = add_week(day, time)
-                time_string = time.split(':')
-
-                # create the availability or check if it's there
-                next_weekday = get_next_weekday(today, day)
-                time_available = datetime.datetime.combine(next_weekday, datetime.time(int(time_string[0]), int(time_string[1])))
+                time_available = get_next_weekday(day, time)
                 utc = calculate_utc(rec_av.profile, time_available)
                 try:
                     av = Availability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
@@ -253,7 +246,7 @@ class Command(BaseCommand):
     def check_not_currently_matched(self, av):
         return av.matched_name is None
 
-    # check to see that the frequency has not been matched yet, for now bsased on 1x/wk
+    # check to see that the frequency has not been matched yet, for now based on 1x/mo
     def check_frequency(self, av, profile):
         av_time = av.time_available_utc
         start_week = av_time - timedelta(days=av_time.weekday())

@@ -853,13 +853,13 @@ class RecurringAvailabilityTest(TestCase):
         )
         av2 = Availability.objects.create(
             profile=t,
-            time_available=datetime.datetime(2017, 7, 26, 12, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 26, 19, 0, tzinfo=pytz.UTC),
+            time_available=datetime.datetime(2017, 8, 2, 12, 0, tzinfo=pytz.UTC),
+            time_available_utc=datetime.datetime(2017, 8, 2, 19, 0, tzinfo=pytz.UTC),
         )
         av3 = Availability.objects.create(
             profile=t,
-            time_available=datetime.datetime(2017, 7, 28, 10, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 28, 17, 0, tzinfo=pytz.UTC),
+            time_available=datetime.datetime(2017, 8, 4, 10, 0, tzinfo=pytz.UTC),
+            time_available_utc=datetime.datetime(2017, 8, 4, 17, 0, tzinfo=pytz.UTC),
         )
         self.assertEqual([av1, av2, av3], Command.create_availabilities(Command()))
 
@@ -951,7 +951,6 @@ class HelpersTest(TestCase):
 
     # you'll have to change this
     def test_get_next_weekday(self):
-        today = datetime.datetime.utcnow().date()
-        self.assertEqual(get_next_weekday(today, '0'), datetime.date(2017, 7, 31))
-        self.assertEqual(get_next_weekday(today, '1'), datetime.date(2017, 8, 1))
-        self.assertEqual(get_next_weekday(today, '4'), datetime.date(2017, 7, 28))
+        self.assertEqual(get_next_weekday('0', '12:00'), datetime.datetime(2017, 7, 31, 12, 0))
+        self.assertEqual(get_next_weekday('1', '1:00'), datetime.datetime(2017, 8, 1, 1, 0))
+        self.assertEqual(get_next_weekday('4', '15:30'), datetime.datetime(2017, 8, 4, 15, 30))
