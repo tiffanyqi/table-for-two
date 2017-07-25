@@ -66,3 +66,7 @@ def get_next_weekday(d, weekday):
     if days_ahead <= 0:  # Target day already happened this week
         days_ahead += 7
     return d + datetime.timedelta(days_ahead)  # 2017-07-19 12:00:00+00:00
+
+
+# def add_week(day, time):
+
