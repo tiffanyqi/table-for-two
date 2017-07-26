@@ -115,7 +115,6 @@ def edit_profile(request):
             'preferred_name': profile.preferred_name,
             'department': profile.department,
             'accept_matches': profile.accept_matches,
-            'department': profile.department,
             'location': profile.location,
             'timezone': profile.timezone,
             'google_hangout': profile.google_hangout,

@@ -23,9 +23,9 @@
 
       <input type="hidden" id="recurring-availabilities" value="{{ recurring_values}}">
       <form method="POST" action="{% url 'save-availability' %}" class="table-holder" >{% csrf_token %}
+        <div class="glyphicon glyphicon-question-sign pull-right" data-toggle="tooltip" data-placement="top" title="Each box represents a 30 minute time slot."></div>
+        <br>
         <div class="table-container">
-          <div class="glyphicon glyphicon-question-sign pull-right" data-toggle="tooltip" data-placement="top" title="Each box represents a 30 minute time slot."></div>
-          <br>
           <table class="table-bordered table" id="availability-table-edit">
             <thead>
               <tr>

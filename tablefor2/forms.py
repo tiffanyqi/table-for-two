@@ -37,7 +37,7 @@ BOOLEANS = (
 )
 
 FREQUENCY = (
-    # ('--', 'Select a Frequency'),
+    ('--', 'Select a Frequency'),
     # ('Once a week', 'Once a week'),
     # ('Once every other week', 'Once every other week'),
     ('Once a month', 'Once a month')

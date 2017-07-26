@@ -42,7 +42,7 @@ Mixpanel
 - Goal: acquisition
 - [X] Signup flow (index -> signup -> profile -> save)
 - [X] identify
-- [ ] Save recurring availability --> double, weird
+- [ ] Save recurring availability --> double, because 2 POST requests
 - [X] Match made / invite sent (server-side)
 - [X] People prop: email, dept, etc, number of matches, number of availabilities
 - [ ] Notifications - onboarding, OOO
