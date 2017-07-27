@@ -96,14 +96,15 @@ class Command(BaseCommand):
         # actually do the matching from here
         for timestamp, availability_list in future_availabilities.iteritems():
             rest_count = 0
-            for av1 in availability_list:
+            for orig_av in availability_list:
                 rest_count += 1
-                for av2 in availability_list[rest_count:]:
-                    profile1 = Profile.objects.get(email=av1.profile)
-                    profile2 = Profile.objects.get(email=av2.profile)
-                    if self.check_match(av1, av2, profile1, profile2):
-                        self.match(av1, av2, profile1, profile2)
-                        matches.append([timestamp, profile1, profile2])
+                for matched_av in availability_list[rest_count:]:
+                    original_profile = Profile.objects.get(email=orig_av.profile)
+                    matched_profile = Profile.objects.get(email=matched_av.profile)
+                    if self.check_match(orig_av, matched_av, original_profile, matched_profile):
+                        self.match(orig_av, matched_av, original_profile, matched_profile)
+                        self.match(matched_av, orig_av, matched_profile, original_profile)
+                        matches.append([timestamp, original_profile, matched_profile])
         # sends hangouts to each group of matches
         for match in matches:
             self.send_google_calendar_invite(match[0], match[1], match[2])
@@ -113,74 +114,29 @@ class Command(BaseCommand):
 
     # check to see that the two profiles should match
     def check_match(self, av1, av2, profile1, profile2):
-        if self.check_accept_matches(profile1, profile2):
-            if self.check_frequency(av1, profile1) and self.check_frequency(av2, profile2):
-                if self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2):
-                    if self.check_previous_matches(profile1, profile2):
-                        if self.check_departments(profile1, profile2):
-                            return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
-                        else:
-                            return False
-                    else:
-                        return False
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return False
+        if self.check_accept_matches(profile1, profile2) and self.check_frequency(av1, profile1) and self.check_frequency(av2, profile2) and self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2) and self.check_previous_matches(profile1, profile2) and self.check_departments(profile1, profile2):
+            return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
+        return False
 
     # actually match the two
-    def match(self, av1, av2, profile1, profile2):
-        av1.matched_name = profile2.preferred_name + ' ' + profile2.last_name
-        av1.matched_email = profile2.email
-        av1.picture_url = profile2.picture_url
-        av1.what_is_your_favorite_animal = profile2.what_is_your_favorite_animal
-        av1.name_a_fun_fact_about_yourself = profile2.name_a_fun_fact_about_yourself
-        av1.department = profile2.department
-        av1.timezone = profile2.timezone
-        profile1.number_of_matches += 1
+    def match(self, orig_av, matched_av, original_profile, matched_profile):
+        orig_av.matched_name = matched_profile.preferred_name + ' ' + matched_profile.last_name
+        orig_av.matched_email = matched_profile.email
+        orig_av.picture_url = matched_profile.picture_url
+        orig_av.what_is_your_favorite_animal = matched_profile.what_is_your_favorite_animal
+        orig_av.name_a_fun_fact_about_yourself = matched_profile.name_a_fun_fact_about_yourself
+        orig_av.department = matched_profile.department
+        orig_av.timezone = matched_profile.timezone
+        original_profile.number_of_matches += 1
 
-        av2.matched_name = profile1.preferred_name + ' ' + profile1.last_name
-        av2.matched_email = profile1.email
-        av2.picture_url = profile1.picture_url
-        av2.what_is_your_favorite_animal = profile1.what_is_your_favorite_animal
-        av2.name_a_fun_fact_about_yourself = profile1.name_a_fun_fact_about_yourself
-        av2.department = profile1.department
-        av2.timezone = profile1.timezone
-        profile2.number_of_matches += 1
-
-        if profile1.location == profile2.location:
-            av1.google_hangout = av2.google_hangout = "In Person"
+        if original_profile.location == matched_profile.location:
+            orig_av.google_hangout = matched_av.google_hangout = "In Person"
         else:
-            av1.google_hangout = av2.google_hangout = "Google Hangout"
+            orig_av.google_hangout = matched_av.google_hangout = "Google Hangout"
 
-        av1.save()
-        av2.save()
-        profile1.save()
-        profile2.save()
-        mp.track(profile1.distinct_id, 'Match Created', {
-            'Current User Department': profile1.department,
-            'Current User Location': profile1.location,
-            'Other User Department': profile2.department,
-            'Other User Location': profile2.location,
-            'Google Hangout or In Person': av1.google_hangout,
-        })
-        mp.track(profile2.distinct_id, 'Match Created', {
-            'Current User Department': profile2.department,
-            'Current User Location': profile2.location,
-            'Other User Department': profile1.department,
-            'Other User Location': profile1.location,
-            'Google Hangout or In Person': av1.google_hangout
-        })
-        mp.people_set(profile1.distinct_id, {
-            'Number of Matches': profile1.number_of_matches,
-            'Last Match Created': datetime.datetime.utcnow()
-        })
-        mp.people_set(profile2.distinct_id, {
-            'Number of Matches': profile2.number_of_matches,
-            'Last Match Created': datetime.datetime.utcnow()
-        })
+        orig_av.save()
+        original_profile.save()
+        self.execute_mixpanel_matches(orig_av, original_profile, matched_profile)
 
     def send_google_calendar_invite(self, timestamp, profile1, profile2):
         credentials = self.get_credentials()
@@ -210,19 +166,15 @@ class Command(BaseCommand):
 
         print('Event created between %s and %s at %s' % (profile1.preferred_name, profile2.preferred_name, start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
-        mp.track(profile1.distinct_id, 'Calendar Invite Sent', {
-            'Meeting Time': start_time.isoformat(),
-            'Timezone': profile1.timezone
-        })
-        mp.track(profile2.distinct_id, 'Calendar Invite Sent', {
-            'Meeting Time': start_time.isoformat(),
-            'Timezone': profile2.timezone
-        })
+        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        self.execute_mixpanel_calendar_invite(profile1, start_time)
+        self.execute_mixpanel_calendar_invite(profile2, start_time)
+
+    ### Helpers ###
 
     # check to see that the profiles can accept matches
     def check_accept_matches(self, profile1, profile2):
-        return profile1.accept_matches == 'Yes' and profile2.accept_matches == 'Yes'
+        return profile1.accept_matches == 'Yes' and profile1.accept_matches == profile2.accept_matches
 
     # check to see that the google hangouts aren't the same
     def check_google_hangout(self, profile1, profile2):
@@ -296,3 +248,24 @@ class Command(BaseCommand):
                 credentials = tools.run(flow, store)
             print('Storing credentials to ' + credential_path)
         return credentials
+
+    # execute mixpanel things related to matches
+    def execute_mixpanel_matches(self, orig_av, original_profile, matched_profile):
+        mp.track(original_profile.distinct_id, 'Match Created', {
+            'Current User Department': original_profile.department,
+            'Current User Location': original_profile.location,
+            'Other User Department': matched_profile.department,
+            'Other User Location': matched_profile.location,
+            'Google Hangout or In Person': orig_av.google_hangout,
+        })
+        mp.people_set(original_profile.distinct_id, {
+            'Number of Matches': original_profile.number_of_matches,
+            'Last Match Created': datetime.datetime.utcnow()
+        })
+
+    # execute mixpanel things related to calendar invite
+    def execute_mixpanel_calendar_invite(self, profile, start_time):
+        mp.track(profile.distinct_id, 'Calendar Invite Sent', {
+            'Meeting Time': start_time.isoformat(),
+            'Timezone': profile.timezone
+        })
