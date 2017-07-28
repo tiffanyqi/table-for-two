@@ -89,7 +89,7 @@ def save_availability(request):
                 pass
 
             # save the rest since they're new
-            except:
+            except RecurringAvailability.DoesNotExist:
                 rec_av = RecurringAvailability(profile=profile, day=day, time=time_string)
                 rec_av.save()
 
