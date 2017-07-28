@@ -69,8 +69,6 @@ function distinguishHighlighted(element) {
     newAvailabilities.push(element.id);
 
   } else {
-    var index = newAvailabilities.indexOf(element.id);
-    newAvailabilities.splice(index, 1);
     newAvailabilities.push(element.id + '-deleted');
   }
 }
