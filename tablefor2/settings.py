@@ -14,10 +14,18 @@ SECRET_KEY = os.environ['TF2_DJANGO_SECRET_KEY']
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['TF2_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['TF2_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-SOCIAL_AUTH_RAISE_EXCEPTIONS = True
-RAISE_EXCEPTIONS = True
-DEBUG = True
+
+TF2_PROD = os.environ['TF2_PROD']
+if TF2_PROD == 'prod':
+    MP_TOKEN = '1bba7a08bce236bed9588d02e2387bd1'
+    SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+    RAISE_EXCEPTIONS = False
+    DEBUG = False
+else:
+    MP_TOKEN = '1bba7a08bce236bed9588d02e2387bd1'
+    SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+    RAISE_EXCEPTIONS = True
+    DEBUG = True
 
 # Application definition
 
@@ -88,7 +96,6 @@ WSGI_APPLICATION = 'tablefor2.wsgi.application'
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 SOCIAL_AUTH_USER_MODEL = 'tablefor2.Profile'
 
-# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases

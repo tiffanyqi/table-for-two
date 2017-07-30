@@ -10,7 +10,7 @@ from mixpanel import Mixpanel
 
 from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
 from tablefor2.models import *
-from tablefor2.settings import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+from tablefor2.settings import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET, MP_TOKEN
 
 import datetime
 import httplib2
@@ -26,7 +26,7 @@ except ImportError:
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/X.json
 APPLICATION_NAME = 'Table for 2'
-mp = Mixpanel("1bba7a08bce236bed9588d02e2387bd1")  # Dev
+mp = Mixpanel(MP_TOKEN)
 
 
 class Command(BaseCommand):

@@ -8,10 +8,11 @@ from mixpanel import Mixpanel
 from tablefor2.forms import *
 from tablefor2.helpers import calculate_ampm, calculate_recurring_values
 from tablefor2.models import *
+from tablefor2.settings import MP_TOKEN
 
 import time
 
-mp = Mixpanel("1bba7a08bce236bed9588d02e2387bd1")  # Dev
+mp = Mixpanel(MP_TOKEN)  # Dev
 
 
 def index(request):
