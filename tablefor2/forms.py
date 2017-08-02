@@ -10,8 +10,8 @@ DEPARTMENTS = (  # change these departments
     ('General & Administrative', 'General & Administrative'),
     ('Marketing', 'Marketing'),
     ('Sales', 'Sales'),
-    ('Success', 'Success')
-    ('Support', 'Support'),
+    ('Success', 'Success'),
+    ('Support', 'Support')
 )
 
 LOCATIONS = (
@@ -30,7 +30,7 @@ TIMEZONES = (
     ('MST', 'US/Mountain'),
     ('PST', 'US/Pacific'),
     ('BST', 'Europe/London'),
-    ('CEST', 'Europe/Amsterdam'),
+    ('CEST', 'Europe/Amsterdam')
 )
 
 BOOLEANS = (
