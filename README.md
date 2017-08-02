@@ -35,8 +35,9 @@ Matching
 - [x] Change everything to proper timezone
 - [x] Option to turn off matching if you want to stop or you're OOO
 - [x] Refactor to once a month
+- [ ] Change to new
 - [ ] Run the actual cron job
-- [x] Test
+- [ ] Test
 
 Mixpanel
 - Goal: acquisition
@@ -128,5 +129,4 @@ Front-end
 - See your Mixpanel calendar
 - Programmatic frequencies
 - Build in OOOs?
-- User request types?
 - Show EMEA/NYC/SF friendly days?

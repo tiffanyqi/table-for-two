@@ -5,11 +5,13 @@ from datetime import *
 
 DEPARTMENTS = (  # change these departments
     ('--', 'Select a Department'),
+    ('Design', 'Design'),
     ('Engineering', 'Engineering'),
     ('General & Administrative', 'General & Administrative'),
     ('Marketing', 'Marketing'),
     ('Sales', 'Sales'),
     ('Success', 'Success')
+    ('Support', 'Support'),
 )
 
 LOCATIONS = (
