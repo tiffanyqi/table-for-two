@@ -5,10 +5,13 @@ from datetime import *
 
 DEPARTMENTS = (  # change these departments
     ('--', 'Select a Department'),
+    ('Design', 'Design'),
     ('Engineering', 'Engineering'),
     ('General & Administrative', 'General & Administrative'),
     ('Marketing', 'Marketing'),
-    ('Success', 'Success')
+    ('Sales', 'Sales'),
+    ('Success', 'Success'),
+    ('Support', 'Support')
 )
 
 LOCATIONS = (
@@ -21,13 +24,13 @@ LOCATIONS = (
 )
 
 TIMEZONES = (
-    ('--', 'Select your timezone by closest city'),
-    ('EST (New York)', 'US/Eastern'),
-    ('CST (Chicago)', 'US/Central'),
-    ('MST (Denver, Lehi)', 'US/Mountain'),
-    ('PST (San Francisco, Seattle)', 'US/Pacific'),
-    ('BST (London)', 'Europe/London'),
-    ('CEST (Barcelona, Madrid, Paris, Amsterdam)', 'Europe/Amsterdam'),
+    ('--', 'Select your timezone'),
+    ('EST', 'US/Eastern'),
+    ('CST', 'US/Central'),
+    ('MST', 'US/Mountain'),
+    ('PST', 'US/Pacific'),
+    ('BST', 'Europe/London'),
+    ('CEST', 'Europe/Amsterdam')
 )
 
 BOOLEANS = (
@@ -45,7 +48,7 @@ FREQUENCY = (
 
 
 class ProfileForm(forms.Form):
-    preferred_name = forms.CharField(max_length=50)
+    preferred_name = forms.CharField(max_length=50, help_text='First name only! Your last name is already recorded :)')
     department = forms.ChoiceField(choices=DEPARTMENTS)
     location = forms.ChoiceField(choices=LOCATIONS)
     timezone = forms.ChoiceField(choices=TIMEZONES, help_text='Choose the closest city in your timezone')

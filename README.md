@@ -34,27 +34,28 @@ Matching
 - [x] Send a google calendar invite
 - [x] Change everything to proper timezone
 - [x] Option to turn off matching if you want to stop or you're OOO
-- [X] Refactor to once a month
+- [x] Refactor to once a month
+- [ ] Change to new
 - [ ] Run the actual cron job
-- [x] Test
+- [ ] Test
 
 Mixpanel
 - Goal: acquisition
-- [X] Signup flow (index -> signup -> profile -> save)
-- [X] identify
-- [ ] Save recurring availability --> double, because 2 POST requests
-- [X] Match made / invite sent (server-side)
-- [X] People prop: email, dept, etc, number of matches, number of availabilities
+- [x] Signup flow (index -> signup -> profile -> save)
+- [x] identify
+- [x] Save recurring availability --> double, because 2 POST requests
+- [x] Match made / invite sent (server-side)
+- [x] People prop: email, dept, etc, number of matches, number of availabilities
 - [ ] Notifications - onboarding, OOO
 
 Front-end
 - PRETTIFY
-- [X] index-logged-out
-- [X] index-logged-in
-- [X] edit-profile
-- [X] edit-availability
-- [X] make sure each display and browser is good
-- [X] tool tips to onboard users about things
+- [x] index-logged-out
+- [x] index-logged-in
+- [x] edit-profile
+- [x] edit-availability
+- [x] make sure each display and browser is good
+- [x] tool tips to onboard users about things
 - [ ] connect to heroku properly --> calendar still weird
 
 
@@ -128,5 +129,4 @@ Front-end
 - See your Mixpanel calendar
 - Programmatic frequencies
 - Build in OOOs?
-- User request types?
 - Show EMEA/NYC/SF friendly days?
