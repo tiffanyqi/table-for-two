@@ -26,7 +26,7 @@ class MatchTestCase(TestCase):
             email='tiffany@TEST-mixpanel.com',
             department='Success',
             location='San Francisco',
-            timezone='PST (San Francisco, Seattle)',
+            timezone='PST',
             google_hangout='No',
             frequency='Once a week',
             accept_matches='Yes',
@@ -41,7 +41,7 @@ class MatchTestCase(TestCase):
             email='andrew@not-TEST-mixpanel.com',
             department='Engineering',
             location='San Francisco',
-            timezone='PST (San Francisco, Seattle)',
+            timezone='PST',
             google_hangout='No',
             frequency='Once a week',
             accept_matches='Yes',
@@ -56,7 +56,7 @@ class MatchTestCase(TestCase):
             email='pj@TEST-mixpanel.com',
             department='Success',
             location='San Francisco',
-            timezone='PST (San Francisco, Seattle)',
+            timezone='PST',
             google_hangout='Yes',
             frequency='Once a week',
             accept_matches='Yes',
@@ -72,7 +72,7 @@ class MatchTestCase(TestCase):
             department='Success',
             location='Other',
             google_hangout='Yes',
-            timezone='CEST (Barcelona, Madrid, Paris, Amsterdam)',
+            timezone='CEST',
             frequency='Once a week',
             accept_matches='Yes',
             date_entered_mixpanel=datetime.datetime(2016, 06, 01),
@@ -87,7 +87,7 @@ class MatchTestCase(TestCase):
             department='Engineering',
             location='New York',
             google_hangout='Yes',
-            timezone='EST (New York)',
+            timezone='EST',
             frequency='Once a week',
             accept_matches='Yes',
             date_entered_mixpanel=datetime.datetime(2013, 06, 01),
@@ -101,7 +101,7 @@ class MatchTestCase(TestCase):
             email='mike@TEST-mixpanel.com',
             department='Sales',
             location='San Francisco',
-            timezone='PST (San Francisco, Seattle)',
+            timezone='PST',
             google_hangout='Yes',
             frequency='Once a week',
             accept_matches='Yes',
@@ -116,7 +116,7 @@ class MatchTestCase(TestCase):
             email='poop@TEST-mixpanel.com',
             department='Engineering',
             location='San Francisco',
-            timezone='PST (San Francisco, Seattle)',
+            timezone='PST',
             google_hangout='Yes',
             frequency='Once a week',
             accept_matches='No',
@@ -195,18 +195,23 @@ class MatchTestCase(TestCase):
     def previous_matches_setup(self):
         '''
         Order by new hires: [Andrew, Tiffany, Karima, Mike, PJ, Tim]
-        Past: Andrew and Tiffany
-        Past2: Andrew and PJ
-        Past: Tiffany and Andrew
-        Past: Karima and Tim
-        Past: Mike and PJ
-        Past: PJ and Mike
-        Past2: PJ and Andrew
-        Past: Tim and Karima
+        Past: Andrew and PJ
+        Past: Karima and Mike
+        Past2: Andrew and Mike
+        Past2: Karima and Tim
+        Past2: Mike and PJ
+        Future: Andrew and Tiffany
+        Future: Mike and Tim
 
-        Matching algorithm:
-        Future: Andrew and Mike
-        Future: PJ and Tim
+        (Vs original)
+        Past: Andrew and Tiffany
+        Past: Karima and Mike
+        Past: PJ and Tim
+        Past2: Andrew and Mike
+        Future: Andrew and PJ
+        Future: Tiffany and Mike
+        Future: Karima and Tim
+        Future2: Mike and PJ
         '''
         self.init_profiles()
         Availability.objects.create(
@@ -319,19 +324,23 @@ class MatchTestCase(TestCase):
     def future_matches_setup(self):
         '''
         Order by new hires: [Andrew, Tiffany, Karima, Mike, PJ, Tim]
-        Past: Andrew and Tiffany
-        Past2: Andrew and PJ
-        Past: Tiffany and Andrew
-        Past: Karima and Tim
-        Past: Mike and PJ
-        Past: PJ and Mike
-        Past2: PJ and Andrew
-        Past: Tim and Karima
-        Future: Andrew and Mike
-        Future: PJ and Tim
+        Past: Andrew and PJ
+        Past: Karima and Mike
+        Past2: Andrew and Mike
+        Past2: Karima and Tim
+        Past2: Mike and PJ
+        Future: Andrew and Tiffany
+        Future: Mike and Tim
 
-        Matching algorithm:
-        Future2: NOTHING, because Mike has already been matched this week
+        (Vs original)
+        Past: Andrew and Tiffany
+        Past: Karima and Mike
+        Past: PJ and Tim
+        Past2: Andrew and Mike
+        Future: Andrew and PJ
+        Future: Tiffany and Mike
+        Future: Karima and Tim
+        Future2: Mike and PJ
         '''
         self.init_profiles()
         Availability.objects.create(
@@ -816,7 +825,7 @@ class RecurringAvailabilityTest(TestCase):
             email='tiffany@TEST-mixpanel.com',
             department='Success',
             location='San Francisco',
-            timezone='PST (San Francisco, Seattle)',
+            timezone='PST',
             google_hangout='No',
             frequency='Once a week',
             accept_matches='Yes',
@@ -848,18 +857,18 @@ class RecurringAvailabilityTest(TestCase):
         t = Profile.objects.get(first_name='tiffany')
         av1 = Availability.objects.create(
             profile=t,
-            time_available=datetime.datetime(2017, 7, 31, 13, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 7, 31, 20, 0, tzinfo=pytz.UTC),
+            time_available=datetime.datetime(2017, 8, 7, 13, 0, tzinfo=pytz.UTC),
+            time_available_utc=datetime.datetime(2017, 8, 7, 20, 0, tzinfo=pytz.UTC),
         )
         av2 = Availability.objects.create(
             profile=t,
-            time_available=datetime.datetime(2017, 8, 2, 12, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 8, 2, 19, 0, tzinfo=pytz.UTC),
+            time_available=datetime.datetime(2017, 8, 9, 12, 0, tzinfo=pytz.UTC),
+            time_available_utc=datetime.datetime(2017, 8, 9, 19, 0, tzinfo=pytz.UTC),
         )
         av3 = Availability.objects.create(
             profile=t,
-            time_available=datetime.datetime(2017, 8, 4, 10, 0, tzinfo=pytz.UTC),
-            time_available_utc=datetime.datetime(2017, 8, 4, 17, 0, tzinfo=pytz.UTC),
+            time_available=datetime.datetime(2017, 8, 11, 10, 0, tzinfo=pytz.UTC),
+            time_available_utc=datetime.datetime(2017, 8, 11, 17, 0, tzinfo=pytz.UTC),
         )
         self.assertEqual([av1, av2, av3], Command.create_availabilities(Command()))
 
@@ -891,7 +900,7 @@ class HelpersTest(TestCase):
             email='tiffany@TEST-mixpanel.com',
             department='Success',
             location='San Francisco',
-            timezone='PST (San Francisco, Seattle)',
+            timezone='PST',
             google_hangout='No',
             frequency='Once a week',
             date_entered_mixpanel=datetime.datetime(2016, 10, 31),
@@ -906,7 +915,7 @@ class HelpersTest(TestCase):
             department='Engineering',
             location='New York',
             google_hangout='Yes',
-            timezone='EST (New York)',
+            timezone='EST',
             frequency='Once a week',
             date_entered_mixpanel=datetime.datetime(2013, 06, 01),
             distinct_id='tim'
@@ -920,7 +929,7 @@ class HelpersTest(TestCase):
             department='Success',
             location='Other',
             google_hangout='Yes',
-            timezone='CEST (Barcelona, Madrid, Paris, Amsterdam)',
+            timezone='CEST',
             frequency='Once a week',
             date_entered_mixpanel=datetime.datetime(2016, 06, 01),
             distinct_id='karima'
@@ -951,6 +960,6 @@ class HelpersTest(TestCase):
 
     # you'll have to change this
     def test_get_next_weekday(self):
-        self.assertEqual(get_next_weekday('0', '12:00'), datetime.datetime(2017, 7, 31, 12, 0))
-        self.assertEqual(get_next_weekday('1', '1:00'), datetime.datetime(2017, 8, 1, 1, 0))
-        self.assertEqual(get_next_weekday('4', '15:30'), datetime.datetime(2017, 8, 4, 15, 30))
+        self.assertEqual(get_next_weekday('0', '12:00'), datetime.datetime(2017, 8, 7, 12, 0))
+        self.assertEqual(get_next_weekday('1', '1:00'), datetime.datetime(2017, 8, 8, 1, 0))
+        self.assertEqual(get_next_weekday('4', '15:30'), datetime.datetime(2017, 8, 11, 15, 30))
