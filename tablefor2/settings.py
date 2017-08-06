@@ -25,7 +25,7 @@ else:
     MP_TOKEN = '1bba7a08bce236bed9588d02e2387bd1'
     SOCIAL_AUTH_RAISE_EXCEPTIONS = True
     RAISE_EXCEPTIONS = True
-    DEBUG = False
+    DEBUG = True
 
 # Application definition
 
