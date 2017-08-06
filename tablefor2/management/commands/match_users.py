@@ -103,15 +103,16 @@ class Command(BaseCommand):
 
                             # actually do the checking from here
                             if self.check_match(new_availability, old_availability, new_profile, old_profile):
-                                self.match(new_availability, old_availability, new_profile, old_profile)
-                                self.match(old_availability, new_availability, old_profile, new_profile)
+                                self.match(new_availability, old_availability, new_profile, old_profile)  # comment out later
+                                self.match(old_availability, new_availability, old_profile, new_profile)  # comment out later
                                 matches.append([new_availability.time_available_utc, new_profile, old_profile])
 
         # sends hangouts to each group of matches
+        # comment out later
         for match in matches:
             self.send_google_calendar_invite(match[0], match[1], match[2])
 
-        # print(matches)
+        print(matches)
         return matches
 
     # check to see that the two profiles should match
