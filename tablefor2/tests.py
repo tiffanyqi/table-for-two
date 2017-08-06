@@ -578,13 +578,16 @@ class MatchTestCase(TestCase):
         tim = Profile.objects.get(first_name='tim')
         mike = Profile.objects.get(first_name='michael')
         t_av_past = Availability.objects.get(profile=t, time_available_utc=self.past)
-        self.assertEqual(t_av_past.matched_name, None)
-
+        a_av_future = Availability.objects.get(profile=a, time_available_utc=self.future)
+        t_av_future = Availability.objects.get(profile=t, time_available_utc=self.future)
+        k_av_future = Availability.objects.get(profile=k, time_available_utc=self.future)
         matches = [
-            [self.future, a, pj],
-            [self.future, t, tim],
-            [self.future, k, mike]
+            [a_av_future, a, pj],
+            [t_av_future, t, tim],
+            [k_av_future, k, mike]
         ]
+
+        self.assertEqual(t_av_past.matched_name, None)
         self.assertEqual(Command.runs_matches(Command()), matches)
 
     def test_match_and_run_future_first_day(self):
@@ -595,6 +598,8 @@ class MatchTestCase(TestCase):
         mike = Profile.objects.get(first_name='michael')
         t_av_past = Availability.objects.get(profile=t, time_available_utc=self.past)
         a_av_past = Availability.objects.get(profile=a, time_available_utc=self.past)
+        a_av_future = Availability.objects.get(profile=a, time_available_utc=self.future)
+        t_av_future = Availability.objects.get(profile=t, time_available_utc=self.future)
         mike_av_past2 = Availability.objects.get(profile=mike, time_available_utc=self.past2)
 
         self.assertEqual(t_av_past.matched_name, 'andrew huang')
@@ -602,8 +607,8 @@ class MatchTestCase(TestCase):
         self.assertEqual(mike_av_past2.matched_name, None)
 
         matches = [
-            [self.future, a, mike],
-            [self.future, t, tim]
+            [a_av_future, a, mike],
+            [t_av_future, t, tim]
         ]
         self.assertEqual(Command.runs_matches(Command()), matches)
 

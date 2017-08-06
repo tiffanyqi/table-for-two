@@ -39,7 +39,7 @@ class Command(BaseCommand):
     - [x] Check if they haven't been matched before
     - [x] Compares only users who have a different profile.department
     - [x] Checks same location first, else if both open to a google_hangout
-    - [x] Ensure that the 1x/wk frequency has not yet been satisifed
+    - [x] Ensure that the 1x/mo frequency has not yet been satisifed
     - [ ] (v2) Ensure that their chosen frequency has not yet been satisfied
     - [x] If two users finally fits all of these criteria, we'll take the two
     Availability models and set the matched_name and matched_email
@@ -105,14 +105,14 @@ class Command(BaseCommand):
                             if self.check_match(new_availability, old_availability, new_profile, old_profile):
                                 self.match(new_availability, old_availability, new_profile, old_profile)  # comment out later
                                 self.match(old_availability, new_availability, old_profile, new_profile)  # comment out later
-                                matches.append([new_availability.time_available_utc, new_profile, old_profile])
+                                matches.append([new_availability, new_profile, old_profile])
 
         # sends hangouts to each group of matches
         # comment out later
         for match in matches:
             self.send_google_calendar_invite(match[0], match[1], match[2])
 
-        print(matches)
+        # print(matches)
         return matches
 
     # check to see that the two profiles should match
@@ -141,17 +141,21 @@ class Command(BaseCommand):
         original_profile.save()
         self.execute_mixpanel_matches(orig_av, original_profile, matched_profile)
 
-    def send_google_calendar_invite(self, time_available, profile1, profile2):
+    def send_google_calendar_invite(self, availability, profile1, profile2):
         credentials = self.get_credentials()
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('calendar', 'v3', http=http)
 
-        start_time = time_available
+        start_time = availability.time_available_utc
         end_time = start_time + datetime.timedelta(minutes=30)
+        description = "You are now matched for a Table for Two session! The session lasts how every long you'd like, and you can meet "
+        description += "wherever you want. If you're on Google Hangout, please use the hangout link located in this event. If something "
+        description += "comes up and you are unable to make the session, you are welcome to reschedule to a different time--don't be afraid "
+        description += "to reach out to them over Slack! If you have any questions, don't hesitate to Slack Tiffany or Kate Ryan. Have fun!"
 
         event = {
-            'summary': '%s // %s Table for 2' % (profile1.preferred_name, profile2.preferred_name),
-            'description': 'Tablefor2!',
+            'summary': '%s // %s Table for Two via %s' % (profile1.preferred_name, profile2.preferred_name, availability.google_hangout),
+            'description': description,
             'start': {
                 'dateTime': start_time.isoformat(),
                 'timeZone': 'UTC',
@@ -168,7 +172,7 @@ class Command(BaseCommand):
         }
 
         print('Event created between %s and %s at %s' % (profile1.preferred_name, profile2.preferred_name, start_time))
-        event = service.events().insert(calendarId='primary', body=event).execute()
+        # event = service.events().insert(calendarId='primary', body=event).execute()
         # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         self.execute_mixpanel_calendar_invite(profile1, start_time)
         self.execute_mixpanel_calendar_invite(profile2, start_time)
