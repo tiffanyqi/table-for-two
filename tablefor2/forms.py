@@ -52,7 +52,7 @@ class ProfileForm(forms.Form):
     department = forms.ChoiceField(choices=DEPARTMENTS)
     location = forms.ChoiceField(choices=LOCATIONS)
     timezone = forms.ChoiceField(choices=TIMEZONES, help_text='Choose the closest city in your timezone')
-    date_entered_mixpanel = forms.DateField(help_text='(MM/DD/YYYY or YYYY-MM-DD)')
+    date_entered_mixpanel = forms.DateField(help_text='(When did you join Mixpanel? Format in MM/DD/YYYY or YYYY-MM-DD)')
     accept_matches = forms.ChoiceField(choices=BOOLEANS, help_text="Choose 'Yes' if you are just starting!")
     frequency = forms.ChoiceField(choices=FREQUENCY, help_text='How often do you want to participate?')
     google_hangout = forms.ChoiceField(choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to Google Hangout?')

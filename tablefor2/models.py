@@ -26,7 +26,6 @@ class Profile(AbstractBaseUser):
     frequency = models.CharField(null=True, max_length=50)
     number_of_matches = models.IntegerField(default=0)
     date_entered_mixpanel = models.DateField(null=True)
-    # user_request_type = models.CharField(null=True, max_length=50)
 
     picture_url = models.CharField(null=True, max_length=255)
     what_is_your_favorite_animal = models.CharField(null=True, max_length=50)
