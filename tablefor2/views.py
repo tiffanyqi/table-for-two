@@ -115,7 +115,7 @@ def edit_profile(request):
         form = ProfileForm(request.POST or None, request.FILES or None)
     else:
         data = {
-            'preferred_name': profile.preferred_name,
+            'preferred_first_name': profile.preferred_first_name,
             'department': profile.department,
             'accept_matches': profile.accept_matches,
             'location': profile.location,
@@ -152,7 +152,7 @@ def save_profile(request):
                 mp.track(profile.distinct_id, 'Profile Saved')
 
             # save the form info to this profile
-            profile.preferred_name = form.cleaned_data.get('preferred_name')
+            profile.preferred_first_name = form.cleaned_data.get('preferred_first_name')
             profile.department = form.cleaned_data.get('department')
             profile.accept_matches = form.cleaned_data.get('accept_matches')
             profile.google_hangout = form.cleaned_data.get('google_hangout')
@@ -168,7 +168,7 @@ def save_profile(request):
             mp.people_set(profile.distinct_id, {
                 '$first_name': profile.first_name,
                 '$last_name': profile.last_name,
-                'Preferred Name': profile.preferred_name,
+                'Preferred Name': profile.preferred_first_name,
                 '$email': profile.email,
                 'Department': profile.department,
                 'Accepting Matches': profile.accept_matches,

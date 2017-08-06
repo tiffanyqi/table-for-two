@@ -48,7 +48,7 @@ FREQUENCY = (
 
 
 class ProfileForm(forms.Form):
-    preferred_name = forms.CharField(max_length=50, help_text='First name only! Your last name is already recorded :)')
+    preferred_first_name = forms.CharField(max_length=50, help_text='First name only! Your last name is already recorded :)')
     department = forms.ChoiceField(choices=DEPARTMENTS)
     location = forms.ChoiceField(choices=LOCATIONS)
     timezone = forms.ChoiceField(choices=TIMEZONES, help_text='Choose the closest city in your timezone')

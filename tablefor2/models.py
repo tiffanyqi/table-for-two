@@ -6,6 +6,7 @@ from django.utils import timezone
 class Profile(AbstractBaseUser):
     first_name = models.CharField(null=True, max_length=50)
     last_name = models.CharField(null=True, max_length=50)
+    preferred_first_name = models.CharField(null=True, max_length=50)
     email = models.CharField(null=True, max_length=50)
     distinct_id = models.CharField(null=True, max_length=50)
 
@@ -18,7 +19,6 @@ class Profile(AbstractBaseUser):
     date_joined = models.DateTimeField(default=timezone.now())
 
     extra_saved_information = models.BooleanField(default=False)
-    preferred_name = models.CharField(null=True, max_length=50)
     department = models.CharField(null=True, max_length=50)
     location = models.CharField(null=True, max_length=50)
     timezone = models.CharField(null=True, max_length=50)

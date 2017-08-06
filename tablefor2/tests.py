@@ -21,7 +21,7 @@ class MatchTestCase(TestCase):
         Profile.objects.create(
             first_name='tiffany',
             last_name='qi',
-            preferred_name='tiffany',
+            preferred_first_name='tiffany',
             email='tiffany@TEST-mixpanel.com',
             department='Success',
             location='San Francisco',
@@ -36,7 +36,7 @@ class MatchTestCase(TestCase):
         Profile.objects.create(
             first_name='andrew',
             last_name='huang',
-            preferred_name='andrew',
+            preferred_first_name='andrew',
             email='andrew@not-TEST-mixpanel.com',
             department='Engineering',
             location='San Francisco',
@@ -51,7 +51,7 @@ class MatchTestCase(TestCase):
         Profile.objects.create(
             first_name='philip',
             last_name='ople',
-            preferred_name='pj',
+            preferred_first_name='pj',
             email='pj@TEST-mixpanel.com',
             department='Success',
             location='San Francisco',
@@ -66,7 +66,7 @@ class MatchTestCase(TestCase):
         Profile.objects.create(
             first_name='karima',
             last_name='el moujahid',
-            preferred_name='karima',
+            preferred_first_name='karima',
             email='karima@TEST-mixpanel.com',
             department='Success',
             location='Other',
@@ -81,7 +81,7 @@ class MatchTestCase(TestCase):
         Profile.objects.create(
             first_name='tim',
             last_name='trefen',
-            preferred_name='tim',
+            preferred_first_name='tim',
             email='tim@TEST-mixpanel.com',
             department='Engineering',
             location='New York',
@@ -96,7 +96,7 @@ class MatchTestCase(TestCase):
         Profile.objects.create(
             first_name='michael',
             last_name='walker',
-            preferred_name='mike',
+            preferred_first_name='mike',
             email='mike@TEST-mixpanel.com',
             department='Sales',
             location='San Francisco',
@@ -111,7 +111,7 @@ class MatchTestCase(TestCase):
         Profile.objects.create(
             first_name='poop',
             last_name='test',
-            preferred_name='poop',
+            preferred_first_name='poop',
             email='poop@TEST-mixpanel.com',
             department='Engineering',
             location='San Francisco',
@@ -775,7 +775,7 @@ class RecurringAvailabilityTest(TestCase):
         Profile.objects.create(
             first_name='tiffany',
             last_name='qi',
-            preferred_name='tiffany',
+            preferred_first_name='tiffany',
             email='tiffany@TEST-mixpanel.com',
             department='Success',
             location='San Francisco',
@@ -850,7 +850,7 @@ class HelpersTest(TestCase):
         Profile.objects.create(
             first_name='tiffany',
             last_name='qi',
-            preferred_name='tiffany',
+            preferred_first_name='tiffany',
             email='tiffany@TEST-mixpanel.com',
             department='Success',
             location='San Francisco',
@@ -864,7 +864,7 @@ class HelpersTest(TestCase):
         Profile.objects.create(
             first_name='tim',
             last_name='trefen',
-            preferred_name='tim',
+            preferred_first_name='tim',
             email='tim@TEST-mixpanel.com',
             department='Engineering',
             location='New York',
@@ -878,7 +878,7 @@ class HelpersTest(TestCase):
         Profile.objects.create(
             first_name='karima',
             last_name='el moujahid',
-            preferred_name='karima',
+            preferred_first_name='karima',
             email='karima@TEST-mixpanel.com',
             department='Success',
             location='Other',

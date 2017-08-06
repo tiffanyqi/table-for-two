@@ -123,7 +123,7 @@ class Command(BaseCommand):
 
     # actually match the two
     def match(self, orig_av, matched_av, original_profile, matched_profile):
-        orig_av.matched_name = matched_profile.preferred_name + ' ' + matched_profile.last_name
+        orig_av.matched_name = matched_profile.preferred_first_name + ' ' + matched_profile.last_name
         orig_av.matched_email = matched_profile.email
         orig_av.picture_url = matched_profile.picture_url
         orig_av.what_is_your_favorite_animal = matched_profile.what_is_your_favorite_animal
@@ -154,7 +154,7 @@ class Command(BaseCommand):
         description += "to reach out to them over Slack! If you have any questions, don't hesitate to Slack Tiffany or Kate Ryan. Have fun!"
 
         event = {
-            'summary': '%s // %s Table for Two via %s' % (profile1.preferred_name, profile2.preferred_name, availability.google_hangout),
+            'summary': '%s // %s Table for Two via %s' % (profile1.preferred_first_name, profile2.preferred_first_name, availability.google_hangout),
             'description': description,
             'start': {
                 'dateTime': start_time.isoformat(),
@@ -171,7 +171,7 @@ class Command(BaseCommand):
             ],
         }
 
-        print('Event created between %s and %s at %s' % (profile1.preferred_name, profile2.preferred_name, start_time))
+        print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
         # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         self.execute_mixpanel_calendar_invite(profile1, start_time)
