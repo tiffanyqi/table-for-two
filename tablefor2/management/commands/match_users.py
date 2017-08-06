@@ -39,7 +39,7 @@ class Command(BaseCommand):
     - [x] Check if they haven't been matched before
     - [x] Compares only users who have a different profile.department
     - [x] Checks same location first, else if both open to a google_hangout
-    - [x] Ensure that the 1x/wk frequency has not yet been satisifed
+    - [x] Ensure that the 1x/mo frequency has not yet been satisifed
     - [ ] (v2) Ensure that their chosen frequency has not yet been satisfied
     - [x] If two users finally fits all of these criteria, we'll take the two
     Availability models and set the matched_name and matched_email
@@ -47,15 +47,9 @@ class Command(BaseCommand):
     '''
 
     def handle(self, *args, **options):
-        today = datetime.datetime.utcnow().date()
         self.delete_availabilities()
         self.create_availabilities()
-        # somehow incorporate user_request_type
-        avs = Availability.objects.filter(time_available_utc__gte=today).order_by('time_available_utc', '-profile__date_entered_mixpanel')
-
-        # dictionary of availability objects with datetime key
-        future_availabilities = self.setup(avs)
-        return self.runs_matches(future_availabilities)
+        return self.runs_matches()
 
     # creates availabilities from recurring availabilities
     def create_availabilities(self):
@@ -90,22 +84,31 @@ class Command(BaseCommand):
                 print('deleted %s' % profile)
                 av.delete()
 
-    # actually runs the cron job
-    def runs_matches(self, future_availabilities):
+    # actually runs the cron job, goes through new profiles and old profiles and sees
+    # if the availabilities match at all
+    def runs_matches(self):
         matches = []
-        # actually do the matching from here
-        for timestamp, availability_list in future_availabilities.iteritems():
-            rest_count = 0
-            for orig_av in availability_list:
-                rest_count += 1
-                for matched_av in availability_list[rest_count:]:
-                    original_profile = Profile.objects.get(email=orig_av.profile)
-                    matched_profile = Profile.objects.get(email=matched_av.profile)
-                    if self.check_match(orig_av, matched_av, original_profile, matched_profile):
-                        self.match(orig_av, matched_av, original_profile, matched_profile)
-                        self.match(matched_av, orig_av, matched_profile, original_profile)
-                        matches.append([timestamp, original_profile, matched_profile])
+        today = datetime.datetime.utcnow().date()
+
+        # iterate through profiles
+        for new_profile in Profile.objects.filter(accept_matches='Yes').order_by('-date_entered_mixpanel'):
+            new_profile_availabilities = Availability.objects.filter(profile=new_profile, time_available_utc__gte=today)
+            for old_profile in Profile.objects.filter(accept_matches='Yes', date_entered_mixpanel__lt=new_profile.date_entered_mixpanel).order_by('date_entered_mixpanel'):
+                old_profile_availabilities = Availability.objects.filter(profile=old_profile, time_available_utc__gte=today)
+
+                # check each av in the profile
+                for new_availability in new_profile_availabilities:
+                    for old_availability in old_profile_availabilities:
+                        if new_availability.time_available_utc == old_availability.time_available_utc:
+
+                            # actually do the checking from here
+                            if self.check_match(new_availability, old_availability, new_profile, old_profile):
+                                self.match(new_availability, old_availability, new_profile, old_profile)  # comment out later
+                                self.match(old_availability, new_availability, old_profile, new_profile)  # comment out later
+                                matches.append([new_availability, new_profile, old_profile])
+
         # sends hangouts to each group of matches
+        # comment out later
         for match in matches:
             self.send_google_calendar_invite(match[0], match[1], match[2])
 
@@ -120,7 +123,7 @@ class Command(BaseCommand):
 
     # actually match the two
     def match(self, orig_av, matched_av, original_profile, matched_profile):
-        orig_av.matched_name = matched_profile.preferred_name + ' ' + matched_profile.last_name
+        orig_av.matched_name = matched_profile.preferred_first_name + ' ' + matched_profile.last_name
         orig_av.matched_email = matched_profile.email
         orig_av.picture_url = matched_profile.picture_url
         orig_av.what_is_your_favorite_animal = matched_profile.what_is_your_favorite_animal
@@ -130,7 +133,7 @@ class Command(BaseCommand):
         original_profile.number_of_matches += 1
 
         if original_profile.location == matched_profile.location:
-            orig_av.google_hangout = matched_av.google_hangout = "In Person"
+            orig_av.google_hangout = matched_av.google_hangout = "in person"
         else:
             orig_av.google_hangout = matched_av.google_hangout = "Google Hangout"
 
@@ -138,17 +141,21 @@ class Command(BaseCommand):
         original_profile.save()
         self.execute_mixpanel_matches(orig_av, original_profile, matched_profile)
 
-    def send_google_calendar_invite(self, timestamp, profile1, profile2):
+    def send_google_calendar_invite(self, availability, profile1, profile2):
         credentials = self.get_credentials()
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('calendar', 'v3', http=http)
 
-        start_time = datetime.datetime.fromtimestamp(timestamp)
+        start_time = availability.time_available_utc
         end_time = start_time + datetime.timedelta(minutes=30)
+        description = "You are now matched for a Table for Two session! The session lasts how every long you'd like, and you can meet "
+        description += "wherever you want. If you're on Google Hangout, please use the hangout link located in this event. If something "
+        description += "comes up and you are unable to make the session, you are welcome to reschedule to a different time--don't be afraid "
+        description += "to reach out to them over Slack! If you have any questions, don't hesitate to Slack Tiffany or Kate Ryan. Have fun!"
 
         event = {
-            'summary': '%s // %s Table for 2' % (profile1.preferred_name, profile2.preferred_name),
-            'description': 'Tablefor2!',
+            'summary': '%s // %s Table for Two via %s' % (profile1.preferred_first_name, profile2.preferred_first_name, availability.google_hangout),
+            'description': description,
             'start': {
                 'dateTime': start_time.isoformat(),
                 'timeZone': 'UTC',
@@ -164,9 +171,9 @@ class Command(BaseCommand):
             ],
         }
 
-        print('Event created between %s and %s at %s' % (profile1.preferred_name, profile2.preferred_name, start_time))
-        # event = service.events().insert(calendarId='primary', body=event).execute()
-        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
+        event = service.events().insert(calendarId='primary', body=event).execute()
+        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         self.execute_mixpanel_calendar_invite(profile1, start_time)
         self.execute_mixpanel_calendar_invite(profile2, start_time)
 
@@ -192,7 +199,7 @@ class Command(BaseCommand):
     def check_previous_matches(self, profile1, profile2):
         avs = Availability.objects.filter(profile=profile1).exclude(matched_name=None)
         previous_matches = avs.values_list('matched_email', flat=True)
-        return profile2.email not in previous_matches
+        return profile2.email not in previous_matches and profile1.email != profile2.email
 
     # check to see that this availability is not matched yet
     def check_not_currently_matched(self, av):
@@ -205,17 +212,6 @@ class Command(BaseCommand):
         end_four_weeks = start_week + timedelta(days=28)
         avs = Availability.objects.filter(profile=profile, time_available_utc__gte=start_week, time_available_utc__lte=end_four_weeks).exclude(matched_name=None)
         return not avs
-
-    # sets up dictionary of timestamps to a list of availabilities
-    def setup(self, avs):
-        future_availabilities = {}
-        for availability in avs:
-            timestamp = (availability.time_available_utc-datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)).total_seconds()
-            if timestamp in future_availabilities:
-                future_availabilities[timestamp].append(availability)
-            else:
-                future_availabilities[timestamp] = [availability]
-        return future_availabilities
 
     # taken from https://developers.google.com/google-apps/calendar/quickstart/python
     def get_credentials(self):

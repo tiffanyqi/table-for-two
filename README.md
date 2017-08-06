@@ -35,9 +35,9 @@ Matching
 - [x] Change everything to proper timezone
 - [x] Option to turn off matching if you want to stop or you're OOO
 - [x] Refactor to once a month
-- [ ] Change to new
+- [x] Change to new
 - [ ] Run the actual cron job
-- [ ] Test
+- [x] Test
 
 Mixpanel
 - Goal: acquisition
@@ -62,8 +62,9 @@ Front-end
 ## Matching process
 - For every recurring availability, create an Availability for that user (date and time of beginning 1/2 hour, assuming timeslot is half hour)
 - Runs a thing at 3pm the day before
-- First pick are the newer Mixpanel hires
-- Check for:
+- Organize all the users based on their hire date
+- Match the newest employees with the most senior employees
+- For each pairing, check for:
     - If a user is currently accepting matches
 	- Only if fits their frequency of 1x/wk (V2 will be programmatic)
 	- People who are available at the same time
@@ -72,6 +73,8 @@ Front-end
 	- Those who are in the same location (last, GHangout)
 	- User can choose between veterans or new hires
 - If that user is matched, then we'll set the name and email equal to the match
+- If the user is not matched, keep going to the next least senior employee
+- If someone does not have a match continuing this process, check the next person
 
 
 ## Mixpanel Implementation
