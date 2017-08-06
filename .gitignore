@@ -4,6 +4,7 @@ staticfiles
 .coverage
 .env
 venv
+tablefor2.log
 
 # secrets
 service_secret.json
