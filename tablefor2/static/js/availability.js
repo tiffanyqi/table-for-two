@@ -2,8 +2,10 @@ $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip({
     container : 'body'
   });
-  toggleSelected();
-  populateTimes();
+  if ($('h1').text() !== 'Welcome to Table for Two!' && $('h1').text() !== 'Edit Your Profile') {
+    toggleSelected();
+    populateTimes();
+  }
 
   // makes an AJAX request to send recurring over to django
   $('#availability-btn').click(function() {
