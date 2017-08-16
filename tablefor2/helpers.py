@@ -1,4 +1,4 @@
-from tablefor2.forms import *
+from tablefor2.forms import TIMEZONES
 from tablefor2.models import *
 
 import datetime
