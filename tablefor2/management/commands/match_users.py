@@ -19,7 +19,6 @@ import os
 try:
     import argparse
     flags = tools.argparser.parse_args([])
-    flags.noauth_local_webserver = True
     # flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
 
 except ImportError:
@@ -241,6 +240,7 @@ class Command(BaseCommand):
 
             flow.user_agent = APPLICATION_NAME
             if flags:
+                flags.noauth_local_webserver = True
                 credentials = tools.run_flow(flow, store, flags)
             else:  # Needed only for compatibility with Python 2.6
                 credentials = tools.run(flow, store)
