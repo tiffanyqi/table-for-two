@@ -15,11 +15,13 @@ from tablefor2.settings import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE
 import datetime
 import httplib2
 import os
-import pytz
 
 try:
     import argparse
     flags = tools.argparser.parse_args([])
+    flags.noauth_local_webserver = True
+    # flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
+
 except ImportError:
     flags = None
 
