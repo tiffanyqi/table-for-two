@@ -48,19 +48,20 @@ class Command(BaseCommand):
     '''
 
     def handle(self, *args, **options):
-        self.delete_availabilities()
-        self.create_availabilities()
+        today = datetime.datetime.utcnow().date()
+        self.delete_availabilities(today)
+        self.create_availabilities(today)
         return self.runs_matches()
 
     # creates availabilities from recurring availabilities
-    def create_availabilities(self):
+    def create_availabilities(self, today):
         availabilities = []
         recurrings = RecurringAvailability.objects.all()
         for rec_av in recurrings:
             if rec_av.profile.accept_matches == "Yes":
                 day = rec_av.day  # num of week
                 time = determine_ampm(rec_av.time)  # HH:MM, miltary
-                time_available = get_next_weekday(day, time)
+                time_available = get_next_weekday(today, day, time)
                 utc = calculate_utc(rec_av.profile, time_available)
                 try:
                     av = Availability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
@@ -71,8 +72,7 @@ class Command(BaseCommand):
         return availabilities
 
     # delete availabilities that were there before but not in recurrings anymore
-    def delete_availabilities(self):
-        today = datetime.datetime.utcnow().date()
+    def delete_availabilities(self, today):
         availabilities = Availability.objects.filter(time_available_utc__gte=today)
         for av in availabilities:
             profile = av.profile
@@ -173,7 +173,7 @@ class Command(BaseCommand):
         }
 
         print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
-        event = service.events().insert(calendarId='primary', body=event).execute()
+        # event = service.events().insert(calendarId='primary', body=event).execute()
         # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         self.execute_mixpanel_calendar_invite(profile1, start_time)
         self.execute_mixpanel_calendar_invite(profile2, start_time)
@@ -195,6 +195,7 @@ class Command(BaseCommand):
     # check to see that the departments aren't the same
     def check_departments(self, profile1, profile2):
         return profile1.department != profile2.department
+        # return True  # temporarily for the support change
 
     # get all previous matches in list form from a profile and check they weren't there before [TEST]
     def check_previous_matches(self, profile1, profile2):

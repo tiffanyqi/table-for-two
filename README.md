@@ -10,6 +10,11 @@ Table for Two is a web app that allows Mixpanelers the chance to meet with other
 
 ## TODOs
 
+Be sure to...
+- remove department from calculation
+- send emails upon matching
+- fully test with real test cases
+
 Signup
 - [x] Create database and model
 - [x] Create signup flow
@@ -19,7 +24,6 @@ Signup
 - [x] Save user in database
 - [x] Create profile page
 - [x] Show existing profile in form
-- [ ] Test
 
 Availability / Recurring Availability
 - [x] Create front-end for availabilities
@@ -36,8 +40,8 @@ Matching
 - [x] Option to turn off matching if you want to stop or you're OOO
 - [x] Refactor to once a month
 - [x] Change to new
-- [ ] Run the actual cron job
 - [x] Test
+- [ ] Create a cron job
 
 Mixpanel
 - Goal: acquisition
@@ -46,6 +50,7 @@ Mixpanel
 - [x] Save recurring availability --> double, because 2 POST requests
 - [x] Match made / invite sent (server-side)
 - [x] People prop: email, dept, etc, number of matches, number of availabilities
+- [x] Test
 - [ ] Notifications - onboarding, OOO
 
 Front-end
@@ -56,7 +61,7 @@ Front-end
 - [x] edit-availability
 - [x] make sure each display and browser is good
 - [x] tool tips to onboard users about things
-- [ ] connect to heroku properly --> calendar still weird
+- [x] connect to heroku properly
 
 
 ## Matching process
