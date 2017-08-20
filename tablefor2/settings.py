@@ -10,11 +10,11 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ['TF2_DJANGO_SECRET_KEY']
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['TF2_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['TF2_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
-
+MATCHING_KEY = os.environ['TF2_KEY_FOR_MATCHING']
+MATCHING_SECRET = os.environ['TF2_SECRET_FOR_MATCHING']
 
 TF2_PROD = os.environ['TF2_PROD']
 if TF2_PROD == 'prod':

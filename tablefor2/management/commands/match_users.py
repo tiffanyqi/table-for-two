@@ -10,7 +10,7 @@ from mixpanel import Mixpanel
 
 from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
 from tablefor2.models import *
-from tablefor2.settings import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET, MP_TOKEN
+from tablefor2.settings import MATCHING_KEY, MATCHING_SECRET, MP_TOKEN
 
 import datetime
 import httplib2
@@ -48,19 +48,20 @@ class Command(BaseCommand):
     '''
 
     def handle(self, *args, **options):
-        self.delete_availabilities()
-        self.create_availabilities()
+        today = datetime.datetime.utcnow().date()
+        self.delete_availabilities(today)
+        self.create_availabilities(today)
         return self.runs_matches()
 
     # creates availabilities from recurring availabilities
-    def create_availabilities(self):
+    def create_availabilities(self, today):
         availabilities = []
         recurrings = RecurringAvailability.objects.all()
         for rec_av in recurrings:
             if rec_av.profile.accept_matches == "Yes":
                 day = rec_av.day  # num of week
                 time = determine_ampm(rec_av.time)  # HH:MM, miltary
-                time_available = get_next_weekday(day, time)
+                time_available = get_next_weekday(today, day, time)
                 utc = calculate_utc(rec_av.profile, time_available)
                 try:
                     av = Availability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
@@ -71,8 +72,7 @@ class Command(BaseCommand):
         return availabilities
 
     # delete availabilities that were there before but not in recurrings anymore
-    def delete_availabilities(self):
-        today = datetime.datetime.utcnow().date()
+    def delete_availabilities(self, today):
         availabilities = Availability.objects.filter(time_available_utc__gte=today)
         for av in availabilities:
             profile = av.profile
@@ -109,7 +109,6 @@ class Command(BaseCommand):
                                 matches.append([new_availability, new_profile, old_profile])
 
         # sends hangouts to each group of matches
-        # comment out later
         for match in matches:
             self.send_google_calendar_invite(match[0], match[1], match[2])
 
@@ -195,6 +194,7 @@ class Command(BaseCommand):
     # check to see that the departments aren't the same
     def check_departments(self, profile1, profile2):
         return profile1.department != profile2.department
+        # return True  # temporarily for the support change
 
     # get all previous matches in list form from a profile and check they weren't there before [TEST]
     def check_previous_matches(self, profile1, profile2):
@@ -233,8 +233,8 @@ class Command(BaseCommand):
         store = Storage(credential_path)
         credentials = store.get()
         if not credentials or credentials.invalid:
-            flow = client.OAuth2WebServerFlow(client_id=SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
-                                              client_secret=SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
+            flow = client.OAuth2WebServerFlow(client_id=MATCHING_KEY,
+                                              client_secret=MATCHING_SECRET,
                                               scope='https://www.googleapis.com/auth/calendar',
                                               redirect_uris='http://localhost, https://frozen-harbor-29806.herokuapp, http://frozen-harbor-29806.herokuapp')
 
