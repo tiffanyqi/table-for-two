@@ -109,7 +109,6 @@ class Command(BaseCommand):
                                 matches.append([new_availability, new_profile, old_profile])
 
         # sends hangouts to each group of matches
-        # comment out later
         for match in matches:
             self.send_google_calendar_invite(match[0], match[1], match[2])
 

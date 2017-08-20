@@ -14,6 +14,7 @@ Be sure to...
 - remove department from calculation
 - send emails upon matching
 - fully test with real test cases
+- print out matched output before actually match
 
 Signup
 - [x] Create database and model
