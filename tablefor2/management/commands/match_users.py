@@ -10,7 +10,7 @@ from mixpanel import Mixpanel
 
 from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
 from tablefor2.models import *
-from tablefor2.settings import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET, MP_TOKEN
+from tablefor2.settings import MATCHING_KEY, MATCHING_SECRET, MP_TOKEN
 
 import datetime
 import httplib2
@@ -172,8 +172,8 @@ class Command(BaseCommand):
         }
 
         print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
-        # event = service.events().insert(calendarId='primary', body=event).execute()
-        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        event = service.events().insert(calendarId='primary', body=event).execute()
+        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         self.execute_mixpanel_calendar_invite(profile1, start_time)
         self.execute_mixpanel_calendar_invite(profile2, start_time)
 
@@ -193,8 +193,8 @@ class Command(BaseCommand):
 
     # check to see that the departments aren't the same
     def check_departments(self, profile1, profile2):
-        # return profile1.department != profile2.department
-        return True  # temporarily for the support change
+        return profile1.department != profile2.department
+        # return True  # temporarily for the support change
 
     # get all previous matches in list form from a profile and check they weren't there before [TEST]
     def check_previous_matches(self, profile1, profile2):
@@ -233,8 +233,8 @@ class Command(BaseCommand):
         store = Storage(credential_path)
         credentials = store.get()
         if not credentials or credentials.invalid:
-            flow = client.OAuth2WebServerFlow(client_id=SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
-                                              client_secret=SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
+            flow = client.OAuth2WebServerFlow(client_id=MATCHING_KEY,
+                                              client_secret=MATCHING_SECRET,
                                               scope='https://www.googleapis.com/auth/calendar',
                                               redirect_uris='http://localhost, https://frozen-harbor-29806.herokuapp, http://frozen-harbor-29806.herokuapp')
 

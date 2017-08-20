@@ -13,6 +13,9 @@ Table for Two is a web app that allows Mixpanelers the chance to meet with other
 Be sure to...
 - bring back department from calculations
 - print out matched output before actually match
+- add prod to the token
+- delete all previous people in heroku
+- emails send in prod
 
 Signup
 - [x] Create database and model
