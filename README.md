@@ -11,9 +11,7 @@ Table for Two is a web app that allows Mixpanelers the chance to meet with other
 ## TODOs
 
 Be sure to...
-- remove department from calculation
-- send emails upon matching
-- fully test with real test cases
+- bring back department from calculations
 - print out matched output before actually match
 
 Signup

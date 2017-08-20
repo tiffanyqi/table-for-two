@@ -173,7 +173,7 @@ class Command(BaseCommand):
 
         print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         self.execute_mixpanel_calendar_invite(profile1, start_time)
         self.execute_mixpanel_calendar_invite(profile2, start_time)
 
@@ -193,8 +193,8 @@ class Command(BaseCommand):
 
     # check to see that the departments aren't the same
     def check_departments(self, profile1, profile2):
-        return profile1.department != profile2.department
-        # return True  # temporarily for the support change
+        # return profile1.department != profile2.department
+        return True  # temporarily for the support change
 
     # get all previous matches in list form from a profile and check they weren't there before [TEST]
     def check_previous_matches(self, profile1, profile2):
