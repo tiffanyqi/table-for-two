@@ -18,7 +18,7 @@ MATCHING_SECRET = os.environ['TF2_SECRET_FOR_MATCHING']
 
 TF2_PROD = os.environ['TF2_PROD']
 if TF2_PROD == 'prod':
-    MP_TOKEN = '1bba7a08bce236bed9588d02e2387bd1'
+    MP_TOKEN = 'f4665b292fe71c1ae9dc124fb8531ab4'
     SOCIAL_AUTH_RAISE_EXCEPTIONS = False
     RAISE_EXCEPTIONS = False
     DEBUG = False
@@ -181,7 +181,7 @@ DATABASES['default'].update(db_from_env)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Allow all host headers
-ALLOWED_HOSTS = ['localhost', 'frozen-harbor-29806.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', 'tablefortwo.herokuapp.com/']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/

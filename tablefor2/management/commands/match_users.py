@@ -112,7 +112,7 @@ class Command(BaseCommand):
         for match in matches:
             self.send_google_calendar_invite(match[0], match[1], match[2])
 
-        # print(matches)
+        print(matches)
         return matches
 
     # check to see that the two profiles should match
@@ -172,8 +172,8 @@ class Command(BaseCommand):
         }
 
         print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
-        event = service.events().insert(calendarId='primary', body=event).execute()
-        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        # event = service.events().insert(calendarId='primary', body=event).execute()
+        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         self.execute_mixpanel_calendar_invite(profile1, start_time)
         self.execute_mixpanel_calendar_invite(profile2, start_time)
 
@@ -193,8 +193,8 @@ class Command(BaseCommand):
 
     # check to see that the departments aren't the same
     def check_departments(self, profile1, profile2):
-        return profile1.department != profile2.department
-        # return True  # temporarily for the support change
+        # return profile1.department != profile2.department
+        return True  # temporarily for the support change
 
     # get all previous matches in list form from a profile and check they weren't there before [TEST]
     def check_previous_matches(self, profile1, profile2):
@@ -236,7 +236,7 @@ class Command(BaseCommand):
             flow = client.OAuth2WebServerFlow(client_id=MATCHING_KEY,
                                               client_secret=MATCHING_SECRET,
                                               scope='https://www.googleapis.com/auth/calendar',
-                                              redirect_uris='http://localhost, https://frozen-harbor-29806.herokuapp, http://frozen-harbor-29806.herokuapp')
+                                              redirect_uris='http://localhost, https://tablefortwo.herokuapp, http://tablefortwo.herokuapp')
 
             flow.user_agent = APPLICATION_NAME
             if flags:

@@ -8,6 +8,12 @@ Table for Two is a web app that allows Mixpanelers the chance to meet with other
 - Matches folks automatically and puts the event on the calendar
 
 
+## How to run the matching system
+- Go to Heroku
+- Run python manage.py match_users in the console
+- Copy the output of the URL into the console
+
+
 ## TODOs
 
 Be sure to...
@@ -16,6 +22,7 @@ Be sure to...
 - add prod to the token
 - delete all previous people in heroku
 - emails send in prod
+- change domain
 
 Signup
 - [x] Create database and model
