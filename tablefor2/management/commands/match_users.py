@@ -148,10 +148,10 @@ class Command(BaseCommand):
 
         start_time = availability.time_available_utc
         end_time = start_time + datetime.timedelta(minutes=30)
-        description = "You are now matched for a Table for Two session! The session lasts how every long you'd like, and you can meet "
+        description = "You are now matched for a Table for Two session! The session lasts how ever long you'd like, and you can meet "
         description += "wherever you want. If you're on Google Hangout, please use the hangout link located in this event. If something "
         description += "comes up and you are unable to make the session, you are welcome to reschedule to a different time--don't be afraid "
-        description += "to reach out to them over Slack! If you have any questions, don't hesitate to Slack Tiffany or Kate Ryan. Have fun!"
+        description += "to reach out to them over Slack! If you have any questions, don't hesitate to Slack Tiffany Qi or Kate Ryan. Have fun!"
 
         event = {
             'summary': '%s // %s Table for Two via %s' % (profile1.preferred_first_name, profile2.preferred_first_name, availability.google_hangout),
