@@ -112,7 +112,7 @@ class Command(BaseCommand):
         for match in matches:
             self.send_google_calendar_invite(match[0], match[1], match[2])
 
-        # print(matches)
+        print(matches)
         return matches
 
     # check to see that the two profiles should match
@@ -148,10 +148,10 @@ class Command(BaseCommand):
 
         start_time = availability.time_available_utc
         end_time = start_time + datetime.timedelta(minutes=30)
-        description = "You are now matched for a Table for Two session! The session lasts how every long you'd like, and you can meet "
+        description = "You are now matched for a Table for Two session! The session lasts how ever long you'd like, and you can meet "
         description += "wherever you want. If you're on Google Hangout, please use the hangout link located in this event. If something "
         description += "comes up and you are unable to make the session, you are welcome to reschedule to a different time--don't be afraid "
-        description += "to reach out to them over Slack! If you have any questions, don't hesitate to Slack Tiffany or Kate Ryan. Have fun!"
+        description += "to reach out to them over Slack! If you have any questions, don't hesitate to Slack Tiffany Qi or Kate Ryan. Have fun!"
 
         event = {
             'summary': '%s // %s Table for Two via %s' % (profile1.preferred_first_name, profile2.preferred_first_name, availability.google_hangout),
@@ -172,8 +172,8 @@ class Command(BaseCommand):
         }
 
         print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
-        event = service.events().insert(calendarId='primary', body=event).execute()
-        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        # event = service.events().insert(calendarId='primary', body=event).execute()
+        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         self.execute_mixpanel_calendar_invite(profile1, start_time)
         self.execute_mixpanel_calendar_invite(profile2, start_time)
 
@@ -193,8 +193,8 @@ class Command(BaseCommand):
 
     # check to see that the departments aren't the same
     def check_departments(self, profile1, profile2):
-        return profile1.department != profile2.department
-        # return True  # temporarily for the support change
+        # return profile1.department != profile2.department
+        return True  # temporarily for the support change
 
     # get all previous matches in list form from a profile and check they weren't there before [TEST]
     def check_previous_matches(self, profile1, profile2):
@@ -236,7 +236,7 @@ class Command(BaseCommand):
             flow = client.OAuth2WebServerFlow(client_id=MATCHING_KEY,
                                               client_secret=MATCHING_SECRET,
                                               scope='https://www.googleapis.com/auth/calendar',
-                                              redirect_uris='http://localhost, https://frozen-harbor-29806.herokuapp, http://frozen-harbor-29806.herokuapp')
+                                              redirect_uris='http://localhost, https://tablefortwo.herokuapp, http://tablefortwo.herokuapp')
 
             flow.user_agent = APPLICATION_NAME
             if flags:
