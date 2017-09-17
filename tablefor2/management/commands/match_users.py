@@ -1,4 +1,5 @@
 from __future__ import print_function
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 
 from apiclient import discovery
@@ -91,7 +92,7 @@ class Command(BaseCommand):
         matches = []
         today = datetime.datetime.utcnow().date()
 
-        # iterate through profiles
+        # iterate through all profiles regardless of availability
         for new_profile in Profile.objects.filter(accept_matches='Yes').order_by('-date_entered_mixpanel'):
             new_profile_availabilities = Availability.objects.filter(profile=new_profile, time_available_utc__gte=today)
             for old_profile in Profile.objects.filter(accept_matches='Yes', date_entered_mixpanel__lt=new_profile.date_entered_mixpanel).order_by('date_entered_mixpanel'):
@@ -104,15 +105,14 @@ class Command(BaseCommand):
 
                             # actually do the checking from here
                             if self.check_match(new_availability, old_availability, new_profile, old_profile):
-                                self.match(new_availability, old_availability, new_profile, old_profile)  # comment out later
-                                self.match(old_availability, new_availability, old_profile, new_profile)  # comment out later
+                                self.match(new_availability, old_availability, new_profile, old_profile)
+                                self.match(old_availability, new_availability, old_profile, new_profile)
                                 matches.append([new_availability, new_profile, old_profile])
 
         # sends hangouts to each group of matches
         for match in matches:
             self.send_google_calendar_invite(match[0], match[1], match[2])
 
-        print(matches)
         return matches
 
     # check to see that the two profiles should match
@@ -173,7 +173,7 @@ class Command(BaseCommand):
 
         print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         self.execute_mixpanel_calendar_invite(profile1, start_time)
         self.execute_mixpanel_calendar_invite(profile2, start_time)
 
@@ -193,8 +193,7 @@ class Command(BaseCommand):
 
     # check to see that the departments aren't the same
     def check_departments(self, profile1, profile2):
-        # return profile1.department != profile2.department
-        return True  # temporarily for the support change
+        return profile1.department != profile2.department
 
     # get all previous matches in list form from a profile and check they weren't there before [TEST]
     def check_previous_matches(self, profile1, profile2):
@@ -209,10 +208,14 @@ class Command(BaseCommand):
     # check to see that the frequency has not been matched yet, for now based on 1x/mo
     def check_frequency(self, av, profile):
         av_time = av.time_available_utc
-        start_week = av_time - timedelta(days=av_time.weekday())
-        end_four_weeks = start_week + timedelta(days=28)
-        avs = Availability.objects.filter(profile=profile, time_available_utc__gte=start_week, time_available_utc__lte=end_four_weeks).exclude(matched_name=None)
-        return not avs
+        try:
+            last_matched_av = Availability.objects.filter(profile=profile).exclude(matched_name=None).latest('time_available_utc')
+            # compare the time between the last accepted av and this av
+            days_between = abs((av_time - last_matched_av.time_available_utc).days)
+            return days_between >= 28
+
+        except ObjectDoesNotExist:  # if no latest_matched_av, it'll be true for sure
+            return True
 
     # taken from https://developers.google.com/google-apps/calendar/quickstart/python
     def get_credentials(self):

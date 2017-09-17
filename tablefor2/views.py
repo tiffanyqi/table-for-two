@@ -177,7 +177,7 @@ def save_profile(request):
                 'Frequency': profile.frequency,
                 'Date Entered Mixpanel': str(profile.date_entered_mixpanel),
                 'Number of Matches': profile.number_of_matches,
-                'Dated Joined': str(profile.date_joined)
+                'Date Joined': str(profile.date_joined)
             })
 
             # add a message here?
