@@ -8,11 +8,11 @@ import pytz
 
 
 class MatchTestCase(TestCase):
-    mon = datetime.datetime(2017, 8, 21, 12, 0, tzinfo=pytz.UTC)
-    tue = datetime.datetime(2017, 8, 22, 12, 0, tzinfo=pytz.UTC)
-    wed = datetime.datetime(2017, 8, 23, 12, 0, tzinfo=pytz.UTC)
-    thu = datetime.datetime(2017, 8, 24, 12, 0, tzinfo=pytz.UTC)
-    fri = datetime.datetime(2017, 8, 25, 12, 0, tzinfo=pytz.UTC)
+    mon = datetime.datetime(2018, 8, 21, 12, 0, tzinfo=pytz.UTC)
+    tue = datetime.datetime(2018, 8, 22, 12, 0, tzinfo=pytz.UTC)
+    wed = datetime.datetime(2018, 8, 23, 12, 0, tzinfo=pytz.UTC)
+    thu = datetime.datetime(2018, 8, 24, 12, 0, tzinfo=pytz.UTC)
+    fri = datetime.datetime(2018, 8, 25, 12, 0, tzinfo=pytz.UTC)
 
     profiles = {
         'christine': [datetime.datetime(2017, 7, 1), 'Engineering', 'TWF'],

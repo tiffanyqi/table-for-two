@@ -14,16 +14,18 @@ Table for Two is a web app that allows Mixpanelers the chance to meet with other
 - Copy the output of the URL into the console
 
 
-## TODOs
+## V2
+- * Use BambooHR to pull OOO dates
+- * Add holiday do not schedule out dates
+- * Programmatic frequencies
+- * Exclude to Mixpanel addresses
+- * Cron job
+- Move to AWS?
+- Variable locations?
+- See your Mixpanel calendar?
+- Show EMEA/NYC/SF friendly days?
 
-Be sure to...
-- bring back department from calculations
-- print out matched output before actually match
-- add prod to the token
-- delete all previous people in heroku
-- emails send in prod
-- change domain
-
+## V1
 Signup
 - [x] Create database and model
 - [x] Create signup flow
@@ -60,7 +62,6 @@ Mixpanel
 - [x] Match made / invite sent (server-side)
 - [x] People prop: email, dept, etc, number of matches, number of availabilities
 - [x] Test
-- [ ] Notifications - onboarding, OOO
 
 Front-end
 - PRETTIFY
@@ -138,12 +139,3 @@ Front-end
 - saving of distinct_id
 - identify on db's distinct_id
 - clear cookie upon logout
-
-
-# V2
-- BambooHR instead?
-- Variable locations?
-- See your Mixpanel calendar
-- Programmatic frequencies
-- Build in OOOs?
-- Show EMEA/NYC/SF friendly days?
