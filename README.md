@@ -15,7 +15,6 @@ Table for Two is a web app that allows Mixpanelers the chance to meet with other
 
 
 ## V2
-- Change "dated joined" to "date joined"
 - * Use BambooHR to pull OOO dates
 - * Add holiday do not schedule out dates
 - * Programmatic frequencies
