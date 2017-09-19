@@ -169,11 +169,12 @@ class Command(BaseCommand):
                 {'email': profile2.email},
                 {'email': 'tiffany.qi+tf2test@mixpanel.com'}  # confirm it worked
             ],
+            "guestsCanModify": True
         }
 
         print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         self.execute_mixpanel_calendar_invite(profile1, start_time)
         self.execute_mixpanel_calendar_invite(profile2, start_time)
 
