@@ -3,15 +3,15 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 
 from apiclient import discovery
-from datetime import timedelta
 from oauth2client import client, tools
 from oauth2client.file import Storage
 
 from mixpanel import Mixpanel
+from PyBambooHR import PyBambooHR
 
 from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
 from tablefor2.models import *
-from tablefor2.settings import MATCHING_KEY, MATCHING_SECRET, MP_TOKEN
+from tablefor2.settings import MATCHING_KEY, MATCHING_SECRET, MP_TOKEN, BAMBOO_HR_API_KEY
 
 import datetime
 import httplib2
@@ -73,8 +73,11 @@ class Command(BaseCommand):
         return availabilities
 
     # delete availabilities that were there before but not in recurrings anymore
+    # also delete those who should be OOO
     def delete_availabilities(self, today):
         availabilities = Availability.objects.filter(time_available_utc__gte=today)
+        time_off = self.get_time_off()
+
         for av in availabilities:
             profile = av.profile
             day = av.time_available.weekday()
@@ -85,6 +88,23 @@ class Command(BaseCommand):
             except:
                 print('deleted %s' % profile)
                 av.delete()
+
+            # delete those from bambooHR here
+            # name = profile.first_name + ' ' + profile.last_name
+            # if time_off['timeOff'][name]:
+            #     date = av.time_available.strftime("%Y-%M-%D")
+            #     start = time_off['timeOff'][name]['start']
+            #     end = time_off['timeOff'][name]['end']
+            #     if date > start and date < end:
+            #         print(av)
+                    # av.delete()
+
+                    # start: "2017-09-28",
+                    # end: "2017-10-08",
+
+            # if time_off['holiday']:
+            #     if date > start and date < end:
+            #         print(av)
 
     # actually runs the cron job, goes through new profiles and old profiles and sees
     # if the availabilities match at all
@@ -174,7 +194,7 @@ class Command(BaseCommand):
 
         print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
         self.execute_mixpanel_calendar_invite(profile1, start_time)
         self.execute_mixpanel_calendar_invite(profile2, start_time)
 
@@ -217,6 +237,40 @@ class Command(BaseCommand):
 
         except ObjectDoesNotExist:  # if no latest_matched_av, it'll be true for sure
             return True
+
+    # use the bambooHR API wrapper to figure who is out when
+    def get_time_off(self):
+        '''
+        {
+            timeOff: {
+                name: {
+                    start: "2017-09-28",
+                    end: "2017-10-08",
+                }
+            },
+            holiday: {
+                name: {
+                    start: "2017-11-23",
+                    end: "2017-11-23",
+                }
+            }
+        }
+        '''
+        bamboo = PyBambooHR(subdomain='mixpanel', api_key=BAMBOO_HR_API_KEY)
+        time_off = bamboo.get_whos_out()
+        time_off_output = {
+            'timeOff': {},
+            'holiday': {}
+        }
+
+        for item in time_off:
+            entry = {
+                'start': item['start'],
+                'end': item['end']
+            }
+            time_off_output[item['type']][item['name']] = entry
+
+        return time_off_output
 
     # taken from https://developers.google.com/google-apps/calendar/quickstart/python
     def get_credentials(self):

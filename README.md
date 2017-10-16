@@ -15,11 +15,10 @@ Table for Two is a web app that allows Mixpanelers the chance to meet with other
 
 
 ## V2
-- * Use BambooHR to pull OOO dates
-- * Add holiday do not schedule out dates
-- * Programmatic frequencies
-- * Exclude to Mixpanel addresses
-- * Cron job
+- * Use BambooHR to pull OOO / holiday dates
+- * Exclude to Mixpanel addresses --> non-Mixpanelers can sign up but not be matched
+- Programmatic frequencies
+- Cron job
 - Move to AWS?
 - Variable locations?
 - See your Mixpanel calendar?
