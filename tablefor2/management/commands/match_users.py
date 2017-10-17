@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         today = datetime.datetime.utcnow().date()
-        self.delete_availabilities(today)
+        self.delete_availabilities(today, self.get_time_off())
         self.create_availabilities(today)
         return self.runs_matches()
 
@@ -74,37 +74,14 @@ class Command(BaseCommand):
 
     # delete availabilities that were there before but not in recurrings anymore
     # also delete those who should be OOO
-    def delete_availabilities(self, today):
+    def delete_availabilities(self, today, time_off):
         availabilities = Availability.objects.filter(time_available_utc__gte=today)
-        time_off = self.get_time_off()
-
         for av in availabilities:
             profile = av.profile
-            day = av.time_available.weekday()
-            time = av.time_available.strftime("%-I:%M%p")
-
-            try:
-                RecurringAvailability.objects.get(profile=profile, day=day, time=time)
-            except:
-                print('deleted %s' % profile)
-                av.delete()
-
-            # delete those from bambooHR here
-            # name = profile.first_name + ' ' + profile.last_name
-            # if time_off['timeOff'][name]:
-            #     date = av.time_available.strftime("%Y-%M-%D")
-            #     start = time_off['timeOff'][name]['start']
-            #     end = time_off['timeOff'][name]['end']
-            #     if date > start and date < end:
-            #         print(av)
-                    # av.delete()
-
-                    # start: "2017-09-28",
-                    # end: "2017-10-08",
-
-            # if time_off['holiday']:
-            #     if date > start and date < end:
-            #         print(av)
+            self.delete_av_from_recurring(profile, av)
+            self.check_av_from_time_off(profile, av, time_off)
+            self.check_av_from_holiday(av, time_off)
+        return availabilities
 
     # actually runs the cron job, goes through new profiles and old profiles and sees
     # if the availabilities match at all
@@ -237,6 +214,53 @@ class Command(BaseCommand):
 
         except ObjectDoesNotExist:  # if no latest_matched_av, it'll be true for sure
             return True
+
+    # delete availabilities if recurring isn't there, True is deleted
+    def delete_av_from_recurring(self, profile, av):
+        day = av.time_available.weekday()
+        time = av.time_available.strftime("%-I:%M%p")
+        result = False
+        try:
+            RecurringAvailability.objects.get(profile=profile, day=day, time=time)
+        except ObjectDoesNotExist:
+            print('deleted %s' % profile)
+            av.delete()
+            result = True
+        return result
+
+    # delete availabilities of those who are off that day, True is deleted
+    def check_av_from_time_off(self, profile, av, time_off):
+        name = profile.first_name + ' ' + profile.last_name
+        date = av.time_available.replace(tzinfo=None)
+        result = False
+        try:
+            if time_off['timeOff'][name]:
+                result = self.check_and_delete_av_from_bamboo(av, date, name, time_off)
+        # name doesn't exist in time_off
+        except KeyError:
+            pass
+        return result
+
+    # delete availabilities of everyone since it's the holiday, True is deleted
+    def check_av_from_holiday(self, av, time_off):
+        date = av.time_available.replace(tzinfo=None)
+        result = False
+        try:
+            if time_off['holiday']:
+                for holiday, dates in time_off['holiday'].iteritems():
+                    result = self.check_and_delete_av_from_bamboo(av, date, 'holiday', time_off)
+        # there's no holidays scheduled
+        except KeyError:
+            pass
+        return result
+
+    # deletes the availability that relates to OOO or holidays specifically
+    def check_and_delete_av_from_bamboo(self, av, date, key, time_off):
+        start = datetime.datetime.strptime(time_off['timeOff'][key]['start'], '%Y-%m-%d')
+        end = datetime.datetime.strptime(time_off['timeOff'][key]['end'], '%Y-%m-%d')
+        if start <= date <= end:
+            av.delete()
+        return start <= date <= end
 
     # use the bambooHR API wrapper to figure who is out when
     def get_time_off(self):
