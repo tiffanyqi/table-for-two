@@ -15,6 +15,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['TF2_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['TF2_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
 MATCHING_KEY = os.environ['TF2_KEY_FOR_MATCHING']
 MATCHING_SECRET = os.environ['TF2_SECRET_FOR_MATCHING']
+BAMBOO_HR_API_KEY = os.environ['BAMBOO_HR_API_KEY']
 
 TF2_PROD = os.environ['TF2_PROD']
 if TF2_PROD == 'prod':
@@ -39,7 +40,6 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'social_django',
-    'django_nose',
     'tablefor2'
 ]
 
