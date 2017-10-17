@@ -8,7 +8,6 @@ import pytz
 
 
 class MatchTestCase(TestCase):
-
     time_off = {
         'timeOff': {
             'tiffany test': {
@@ -20,6 +19,14 @@ class MatchTestCase(TestCase):
             'Thanksgiving': {
                 'start': "2017-11-23",
                 'end': "2017-11-24",
+            }
+        }
+    }
+    time_off_no_holiday = {
+        'timeOff': {
+            'tiffany test': {
+                'start': "2017-09-28",
+                'end': "2017-10-08",
             }
         }
     }
@@ -77,11 +84,6 @@ class MatchTestCase(TestCase):
     def test_one_ooo(self):
         self.init_profiles()
         date = datetime.datetime(2017, 9, 28, 12, 0)
-        RecurringAvailability.objects.create(
-            profile=Profile.objects.get(first_name='tiffany'),
-            day='3',
-            time='12:00PM'
-        )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='tiffany'),
             time_available=date,
@@ -89,17 +91,12 @@ class MatchTestCase(TestCase):
         )
         t = Profile.objects.get(first_name='tiffany')
         t_av = Availability.objects.get(profile=t, time_available_utc=date)
-        self.assertEqual(Command.check_av_from_time_off(Command(), t, t_av, self.time_off), True)
+        self.assertEqual(Command.delete_av_from_time_off(Command(), t, t_av, self.time_off), True)
 
     # tiffany is OOO on 9/29
     def test_two_ooo(self):
         self.init_profiles()
         date = datetime.datetime(2017, 9, 29, 12, 0)
-        RecurringAvailability.objects.create(
-            profile=Profile.objects.get(first_name='tiffany'),
-            day='4',
-            time='12:00PM'
-        )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='tiffany'),
             time_available=date,
@@ -107,17 +104,12 @@ class MatchTestCase(TestCase):
         )
         t = Profile.objects.get(first_name='tiffany')
         t_av = Availability.objects.get(profile=t, time_available_utc=date)
-        self.assertEqual(Command.check_av_from_time_off(Command(), t, t_av, self.time_off), True)
+        self.assertEqual(Command.delete_av_from_time_off(Command(), t, t_av, self.time_off), True)
 
     # tiffany is OOO on 10/08
     def test_three_ooo(self):
         self.init_profiles()
         date = datetime.datetime(2017, 10, 8, 12, 0)
-        RecurringAvailability.objects.create(
-            profile=Profile.objects.get(first_name='tiffany'),
-            day='6',
-            time='12:00PM'
-        )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='tiffany'),
             time_available=date,
@@ -125,17 +117,12 @@ class MatchTestCase(TestCase):
         )
         t = Profile.objects.get(first_name='tiffany')
         t_av = Availability.objects.get(profile=t, time_available_utc=date)
-        self.assertEqual(Command.check_av_from_time_off(Command(), t, t_av, self.time_off), True)
+        self.assertEqual(Command.delete_av_from_time_off(Command(), t, t_av, self.time_off), True)
 
     # tiffany is not OOO on 10/09
     def test_four_ooo(self):
         self.init_profiles()
         date = datetime.datetime(2017, 10, 9, 12, 0)
-        RecurringAvailability.objects.create(
-            profile=Profile.objects.get(first_name='tiffany'),
-            day='0',
-            time='12:00PM'
-        )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='tiffany'),
             time_available=date,
@@ -143,17 +130,12 @@ class MatchTestCase(TestCase):
         )
         t = Profile.objects.get(first_name='tiffany')
         t_av = Availability.objects.get(profile=t, time_available_utc=date)
-        self.assertEqual(Command.check_av_from_time_off(Command(), t, t_av, self.time_off), False)
+        self.assertEqual(Command.delete_av_from_time_off(Command(), t, t_av, self.time_off), False)
 
     # holiday
     def test_holiday(self):
         self.init_profiles()
         date = datetime.datetime(2017, 11, 23, 12, 0)
-        RecurringAvailability.objects.create(
-            profile=Profile.objects.get(first_name='tiffany'),
-            day='3',
-            time='12:00PM'
-        )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='tiffany'),
             time_available=date,
@@ -161,4 +143,17 @@ class MatchTestCase(TestCase):
         )
         t = Profile.objects.get(first_name='tiffany')
         t_av = Availability.objects.get(profile=t, time_available_utc=date)
-        self.assertEqual(Command.check_av_from_holiday(Command(), t_av, self.time_off), True)
+        self.assertEqual(Command.delete_av_from_holiday(Command(), t_av, self.time_off), True)
+
+    # no holiday
+    def test_no_holiday(self):
+        self.init_profiles()
+        date = datetime.datetime(2017, 11, 23, 12, 0)
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tiffany'),
+            time_available=date,
+            time_available_utc=date
+        )
+        t = Profile.objects.get(first_name='tiffany')
+        t_av = Availability.objects.get(profile=t, time_available_utc=date)
+        self.assertEqual(Command.delete_av_from_holiday(Command(), t_av, self.time_off_no_holiday), False)
