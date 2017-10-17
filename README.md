@@ -15,7 +15,6 @@ Table for Two is a web app that allows Mixpanelers the chance to meet with other
 
 
 ## V2
-- * Use BambooHR to pull OOO / holiday dates
 - * Exclude to Mixpanel addresses --> non-Mixpanelers can sign up but not be matched
 - Programmatic frequencies
 - Cron job
@@ -40,6 +39,7 @@ Availability / Recurring Availability
 - [x] Save recurring availabilities in the back-end
 - [x] Edit availabilities
 - [x] Test
+- [x] Use BambooHR to prevent scheduling when a user is OOO
 
 Matching
 - [x] Match the people by availability and 1x/wk (frequency V2)
