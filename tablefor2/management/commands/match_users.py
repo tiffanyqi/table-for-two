@@ -231,11 +231,11 @@ class Command(BaseCommand):
     # delete availabilities of those who are off that day, True is deleted
     def delete_av_from_time_off(self, profile, av, time_off):
         name = profile.first_name + ' ' + profile.last_name
-        date = av.time_available.replace(tzinfo=None)
+        date = av.time_available.replace(tzinfo=None, hour=0, minute=0, second=0)
         result = False
         try:
             if time_off['timeOff'][name]:
-                if self.check_av_deleted(av, date, name, time_off):
+                if self.check_av_deleted(av, date, 'timeOff', name, time_off):
                     av.delete()
                     result = True
         # name doesn't exist in time_off
@@ -245,12 +245,12 @@ class Command(BaseCommand):
 
     # delete availabilities of everyone since it's the holiday, True is deleted
     def delete_av_from_holiday(self, av, time_off):
-        date = av.time_available.replace(tzinfo=None)
+        date = av.time_available.replace(tzinfo=None, hour=0, minute=0, second=0)
         result = False
         try:
             if time_off['holiday']:
                 for holiday, dates in time_off['holiday'].iteritems():
-                    if self.check_av_deleted(av, date, 'holiday', time_off):
+                    if self.check_av_deleted(av, date, 'holiday', holiday, time_off):
                         av.delete()
                         result = True
         # there's no holidays scheduled
@@ -259,9 +259,9 @@ class Command(BaseCommand):
         return result
 
     # deletes the availability that relates to OOO or holidays specifically
-    def check_av_deleted(self, av, date, key, time_off):
-        start = datetime.datetime.strptime(time_off['timeOff'][key]['start'], '%Y-%m-%d')
-        end = datetime.datetime.strptime(time_off['timeOff'][key]['end'], '%Y-%m-%d')
+    def check_av_deleted(self, av, date, key, name, time_off):
+        start = datetime.datetime.strptime(time_off[key][name]['start'], '%Y-%m-%d')
+        end = datetime.datetime.strptime(time_off[key][name]['end'], '%Y-%m-%d')
         return start <= date <= end
 
     # use the bambooHR API wrapper to figure who is out when

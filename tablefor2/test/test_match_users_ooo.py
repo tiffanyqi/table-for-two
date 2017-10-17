@@ -4,7 +4,6 @@ from tablefor2.models import *
 from tablefor2.management.commands.match_users import Command
 
 import datetime
-import pytz
 
 
 class MatchTestCase(TestCase):
