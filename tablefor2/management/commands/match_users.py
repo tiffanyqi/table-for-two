@@ -86,7 +86,7 @@ class Command(BaseCommand):
             profile = av.profile
             self.delete_av_from_recurring(profile, av)
             self.delete_av_from_time_off(profile, av, time_off)
-            self.delete_av_from_holiday(av, time_off)
+            self.delete_av_from_holiday(profile, av, time_off)
         return availabilities
 
     def runs_matches(self):
@@ -283,6 +283,7 @@ class Command(BaseCommand):
         try:
             if time_off['timeOff'][name]:
                 if self.check_av_deleted(av, date, 'timeOff', name, time_off):
+                    print('deleted OOO avs from %s' % profile)
                     av.delete()
                     result = True
         # name doesn't exist in time_off
@@ -290,7 +291,7 @@ class Command(BaseCommand):
             pass
         return result
 
-    def delete_av_from_holiday(self, av, time_off):
+    def delete_av_from_holiday(self, profile, av, time_off):
         """
         Delete the availability if it's a holiday
         Returns a boolean, True is deleted
@@ -301,6 +302,7 @@ class Command(BaseCommand):
             if time_off['holiday']:
                 for holiday, dates in time_off['holiday'].iteritems():
                     if self.check_av_deleted(av, date, 'holiday', holiday, time_off):
+                        print('deleted holiday avs from %s' % profile)
                         av.delete()
                         result = True
         # there's no holidays scheduled

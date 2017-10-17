@@ -17,6 +17,10 @@ class MatchTestCase(TestCase):
         'holiday': {
             'Thanksgiving': {
                 'start': "2017-11-23",
+                'end': "2017-11-23",
+            },
+            'Day After Thanksgiving': {
+                'start': "2017-11-24",
                 'end': "2017-11-24",
             }
         }
@@ -142,7 +146,7 @@ class MatchTestCase(TestCase):
         )
         t = Profile.objects.get(first_name='tiffany')
         t_av = Availability.objects.get(profile=t, time_available_utc=date)
-        self.assertEqual(Command.delete_av_from_holiday(Command(), t_av, self.time_off), True)
+        self.assertEqual(Command.delete_av_from_holiday(Command(), t, t_av, self.time_off), True)
 
     # no holiday
     def test_no_holiday(self):
@@ -155,4 +159,4 @@ class MatchTestCase(TestCase):
         )
         t = Profile.objects.get(first_name='tiffany')
         t_av = Availability.objects.get(profile=t, time_available_utc=date)
-        self.assertEqual(Command.delete_av_from_holiday(Command(), t_av, self.time_off_no_holiday), False)
+        self.assertEqual(Command.delete_av_from_holiday(Command(), t, t_av, self.time_off_no_holiday), False)
