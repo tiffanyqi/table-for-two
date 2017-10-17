@@ -37,6 +37,9 @@ class Profile(AbstractBaseUser):
     def is_authenticated(self):
         return self.is_authenticated
 
+    def has_module_perms(self, app_label):
+        return self.is_superuser
+
 
 class RecurringAvailability(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
