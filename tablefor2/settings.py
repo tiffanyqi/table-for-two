@@ -96,7 +96,7 @@ WSGI_APPLICATION = 'tablefor2.wsgi.application'
 
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 SOCIAL_AUTH_USER_MODEL = 'tablefor2.Profile'
-
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
