@@ -18,7 +18,6 @@ mp = Mixpanel(MP_TOKEN)
 def index(request):
     try:
         # does the profile exist?
-        print(request.user)
         profile = Profile.objects.get(email=request.user.email)
         recurring = RecurringAvailability.objects.filter(profile=profile)
         times = calculate_ampm()

@@ -16,5 +16,5 @@ urlpatterns = [
 
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', views.logout_view, name='logout'),
-    url('', include('social_django.urls', namespace='social')),
+    url('', include('social_django.urls', namespace='social'))
 ]
