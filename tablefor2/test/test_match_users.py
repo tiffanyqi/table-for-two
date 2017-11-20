@@ -10,8 +10,8 @@ import pytz
 class MatchTestCase(TestCase):
     past = datetime.datetime(2016, 11, 5, 12, 0, tzinfo=pytz.UTC)  # 1478347200
     past2 = datetime.datetime(2016, 12, 5, 12, 0, tzinfo=pytz.UTC)
-    future = datetime.datetime(2017, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
-    future2 = datetime.datetime(2017, 11, 2, 12, 0, tzinfo=pytz.UTC)
+    future = datetime.datetime(2020, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
+    future2 = datetime.datetime(2020, 11, 2, 12, 0, tzinfo=pytz.UTC)
 
     # setup
     def init_profiles(self):
