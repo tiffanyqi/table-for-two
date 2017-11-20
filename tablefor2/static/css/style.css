@@ -13,6 +13,7 @@
     background-color: white;
     display: inline-block;
     text-align: center;
+    float: left;
 }
 .table-holder {
     margin: 20px;
