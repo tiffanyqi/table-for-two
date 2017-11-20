@@ -12,7 +12,7 @@ from tablefor2.settings import MP_TOKEN
 
 import time
 
-mp = Mixpanel(MP_TOKEN)  # Dev
+mp = Mixpanel(MP_TOKEN)
 
 
 def index(request):

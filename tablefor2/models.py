@@ -12,8 +12,7 @@ class Profile(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
     username = models.CharField(null=True, max_length=50)
-    is_authenticated = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
@@ -33,9 +32,6 @@ class Profile(AbstractBaseUser):
     accept_matches = models.CharField(null=True, max_length=50)
 
     objects = UserManager()
-
-    def is_authenticated(self):
-        return self.is_authenticated
 
     def has_module_perms(self, app_label):
         return self.is_superuser
