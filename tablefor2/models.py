@@ -11,6 +11,7 @@ class Profile(AbstractBaseUser):
     distinct_id = models.CharField(null=True, max_length=50)
 
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
     username = models.CharField(null=True, max_length=50)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
@@ -35,6 +36,13 @@ class Profile(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return self.is_superuser
+
+    def has_perm(self, perm, obj=None):
+        return self.is_superuser
+
+    def get_short_name(self):
+        "Returns the short name for the user."
+        return self.first_name
 
 
 class RecurringAvailability(models.Model):
