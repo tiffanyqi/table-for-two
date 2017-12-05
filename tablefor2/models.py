@@ -28,8 +28,8 @@ class Profile(AbstractBaseUser):
     date_entered_mixpanel = models.DateField(null=True)
 
     picture_url = models.CharField(null=True, max_length=255)
-    what_is_your_favorite_animal = models.CharField(null=True, max_length=50)
-    name_a_fun_fact_about_yourself = models.CharField(null=True, max_length=50)
+    what_is_your_favorite_animal = models.CharField(null=False, max_length=50)
+    name_a_fun_fact_about_yourself = models.CharField(null=False, max_length=50)
     accept_matches = models.CharField(null=True, max_length=50)
 
     objects = UserManager()
