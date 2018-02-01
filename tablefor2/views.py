@@ -172,6 +172,7 @@ def save_profile(request):
                 '$email': profile.email,
                 'Department': profile.department,
                 'Accepting Matches': profile.accept_matches,
+                'Google Hangout': profile.google_hangout,
                 'Location': profile.location,
                 'Timezone': profile.timezone,
                 'Frequency': profile.frequency,

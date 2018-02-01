@@ -125,6 +125,7 @@ Front-end
 	- $email
 	- Department
 	- Accepting Matches
+	- Google Hangout
 	- Location
 	- Timezone
 	- Frequency
