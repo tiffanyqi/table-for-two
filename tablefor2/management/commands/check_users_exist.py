@@ -13,14 +13,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         employees = self.get_employees()
         self.check_profiles(employees)
-        # print(employees)
 
     def get_employees(self):
         bamboo = PyBambooHR(subdomain='mixpanel', api_key=BAMBOO_HR_API_KEY)
         directory = bamboo.get_employee_directory()
         current_directory = {}
         for employee in directory:
-            current_directory[employee.get('workEmail')] = {
+            current_directory[employee.get('workEmail').lower()] = {
                 'bamboohr_id': employee.get('id'),
                 'photo_url': employee.get('photoUrl')
             }
