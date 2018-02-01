@@ -38,6 +38,7 @@ class Command(BaseCommand):
     - [ ] Runs this command at 3pm on all Availabilities that do not have
     a matched_name from tomorrow until a week from tomorrow.
     - [x] Prioritizes new Mixpanel hires.
+    - [x] Checks to see if they're a valid Mixpanel user
     - [x] Check if they haven't been matched before
     - [x] Compares only users who have a different profile.department
     - [x] Checks same location first, else if both open to a google_hangout
@@ -49,10 +50,39 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
+        employees = self.get_employees()
+        self.check_profiles(employees)
         today = datetime.datetime.utcnow().date()
         self.delete_availabilities(today, self.get_time_off())
         self.create_availabilities(today)
         return self.runs_matches()
+
+    def get_employees(self):
+        """
+        Get a list of all employees from BambooHR
+        """
+        bamboo = PyBambooHR(subdomain='mixpanel', api_key=BAMBOO_HR_API_KEY)
+        directory = bamboo.get_employee_directory()
+        current_directory = {}
+        for employee in directory:
+            current_directory[employee.get('workEmail')] = {
+                'bamboohr_id': employee.get('id'),
+                'photo_url': employee.get('photoUrl')
+            }
+        return current_directory
+
+    def check_profiles(self, employees):
+        """
+        Checks to see if the matching profiles are valid employees, otherwise
+        set to not accepting matches
+        """
+        for profile in Profile.objects.filter(accept_matches='Yes'):
+            try:
+                employees[profile.email]
+            except KeyError:
+                profile.accept_matches = "No"
+                profile.save()
+                print("Deactivated " + profile.email)
 
     def create_availabilities(self, today):
         """
