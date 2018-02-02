@@ -65,9 +65,12 @@ class Command(BaseCommand):
         directory = bamboo.get_employee_directory()
         current_directory = {}
         for employee in directory:
-            current_directory[employee.get('workEmail').lower()] = {
-                'bamboohr_id': employee.get('id')
-            }
+            try:
+                current_directory[employee.get('workEmail').lower()] = {
+                    'bamboohr_id': employee.get('id')
+                }
+            except AttributeError:
+                pass
         return current_directory
 
     def check_profiles(self, employees):
