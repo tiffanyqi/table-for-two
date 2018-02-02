@@ -66,8 +66,7 @@ class Command(BaseCommand):
         current_directory = {}
         for employee in directory:
             current_directory[employee.get('workEmail').lower()] = {
-                'bamboohr_id': employee.get('id'),
-                'photo_url': employee.get('photoUrl')
+                'bamboohr_id': employee.get('id')
             }
         return current_directory
 
