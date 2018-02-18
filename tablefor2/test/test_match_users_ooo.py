@@ -33,6 +33,20 @@ class MatchTestCase(TestCase):
             }
         }
     }
+    time_off_and_holiday = {
+        'timeOff': {
+            'tiffany test': {
+                'start': "2017-09-28",
+                'end': "2017-10-08",
+            }
+        },
+        'holiday': {
+            'Presidents Day': {
+                'start': "2017-09-21",
+                'end': "2017-09-28",
+            },
+        }
+    }
     today = datetime.datetime(2017, 9, 20)
 
     def init_profiles(self):
@@ -160,3 +174,16 @@ class MatchTestCase(TestCase):
         t = Profile.objects.get(first_name='tiffany')
         t_av = Availability.objects.get(profile=t, time_available_utc=date)
         self.assertEqual(Command.delete_av_from_holiday(Command(), t, t_av, self.time_off_no_holiday), False)
+
+    # holiday and OOO on the same day, doesn't work ¯\_(ツ)_/¯
+    def test_ooo_and_holiday(self):
+        self.init_profiles()
+        date = datetime.datetime(2017, 9, 28, 12, 0)
+        Availability.objects.create(
+            profile=Profile.objects.get(first_name='tiffany'),
+            time_available=date,
+            time_available_utc=date
+        )
+        t = Profile.objects.get(first_name='tiffany')
+        t_av = Availability.objects.get(profile=t, time_available_utc=date)
+        self.assertEqual(Command.delete_av_from_holiday(Command(), t, t_av, self.time_off_and_holiday), True)

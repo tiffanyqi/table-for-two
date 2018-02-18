@@ -340,6 +340,9 @@ class Command(BaseCommand):
         # there's no holidays scheduled
         except KeyError:
             pass
+        # the availability was already deleted from them being OOO
+        except AssertionError:
+            pass
         return result
 
     def check_av_deleted(self, av, date, key, name, time_off):
