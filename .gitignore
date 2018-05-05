@@ -5,6 +5,8 @@ staticfiles
 .env
 venv
 tablefor2.log
+tablefortwo_db.json
+tablefortwo_db2.json
 
 # secrets
 service_secret.json

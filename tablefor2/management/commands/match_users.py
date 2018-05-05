@@ -109,17 +109,24 @@ class Command(BaseCommand):
 
     def delete_availabilities(self, today, time_off):
         """
-        Delete availabilities that were there before but not in recurrings
-        anymore. Also delete those who should be OOO via time off or holidays
-        Returns remaining availabilities
+        Deletes:
+            - excess availabilities that were there but not in recurrings anymore
+            - delete those who should be OOO via time off or holidays
+            - past availabilities with no matches
+        Returns future availabilities
         """
-        availabilities = Availability.objects.filter(time_available_utc__gte=today)
-        for av in availabilities:
+        future_availabilities = Availability.objects.filter(time_available_utc__gte=today)
+        for av in future_availabilities:
             profile = av.profile
             self.delete_av_from_recurring(profile, av)
             self.delete_av_from_time_off(profile, av, time_off)
             self.delete_av_from_holiday(profile, av, time_off)
-        return availabilities
+
+        # prevent excess rows from being generated for heroku
+        old_availabilities = Availability.objects.filter(time_available_utc__lt=today, matched_name=None)
+        print('deleted ', old_availabilities.count())
+        old_availabilities.delete()
+        return future_availabilities
 
     def runs_matches(self):
         """
@@ -214,7 +221,6 @@ class Command(BaseCommand):
             'attendees': [
                 {'email': profile1.email},
                 {'email': profile2.email},
-                {'email': 'tiffany.qi+tf2test@mixpanel.com'}  # confirm it worked
             ],
             "guestsCanModify": True
         }
