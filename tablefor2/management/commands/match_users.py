@@ -7,7 +7,6 @@ from oauth2client import client, tools
 from oauth2client.file import Storage
 
 from mixpanel import Mixpanel
-from PyBambooHR import PyBambooHR
 
 from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
 from tablefor2.models import *
@@ -50,41 +49,10 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
-        employees = self.get_employees()
-        self.check_profiles(employees)
         today = datetime.datetime.utcnow().date()
         self.delete_availabilities(today, self.get_time_off())
         self.create_availabilities(today)
         return self.runs_matches()
-
-    def get_employees(self):
-        """
-        Get a list of all employees from BambooHR
-        """
-        bamboo = PyBambooHR(subdomain='mixpanel', api_key=BAMBOO_HR_API_KEY)
-        directory = bamboo.get_employee_directory()
-        current_directory = {}
-        for employee in directory:
-            try:
-                current_directory[employee.get('workEmail').lower()] = {
-                    'bamboohr_id': employee.get('id')
-                }
-            except AttributeError:
-                pass
-        return current_directory
-
-    def check_profiles(self, employees):
-        """
-        Checks to see if the matching profiles are valid employees, otherwise
-        set to not accepting matches
-        """
-        for profile in Profile.objects.filter(accept_matches='Yes'):
-            try:
-                employees[profile.email]
-            except KeyError:
-                profile.accept_matches = "No"
-                profile.save()
-                print("Deactivated " + profile.email)
 
     def create_availabilities(self, today):
         """
@@ -105,6 +73,7 @@ class Command(BaseCommand):
                     av = Availability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
                     av.save()
                 availabilities.append(av)
+        print(Availability.objects.filter(time_available__gte=today).count(), ' created')
         return availabilities
 
     def delete_availabilities(self, today, time_off):
@@ -119,8 +88,6 @@ class Command(BaseCommand):
         for av in future_availabilities:
             profile = av.profile
             self.delete_av_from_recurring(profile, av)
-            self.delete_av_from_time_off(profile, av, time_off)
-            self.delete_av_from_holiday(profile, av, time_off)
 
         # prevent excess rows from being generated for heroku
         old_availabilities = Availability.objects.filter(time_available_utc__lt=today, matched_name=None)
@@ -310,47 +277,6 @@ class Command(BaseCommand):
             result = True
         return result
 
-    def delete_av_from_time_off(self, profile, av, time_off):
-        """
-        Delete the availability if profile is off that day
-        Returns a boolean, True is deleted
-        """
-        name = profile.first_name + ' ' + profile.last_name
-        date = av.time_available.replace(tzinfo=None, hour=0, minute=0, second=0)
-        result = False
-        try:
-            if time_off['timeOff'][name]:
-                if self.check_av_deleted(av, date, 'timeOff', name, time_off):
-                    print('deleted OOO avs from %s' % profile)
-                    av.delete()
-                    result = True
-        # name doesn't exist in time_off
-        except KeyError:
-            pass
-        return result
-
-    def delete_av_from_holiday(self, profile, av, time_off):
-        """
-        Delete the availability if it's a holiday
-        Returns a boolean, True is deleted
-        """
-        date = av.time_available.replace(tzinfo=None, hour=0, minute=0, second=0)
-        result = False
-        try:
-            if time_off['holiday']:
-                for holiday, dates in time_off['holiday'].iteritems():
-                    if self.check_av_deleted(av, date, 'holiday', holiday, time_off):
-                        print('deleted holiday avs from %s' % profile)
-                        av.delete()
-                        result = True
-        # there's no holidays scheduled
-        except KeyError:
-            pass
-        # the availability was already deleted from them being OOO
-        except AssertionError:
-            pass
-        return result
-
     def check_av_deleted(self, av, date, key, name, time_off):
         """
         Checks whether the availability is in the specified time period
@@ -359,27 +285,6 @@ class Command(BaseCommand):
         start = datetime.datetime.strptime(time_off[key][name]['start'], '%Y-%m-%d')
         end = datetime.datetime.strptime(time_off[key][name]['end'], '%Y-%m-%d')
         return start <= date <= end
-
-    def get_time_off(self):
-        """
-        Uses the bambooHR API wrapper to figure who is out when and returns
-        a dictionary for usage
-        """
-        bamboo = PyBambooHR(subdomain='mixpanel', api_key=BAMBOO_HR_API_KEY)
-        time_off = bamboo.get_whos_out()
-        time_off_output = {
-            'timeOff': {},
-            'holiday': {}
-        }
-
-        for item in time_off:
-            entry = {
-                'start': item['start'],
-                'end': item['end']
-            }
-            time_off_output[item['type']][item['name']] = entry
-
-        return time_off_output
 
     def get_credentials(self):
         """
