@@ -39,7 +39,8 @@ Availability / Recurring Availability
 - [x] Save recurring availabilities in the back-end
 - [x] Edit availabilities
 - [x] Test
-- [x] Use BambooHR to prevent scheduling when a user is OOO
+- [] Use UltiPro to prevent scheduling when a user is OOO
+- [] Use UltiPro to turn off matching for a user if they've left Mixpanel
 
 Matching
 - [x] Match the people by availability and 1x/wk (frequency V2)
