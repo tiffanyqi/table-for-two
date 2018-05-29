@@ -9,7 +9,7 @@ from oauth2client.file import Storage
 from mixpanel import Mixpanel
 
 from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
-from tablefor2.models import *
+from tablefor2.models import Availability, Profile, RecurringAvailability
 from tablefor2.settings import MATCHING_KEY, MATCHING_SECRET, MP_TOKEN, BAMBOO_HR_API_KEY
 
 import datetime
@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         today = datetime.datetime.utcnow().date()
-        self.delete_availabilities(today, self.get_time_off())
+        self.delete_availabilities(today)
         self.create_availabilities(today)
         return self.runs_matches()
 
@@ -76,7 +76,7 @@ class Command(BaseCommand):
         print(Availability.objects.filter(time_available__gte=today).count(), ' created')
         return availabilities
 
-    def delete_availabilities(self, today, time_off):
+    def delete_availabilities(self, today):
         """
         Deletes:
             - excess availabilities that were there but not in recurrings anymore
