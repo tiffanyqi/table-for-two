@@ -1,0 +1,62 @@
+*SHELL COMMANDS*
+==
+
+MARK A USER AS NOT ACCEPTING MATCHES
+- Mark them as "No" in Mixpanel
+
+email = "person@mixpanel.com"
+
+from tablefor2.models import *
+person = Profile.objects.get(email=email)
+person.accept_matches = "No"
+person.save()
+
+==
+REMOVE AN ERRONOUS MATCH
+from tablefor2.models import *
+
+email1 = "person@mixpanel.com"
+email2 = "person@mixpanel.com"
+
+person1 = Profile.objects.get(email=email1)
+person2 = Profile.objects.get(email=email2)
+full_name1 = person1.preferred_first_name + ' ' + person1.last_name
+full_name2 = person2.preferred_first_name + ' ' + person2.last_name
+match1 = Availability.objects.get(profile=person1, matched_name=full_name2)
+match2 = Availability.objects.get(profile=person2, matched_name=full_name1)
+match1.delete()
+match2.delete()
+
+==
+ADD A MATCH
+from tablefor2.models import *
+
+email1 = "person@mixpanel.com"
+email2 = "person@mixpanel.com"
+
+person1 = Profile.objects.get(email=email1)
+person2 = Profile.objects.get(email=email2)
+full_name1 = person1.preferred_first_name + ' ' + person1.last_name
+full_name2 = person2.preferred_first_name + ' ' + person2.last_name
+match1 = Availability(profile=person1, matched_name=full_name2)
+match1.matched_email = person2.email
+match1.picture_url = person2.picture_url
+match1.what_is_your_favorite_animal = person2.what_is_your_favorite_animal
+match1.name_a_fun_fact_about_yourself = person2.name_a_fun_fact_about_yourself
+match1.department = person2.department
+match1.timezone = person2.timezone
+match2 = Availability(profile=person2, matched_name=full_name1)
+match2.matched_email = person2.email
+match2.picture_url = person1.picture_url
+match2.what_is_your_favorite_animal = person1.what_is_your_favorite_animal
+match2.name_a_fun_fact_about_yourself = person1.name_a_fun_fact_about_yourself
+match2.department = person1.department
+match2.timezone = person1.timezone
+
+if person1.location == person2.location:
+    match1.google_hangout = match2.google_hangout = "in person"
+else:
+    match1.google_hangout = match2.google_hangout = "Google Hangout"
+
+match1.save()
+match2.save()
