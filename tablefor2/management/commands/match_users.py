@@ -3,18 +3,19 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 
 from apiclient import discovery
+import datetime
+import httplib2
+import json
+from mixpanel import Mixpanel
 from oauth2client import client, tools
 from oauth2client.file import Storage
-
-from mixpanel import Mixpanel
+import os
+from slackclient import SlackClient
 
 from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
 from tablefor2.models import Availability, Profile, RecurringAvailability
-from tablefor2.settings import MATCHING_KEY, MATCHING_SECRET, MP_TOKEN, BAMBOO_HR_API_KEY
+from tablefor2.settings import MATCHING_KEY, MATCHING_SECRET, MP_TOKEN, BAMBOO_HR_API_KEY, SLACK_TOKEN
 
-import datetime
-import httplib2
-import os
 
 try:
     import argparse
@@ -49,10 +50,41 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
+        employees = self.get_employees()	
+        self.check_profiles(employees)
         today = datetime.datetime.utcnow().date()
         self.delete_availabilities(today)
         self.create_availabilities(today)
         return self.runs_matches()
+
+    def get_employees(self):	
+        """	
+        Get a list of all employees from Slack	
+        """	
+        sc = SlackClient(SLACK_TOKEN)
+        slack_users = sc.api_call("users.list")['members']
+        current_directory = {}	
+        for employee in slack_users:
+            if not employee['deleted'] and not employee['is_bot'] and not employee['id'] == 'USLACKBOT' and not employee['is_restricted']:
+                profile = employee.get('profile')
+                if 'email' in profile.keys():
+                    current_directory[profile['email']] = {	
+                        'slack_id': employee['id']
+                    }
+        return current_directory		
+
+    def check_profiles(self, employees):	
+        """	
+        Checks to see if the matching profiles are valid employees, otherwise	
+        set to not accepting matches	
+        """	
+        for profile in Profile.objects.filter(accept_matches='Yes'):	
+            try:	
+                employees[profile.email]	
+            except KeyError:	
+                profile.accept_matches = "No"	
+                profile.save()	
+                print("Deactivated " + profile.email)
 
     def create_availabilities(self, today):
         """
