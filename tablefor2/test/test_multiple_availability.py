@@ -7,10 +7,10 @@ import datetime
 import pytz
 
 
-class MatchTestCase(TestCase):
-    mon = datetime.datetime(2018, 10, 21, 12, 0, tzinfo=pytz.UTC)
-    tue = datetime.datetime(2018, 10, 22, 12, 0, tzinfo=pytz.UTC)
-    wed = datetime.datetime(2018, 10, 23, 12, 0, tzinfo=pytz.UTC)
+class MatchMultipleAvailabilityTestCase(TestCase):
+    mon = datetime.datetime(2030, 10, 21, 12, 0, tzinfo=pytz.UTC)
+    tue = datetime.datetime(2030, 10, 22, 12, 0, tzinfo=pytz.UTC)
+    wed = datetime.datetime(2030, 10, 23, 12, 0, tzinfo=pytz.UTC)
 
     profiles = {
         'christine': [datetime.datetime(2017, 7, 1), 'Engineering', 'MTW'],
@@ -33,6 +33,7 @@ class MatchTestCase(TestCase):
                 location='San Francisco',
                 timezone='PST',
                 google_hangout='Yes',
+                match_type='one-on-one',
                 frequency='Once a month',
                 accept_matches='Yes'
             )
@@ -70,6 +71,7 @@ class MatchTestCase(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='Yes',
+            match_type='one-on-one',
             frequency='Once a month',
             accept_matches='Yes'
         )

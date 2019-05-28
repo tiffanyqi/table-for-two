@@ -137,7 +137,7 @@ class Command(BaseCommand):
         today = datetime.datetime.utcnow().date()
 
         # iterate through all profiles regardless of availability
-        for new_profile in Profile.objects.filter(accept_matches='Yes').order_by('-date_entered_mixpanel'):
+        for new_profile in Profile.objects.filter(match_type='one-on-one', accept_matches='Yes').order_by('-date_entered_mixpanel'):
             new_profile_availabilities = Availability.objects.filter(profile=new_profile, time_available_utc__gte=today)
             for old_profile in Profile.objects.filter(accept_matches='Yes', date_entered_mixpanel__lt=new_profile.date_entered_mixpanel).order_by('date_entered_mixpanel'):
                 old_profile_availabilities = Availability.objects.filter(profile=old_profile, time_available_utc__gte=today)
@@ -226,9 +226,9 @@ class Command(BaseCommand):
 
         print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
-        self.execute_mixpanel_calendar_invite(profile1, start_time)
-        self.execute_mixpanel_calendar_invite(profile2, start_time)
+        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        # self.execute_mixpanel_calendar_invite(profile1, start_time)
+        # self.execute_mixpanel_calendar_invite(profile2, start_time)
 
     ### Helpers ###
 

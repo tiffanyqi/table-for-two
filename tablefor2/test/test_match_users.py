@@ -7,11 +7,11 @@ import datetime
 import pytz
 
 
-class MatchTestCase(TestCase):
+class BasicMatchUsersTestCase(TestCase):
     past = datetime.datetime(2016, 11, 5, 12, 0, tzinfo=pytz.UTC)  # 1478347200
     past2 = datetime.datetime(2016, 12, 5, 12, 0, tzinfo=pytz.UTC)
-    future = datetime.datetime(2020, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
-    future2 = datetime.datetime(2020, 11, 2, 12, 0, tzinfo=pytz.UTC)
+    future = datetime.datetime(2030, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
+    future2 = datetime.datetime(2030, 11, 2, 12, 0, tzinfo=pytz.UTC)
 
     # setup
     def init_profiles(self):
@@ -26,6 +26,7 @@ class MatchTestCase(TestCase):
             timezone='PST',
             google_hangout='Yes',
             frequency='Once a month',
+            match_type='one-on-one',
             accept_matches='Yes',
             date_entered_mixpanel=datetime.datetime(2016, 10, 31),
             distinct_id='tiffany'
@@ -40,6 +41,7 @@ class MatchTestCase(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='No',
+            match_type='one-on-one',
             frequency='Once a month',
             accept_matches='Yes',
             date_entered_mixpanel=datetime.datetime(2016, 11, 01),
@@ -54,6 +56,7 @@ class MatchTestCase(TestCase):
             department='Success',
             location='San Francisco',
             timezone='PST',
+            match_type='one-on-one',
             google_hangout='Yes',
             frequency='Once a month',
             accept_matches='Yes',
@@ -69,6 +72,7 @@ class MatchTestCase(TestCase):
             department='Success',
             location='Other',
             google_hangout='Yes',
+            match_type='one-on-one',
             timezone='CEST',
             frequency='Once a month',
             accept_matches='Yes',
@@ -84,6 +88,7 @@ class MatchTestCase(TestCase):
             department='Engineering',
             location='New York',
             google_hangout='Yes',
+            match_type='one-on-one',
             timezone='EST',
             frequency='Once a month',
             accept_matches='Yes',
@@ -100,6 +105,7 @@ class MatchTestCase(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='Yes',
+            match_type='one-on-one',
             frequency='Once a month',
             accept_matches='Yes',
             date_entered_mixpanel=datetime.datetime(2016, 01, 01),
@@ -115,6 +121,7 @@ class MatchTestCase(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='Yes',
+            match_type='one-on-one',
             frequency='Once a month',
             accept_matches='No',
             date_entered_mixpanel=datetime.datetime(2016, 01, 01),

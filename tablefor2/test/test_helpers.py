@@ -7,7 +7,7 @@ import datetime
 import pytz
 
 
-class HelpersTest(TestCase):
+class HelpersTestCast(TestCase):
     def setup_profiles(self):
         # tiffany, Success, SF, No, once a month
         Profile.objects.create(
@@ -21,6 +21,7 @@ class HelpersTest(TestCase):
             google_hangout='No',
             frequency='Once a month',
             date_entered_mixpanel=datetime.datetime(2016, 10, 31),
+            match_type='one-on-one',
             distinct_id='tiffany'
         )
         # Tim, Engineering, New York, Yes, once a month
@@ -33,6 +34,7 @@ class HelpersTest(TestCase):
             location='New York',
             google_hangout='Yes',
             timezone='EST',
+            match_type='one-on-one',
             frequency='Once a month',
             date_entered_mixpanel=datetime.datetime(2013, 06, 01),
             distinct_id='tim'
@@ -46,6 +48,7 @@ class HelpersTest(TestCase):
             department='Success',
             location='Other',
             google_hangout='Yes',
+            match_type='one-on-one',
             timezone='CEST',
             frequency='Once a month',
             date_entered_mixpanel=datetime.datetime(2016, 06, 01),
