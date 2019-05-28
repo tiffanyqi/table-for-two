@@ -19,7 +19,11 @@ LOCATIONS = (
     ('San Francisco', 'San Francisco'),
     ('New York', 'New York'),
     ('Seattle', 'Seattle'),
-    ('Lehi', 'Lehi'),
+    ('Austin', 'Austin'),
+    ('London', 'London'),
+    ('Paris', 'Paris'),
+    ('Barcelona', 'Barcelona'),
+    ('Singapore', 'Singapore'),
     ('Other', 'Other')
 )
 
@@ -30,7 +34,8 @@ TIMEZONES = (
     ('MST', 'US/Mountain'),
     ('PST', 'US/Pacific'),
     ('BST', 'Europe/London'),
-    ('CEST', 'Europe/Amsterdam')
+    ('CEST', 'Europe/Amsterdam'),
+    ('SGT', 'Singapore'),
 )
 
 BOOLEANS = (
