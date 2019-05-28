@@ -122,6 +122,7 @@ def edit_profile(request):
             'timezone': profile.timezone,
             'google_hangout': profile.google_hangout,
             'frequency': profile.frequency,
+            'match_type': profile.match_type,
             'date_entered_mixpanel': profile.date_entered_mixpanel,
             'what_is_your_favorite_animal': profile.what_is_your_favorite_animal,
             'name_a_fun_fact_about_yourself': profile.name_a_fun_fact_about_yourself
@@ -159,6 +160,7 @@ def save_profile(request):
             profile.location = form.cleaned_data.get('location')
             profile.timezone = form.cleaned_data.get('timezone')
             profile.frequency = form.cleaned_data.get('frequency')
+            profile.match_type = form.cleaned_data.get('match_type')
             profile.date_entered_mixpanel = form.cleaned_data.get('date_entered_mixpanel')
             profile.what_is_your_favorite_animal = form.cleaned_data.get('what_is_your_favorite_animal')
             profile.name_a_fun_fact_about_yourself = form.cleaned_data.get('name_a_fun_fact_about_yourself')

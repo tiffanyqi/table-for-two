@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, UserManager
 from django.db import models
 from django.utils import timezone
 
+from jsonfield import JSONField
 
 class Profile(AbstractBaseUser):
     first_name = models.CharField(null=True, max_length=50)
@@ -28,9 +29,10 @@ class Profile(AbstractBaseUser):
     date_entered_mixpanel = models.DateField(null=True)
 
     picture_url = models.CharField(null=True, max_length=255)
-    what_is_your_favorite_animal = models.CharField(null=False, max_length=50)
-    name_a_fun_fact_about_yourself = models.CharField(null=False, max_length=50)
+    what_is_your_favorite_animal = models.CharField(null=True, max_length=50)
+    name_a_fun_fact_about_yourself = models.CharField(null=True, max_length=50)
     accept_matches = models.CharField(null=True, max_length=50)
+    match_type = models.CharField(null=False, default='one-on-one', max_length=20)
 
     objects = UserManager()
 
@@ -63,3 +65,11 @@ class Availability(models.Model):
     department = models.CharField(null=True, max_length=50)
     timezone = models.CharField(null=True, max_length=50)
     google_hangout = models.CharField(null=True, max_length=50)
+
+
+class GroupAvailability(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    # json object of name to email
+    matched_group_users = JSONField()
+    time_available = models.DateTimeField(default=timezone.now)
+    time_available_utc = models.DateTimeField(default=timezone.now)
