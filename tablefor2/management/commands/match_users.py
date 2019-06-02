@@ -97,6 +97,7 @@ class Command(BaseCommand):
             except KeyError:	
                 profile.accept_matches = 'No'	
                 profile.save()
+                mp.people_set(original_profile.distinct_id, {'Accepting Matches': 'No'})
                 print('Deactivated ' + profile.email)
 
     def create_availabilities(self, today):
