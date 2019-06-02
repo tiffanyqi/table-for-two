@@ -13,8 +13,19 @@ import os
 from slackclient import SlackClient
 
 from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
-from tablefor2.models import Availability, Profile, RecurringAvailability
-from tablefor2.settings import MATCHING_KEY, MATCHING_SECRET, MP_TOKEN, BAMBOO_HR_API_KEY, SLACK_TOKEN
+from tablefor2.models import (
+    Availability,
+    GroupAvailability,
+    Profile,
+    RecurringAvailability
+)
+from tablefor2.settings import (
+    BAMBOO_HR_API_KEY,
+    MATCHING_KEY,
+    MATCHING_SECRET,
+    MP_TOKEN,
+    SLACK_TOKEN
+)
 
 
 try:
@@ -28,6 +39,8 @@ except ImportError:
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/X.json
 APPLICATION_NAME = 'Table for 2'
+# ensure in sync with forms.py
+locations = ['San Francisco', 'New York', 'Seattle', 'Austin', 'London', 'Paris', 'Barcelona', 'Singapore', 'Other']
 mp = Mixpanel(MP_TOKEN)
 
 
@@ -62,7 +75,7 @@ class Command(BaseCommand):
         Get a list of all employees from Slack	
         """	
         sc = SlackClient(SLACK_TOKEN)
-        slack_users = sc.api_call("users.list")['members']
+        slack_users = sc.api_call('users.list')['members']
         current_directory = {}	
         for employee in slack_users:
             if not employee['deleted'] and not employee['is_bot'] and not employee['id'] == 'USLACKBOT' and not employee['is_restricted']:
@@ -82,9 +95,9 @@ class Command(BaseCommand):
             try:	
                 employees[profile.email]	
             except KeyError:	
-                profile.accept_matches = "No"	
-                profile.save()	
-                print("Deactivated " + profile.email)
+                profile.accept_matches = 'No'	
+                profile.save()
+                print('Deactivated ' + profile.email)
 
     def create_availabilities(self, today):
         """
@@ -94,16 +107,24 @@ class Command(BaseCommand):
         availabilities = []
         recurrings = RecurringAvailability.objects.all()
         for rec_av in recurrings:
-            if rec_av.profile.accept_matches == "Yes":
+            if rec_av.profile.accept_matches == 'Yes':
                 day = rec_av.day  # num of week
                 time = determine_ampm(rec_av.time)  # HH:MM, miltary
                 time_available = get_next_weekday(today, day, time)
                 utc = calculate_utc(rec_av.profile, time_available)
-                try:
-                    av = Availability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
-                except:
-                    av = Availability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
-                    av.save()
+                if rec_av.profile.match_type == 'one-on-one':
+                    try:
+                        av = Availability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                    except:
+                        av = Availability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                        av.save()
+                else:
+                    if rec_av.time == '12PM':
+                        try:
+                            av = GroupAvailability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                        except:
+                            av = GroupAvailability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
+                            av.save()
                 availabilities.append(av)
         print(Availability.objects.filter(time_available__gte=today).count(), ' created')
         return availabilities
@@ -123,8 +144,10 @@ class Command(BaseCommand):
 
         # prevent excess rows from being generated for heroku
         old_availabilities = Availability.objects.filter(time_available_utc__lt=today, matched_name=None)
-        print('deleted ', old_availabilities.count())
+        old_group_availabilities = GroupAvailability.objects.filter(time_available_utc__lt=today, matched_group_users=None)
+        print('deleted ', old_availabilities.count() + old_group_availabilities.count())
         old_availabilities.delete()
+        old_group_availabilities.dekete()
         return future_availabilities
 
     def runs_matches(self):
@@ -133,9 +156,18 @@ class Command(BaseCommand):
         and sees if the availabilities match at all
         Returns all matches
         """
-        matches = []
-        today = datetime.datetime.utcnow().date()
+        matches = self.run_one_on_one_matches()
+        for match in matches:
+            self.send_google_calendar_invite(match[0], match[1], match[2])
 
+        group_matches = self.run_group_matches()
+        # TODO: send google calendar invites
+
+        return (matches, group_matches)
+
+    def run_one_on_one_matches(self):
+        today = datetime.datetime.utcnow().date()
+        matches = []
         # iterate through all profiles regardless of availability
         for new_profile in Profile.objects.filter(match_type='one-on-one', accept_matches='Yes').order_by('-date_entered_mixpanel'):
             new_profile_availabilities = Availability.objects.filter(profile=new_profile, time_available_utc__gte=today)
@@ -152,12 +184,22 @@ class Command(BaseCommand):
                                 self.match(new_availability, old_availability, new_profile, old_profile)
                                 self.match(old_availability, new_availability, old_profile, new_profile)
                                 matches.append([new_availability, new_profile, old_profile])
-
-        # sends hangouts to each group of matches
-        for match in matches:
-            self.send_google_calendar_invite(match[0], match[1], match[2])
-
         return matches
+
+    def run_group_matches(self):
+        today = datetime.datetime.utcnow().date()
+        group_matches = {}
+        for location in locations:
+            # assuming these are all lunchtime avs from av creation
+            curr_match = []
+            for av in GroupAvailability.objects.filter(profile__location=location, time_available_utc__gte=today, profile__accept_matches='Yes'):
+                if (self.check_fuzzy_match(av.profile, av, group_matches)):
+                    curr_match += av.profile
+                if len(curr_match) == 4:
+                    group_matches[av.time_available_utc] = curr_match
+                    curr_match = []
+
+        return group_matches
 
     # check to see that the two profiles should match
     def check_match(self, av1, av2, profile1, profile2):
@@ -165,8 +207,18 @@ class Command(BaseCommand):
         Checks to see that the two profiles actually match
         Returns a boolean of whether the two profiles are matched
         """
-        if self.check_accept_matches(profile1, profile2) and self.check_frequency(av1, profile1) and self.check_frequency(av2, profile2) and self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2) and self.check_previous_matches(profile1, profile2) and self.check_departments(profile1, profile2):
+        if self.check_frequency(av1, profile1) and self.check_frequency(av2, profile2) and self.check_not_currently_matched(av1) and self.check_not_currently_matched(av2) and self.check_previous_matches(profile1, profile2) and self.check_departments(profile1, profile2):
             return self.check_locations(profile1, profile2) or self.check_google_hangout(profile1, profile2)
+        return False
+
+    # check to see if user is different enough from the others of the group
+    def check_fuzzy_match(self, profile, av, group):
+        """
+        Returns a boolean of whether the user can join the group
+        """
+        # TODO: implement checking seniority, for now hope it just works out
+        if self.check_frequency(av, profile) and self.check_not_currently_matched(av):
+            return len(group) == 0 or (self.check_fuzzy_previous_matches(profile, group) and self.check_fuzzy_departments(profile, group))
         return False
 
     def match(self, orig_av, matched_av, original_profile, matched_profile):
@@ -183,9 +235,9 @@ class Command(BaseCommand):
         original_profile.number_of_matches += 1
 
         if original_profile.location == matched_profile.location:
-            orig_av.google_hangout = matched_av.google_hangout = "in person"
+            orig_av.google_hangout = matched_av.google_hangout = 'in person'
         else:
-            orig_av.google_hangout = matched_av.google_hangout = "Google Hangout"
+            orig_av.google_hangout = matched_av.google_hangout = 'video call'
 
         orig_av.save()
         original_profile.save()
@@ -232,16 +284,9 @@ class Command(BaseCommand):
 
     ### Helpers ###
 
-    def check_accept_matches(self, profile1, profile2):
-        """
-        Check to see that the profiles can accept matches
-        Returns a boolean
-        """
-        return profile1.accept_matches == 'Yes' and profile1.accept_matches == profile2.accept_matches
-
     def check_google_hangout(self, profile1, profile2):
         """
-        Check to see that the google hangout prefs are both "yes"
+        Check to see that the google hangout (video call) prefs are both "yes"
         Returns a boolean
         """
         return profile1.google_hangout == 'Yes' and profile2.google_hangout == 'Yes'
@@ -252,13 +297,26 @@ class Command(BaseCommand):
         Returns a boolean
         """
         return profile1.location == profile2.location and profile1.location is not 'Other'
-
+    
     def check_departments(self, profile1, profile2):
         """
         Check to see that the profiles aren't the same department
         Returns a boolean
         """
         return profile1.department != profile2.department
+
+    def check_fuzzy_departments(self, profile, group):
+        """
+        Check to see that the group has one or fewer of the same department as the profile
+        Returns a boolean
+        """
+        departments = {}
+        for prof in group:
+            if prof.department in departments:
+                deparments[prof.department] += 1
+            else:
+                departments[prof.department] = 1
+        return profile.department not in departments or departments[profile.department] < 2
 
     def check_previous_matches(self, profile1, profile2):
         """
@@ -270,12 +328,23 @@ class Command(BaseCommand):
         previous_matches = avs.values_list('matched_email', flat=True)
         return profile2.email not in previous_matches and profile1.email != profile2.email
 
+    def check_fuzzy_previous_matches(self, profile, group):
+        """
+        Check to see that the profile has not met more than one person of the group before
+        Returns a boolean
+        """
+        emails = [prof.email in group]
+        avs = GroupAvailability.objects.filter(profile=profile).exclude(matched_group=None)
+        previous_matches = avs.values_list('matched_email', flat=True)
+        intersection = [value for value in emails if value in previous_matches] 
+        return len(intersection) < 2
+
     def check_not_currently_matched(self, av):
         """
         Check to see that the availability is not matched yet
         Returns a boolean
         """
-        return av.matched_name is None
+        return av.matched_name is None or av.matched_group_users is None
 
     def check_frequency(self, av, profile):
         """
@@ -285,7 +354,10 @@ class Command(BaseCommand):
         """
         av_time = av.time_available_utc
         try:
-            last_matched_av = Availability.objects.filter(profile=profile).exclude(matched_name=None).latest('time_available_utc')
+            if profile.match_type == 'one-on-one':
+                last_matched_av = Availability.objects.filter(profile=profile).exclude(matched_name=None).latest('time_available_utc')
+            else:
+                last_matched_av = GroupAvailability.objects.filter(profile=profile).exclude(matched_group_users=None).latest('time_available_utc')
             # compare the time between the last accepted av and this av
             days_between = abs((av_time - last_matched_av.time_available_utc).days)
             return days_between >= 28

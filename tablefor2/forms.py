@@ -14,6 +14,7 @@ DEPARTMENTS = (  # change these departments
     ('Support', 'Support')
 )
 
+# Ensure in sync with match_users.py
 LOCATIONS = (
     ('--', 'Select a Location'),
     ('San Francisco', 'San Francisco'),
