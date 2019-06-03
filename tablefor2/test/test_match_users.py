@@ -593,7 +593,7 @@ class BasicMatchUsersTestCase(TestCase):
         ]
 
         self.assertEqual(t_av_past.matched_name, None)
-        self.assertEqual(Command.runs_matches(Command()), matches)
+        self.assertEqual(Command.run_one_on_one_matches(Command()), matches)
 
     def test_match_and_run_future_first_day(self):
         self.previous_matches_setup()
@@ -615,12 +615,12 @@ class BasicMatchUsersTestCase(TestCase):
             [a_av_future, a, mike],
             [t_av_future, t, tim]
         ]
-        self.assertEqual(Command.runs_matches(Command()), matches)
+        self.assertEqual(Command.run_one_on_one_matches(Command()), matches)
 
     # case where there's two day in a row, but folks shouldn't be matched
     def test_match_and_run_future_second_day(self):
         self.future_matches_setup()
-        self.assertEqual(Command.runs_matches(Command()), [])
+        self.assertEqual(Command.run_one_on_one_matches(Command()), [])
 
     def test_check_google_hangout(self):
         self.fresh_setup()
@@ -763,12 +763,3 @@ class BasicMatchUsersTestCase(TestCase):
         self.assertEqual(Command.check_frequency(Command(), k_av, k), True)
         self.assertEqual(Command.check_frequency(Command(), tim_av, tim), False)
         self.assertEqual(Command.check_frequency(Command(), mike_av, mike), False)
-
-    def test_check_accept_matches(self):
-        self.fresh_setup()
-        poop = Profile.objects.get(first_name='poop')
-        t = Profile.objects.get(first_name='tiffany')
-        a = Profile.objects.get(first_name='andrew')
-
-        self.assertEqual(Command.check_accept_matches(Command(), t, a), True)
-        self.assertEqual(Command.check_accept_matches(Command(), poop, a), False)

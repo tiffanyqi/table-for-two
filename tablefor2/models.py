@@ -2,8 +2,6 @@ from django.contrib.auth.models import AbstractBaseUser, UserManager
 from django.db import models
 from django.utils import timezone
 
-from jsonfield import JSONField
-
 class Profile(AbstractBaseUser):
     first_name = models.CharField(null=True, max_length=50)
     last_name = models.CharField(null=True, max_length=50)
@@ -70,6 +68,13 @@ class Availability(models.Model):
 class GroupAvailability(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     # json object of name to email
-    matched_group_users = JSONField()
+    matched_group_users = models.TextField(null=True)
     time_available = models.DateTimeField(default=timezone.now)
     time_available_utc = models.DateTimeField(default=timezone.now)
+
+    def to_json(self):
+        return {
+            self.profile,
+            self.matched_group_users,
+            self.time_available
+        }

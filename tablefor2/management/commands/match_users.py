@@ -20,7 +20,6 @@ from tablefor2.models import (
     RecurringAvailability
 )
 from tablefor2.settings import (
-    BAMBOO_HR_API_KEY,
     MATCHING_KEY,
     MATCHING_SECRET,
     MP_TOKEN,
@@ -194,10 +193,11 @@ class Command(BaseCommand):
             # assuming these are all lunchtime avs from av creation
             curr_match = []
             for av in GroupAvailability.objects.filter(profile__location=location, time_available_utc__gte=today, profile__accept_matches='Yes'):
-                if (self.check_fuzzy_match(av.profile, av, group_matches)):
-                    curr_match += av.profile
+                if (self.check_fuzzy_match(av.profile, av, curr_match)):
+                    curr_match.append(av.profile)
                 if len(curr_match) == 4:
                     group_matches[av.time_available_utc] = curr_match
+                    self.match_group(av.time_available_utc, curr_match)
                     curr_match = []
 
         return group_matches
@@ -243,6 +243,19 @@ class Command(BaseCommand):
         orig_av.save()
         original_profile.save()
         self.execute_mixpanel_matches(orig_av, original_profile, matched_profile)
+
+    def match_group(self, time, matches):
+        """
+        Creates a group and matches each av profile with the group
+        """
+        emails = [prof.email for prof in matches]
+        for prof in matches:
+            av = GroupAvailability.objects.get(time_available_utc=time, profile=prof)
+            av.matched_group_users = json.dumps(emails)
+            av.save()
+            prof.number_of_matches += 1
+            prof.save()
+        # execute matches
 
     def send_google_calendar_invite(self, availability, profile1, profile2):
         """
@@ -314,7 +327,7 @@ class Command(BaseCommand):
         departments = {}
         for prof in group:
             if prof.department in departments:
-                deparments[prof.department] += 1
+                departments[prof.department] += 1
             else:
                 departments[prof.department] = 1
         return profile.department not in departments or departments[profile.department] < 2
@@ -334,9 +347,9 @@ class Command(BaseCommand):
         Check to see that the profile has not met more than one person of the group before
         Returns a boolean
         """
-        emails = [prof.email in group]
-        avs = GroupAvailability.objects.filter(profile=profile).exclude(matched_group=None)
-        previous_matches = avs.values_list('matched_email', flat=True)
+        emails = [prof.email for prof in group]
+        avs = GroupAvailability.objects.filter(profile=profile).exclude(matched_group_users=None)
+        previous_matches = avs.values_list('matched_group_users', flat=True)
         intersection = [value for value in emails if value in previous_matches] 
         return len(intersection) < 2
 
@@ -345,7 +358,8 @@ class Command(BaseCommand):
         Check to see that the availability is not matched yet
         Returns a boolean
         """
-        return av.matched_name is None or av.matched_group_users is None
+        return ((av.profile.match_type == 'one-on-one' and av.matched_name is None)
+            or (av.profile.match_type == 'group' and av.matched_group_users is None))
 
     def check_frequency(self, av, profile):
         """

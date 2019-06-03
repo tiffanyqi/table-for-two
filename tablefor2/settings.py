@@ -15,7 +15,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['TF2_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['TF2_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
 MATCHING_KEY = os.environ['TF2_KEY_FOR_MATCHING']
 MATCHING_SECRET = os.environ['TF2_SECRET_FOR_MATCHING']
-BAMBOO_HR_API_KEY = os.environ['BAMBOO_HR_API_KEY']
 SLACK_TOKEN = os.environ['CELEBRATION_SLACK_BOT_TOKEN']
 
 TF2_PROD = os.environ['TF2_PROD']
@@ -182,6 +181,8 @@ LOGGING = {
         },
     }
 }
+import logging
+logging.disable(logging.CRITICAL)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/

@@ -106,7 +106,7 @@ class MatchMultipleAvailabilityTestCase(TestCase):
             [christine_mon, christine, shimin]
         ]
 
-        self.assertEqual(Command.runs_matches(Command()), matches)
+        self.assertEqual(Command.run_one_on_one_matches(Command()), matches)
 
     def test_add_new(self):
         '''
@@ -122,4 +122,4 @@ class MatchMultipleAvailabilityTestCase(TestCase):
             [zara_tue, zara, james]
         ]
 
-        self.assertEqual(Command.runs_matches(Command()), matches)
+        self.assertEqual(Command.run_one_on_one_matches(Command()), matches)

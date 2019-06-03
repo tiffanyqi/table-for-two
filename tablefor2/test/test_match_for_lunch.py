@@ -127,4 +127,4 @@ class MatchLunchTestCase(TestCase):
             [rajiv_wed, rajiv, lopa],
         ]
 
-        self.assertEqual(Command.runs_matches(Command()), matches)
+        self.assertEqual(Command.run_one_on_one_matches(Command()), matches)
