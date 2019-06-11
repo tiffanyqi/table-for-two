@@ -194,14 +194,14 @@ class Command(BaseCommand):
         group_matches = {}
         for location in locations:
             # assuming these are all lunchtime avs from av creation
-            curr_match = []
+            in_progress_matched_profiles = []
             for av in GroupAvailability.objects.filter(profile__location=location, time_available_utc__gte=today, profile__accept_matches='Yes'):
-                if (self.check_fuzzy_match(av.profile, av, curr_match)):
-                    curr_match.append(av.profile)
-                if len(curr_match) == 4:
-                    group_matches[av.time_available_utc] = curr_match  
-                    self.match_group(av.time_available_utc, curr_match)
-                    curr_match = []
+                if (self.check_fuzzy_match(av.profile, av, in_progress_matched_profiles)):
+                    in_progress_matched_profiles.append(av.profile)
+                if len(in_progress_matched_profiles) == 4:
+                    group_matches[av.time_available_utc] = in_progress_matched_profiles  
+                    self.match_group(av.time_available_utc, in_progress_matched_profiles)
+                    in_progress_matched_profiles = []
 
         # send the invites
         for time, matches in group_matches.items():
@@ -353,8 +353,9 @@ class Command(BaseCommand):
         """
         emails = [prof.email for prof in group]
         avs = GroupAvailability.objects.filter(profile=profile).exclude(matched_group_users=None)
-        previous_matches = avs.values_list('matched_group_users', flat=True)
-        intersection = [value for value in emails if value in previous_matches] 
+        previous_matches = list(avs.values_list('matched_group_users', flat=True))
+        flat_matches = [item for sublist in previous_matches for item in json.loads(sublist)]
+        intersection = [value for value in emails if value in flat_matches]
         return len(intersection) < 2
 
     def check_not_currently_matched(self, av):

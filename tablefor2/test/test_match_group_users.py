@@ -13,7 +13,7 @@ class GroupMatchUsersTestCase(TestCase):
     past2 = datetime.datetime(2016, 12, 5, 12, 0, tzinfo=pytz.UTC)
     future = datetime.datetime(2019, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
     future2 = datetime.datetime(2019, 11, 2, 12, 0, tzinfo=pytz.UTC)
-    first_names = ['tiffany', 'andrew', 'philip', 'karima', 'tim', 'michael', 'poop']
+    first_names = ['tiffany', 'andrew', 'philip', 'karima', 'tim', 'michael']
 
     # setup
     def init_profiles(self):
@@ -24,7 +24,6 @@ class GroupMatchUsersTestCase(TestCase):
         Karima - group, success, CEST
         Tim - group, eng, PST
         Mike - group, sales, PST
-        Poop - one on one, no match
         """
 
         # tiffany, Success, SF, No, once a month
@@ -123,22 +122,6 @@ class GroupMatchUsersTestCase(TestCase):
             date_entered_mixpanel=datetime.datetime(2016, 1, 1),
             distinct_id='mike'
         )
-        # Poop, Engineering, SF, Yes, once a month
-        Profile.objects.create(
-            first_name='poop',
-            last_name='test',
-            preferred_first_name='poop',
-            email='poop@TEST-mixpanel.com',
-            department='Engineering',
-            location='San Francisco',
-            timezone='PST',
-            google_hangout='Yes',
-            match_type='one-on-one',
-            frequency='Once a month',
-            accept_matches='No',
-            date_entered_mixpanel=datetime.datetime(2016, 1, 1),
-            distinct_id='poop'
-        )
 
     def fresh_setup(self):
         self.init_profiles()
@@ -192,7 +175,6 @@ class GroupMatchUsersTestCase(TestCase):
         m = Profile.objects.get(first_name='michael')
         group = {self.future: [t, a, pj, m]}
         self.assertEqual(Command.run_group_matches(Command()), group)
-        Command.runs_matches(Command())
 
     def test_check_fuzzy_departments(self):
         self.fresh_setup()
@@ -241,11 +223,59 @@ class GroupMatchUsersTestCase(TestCase):
         k = Profile.objects.get(first_name='karima')
         matches = [t, a, pj, k]
         emails = [t.email, a.email, pj.email, k.email]
-        Command.match_group(Command(), self.future, matches)
+        Command.match_group(Command(), self.past, matches)
         for prof in matches:
-            av = GroupAvailability.objects.get(time_available_utc=self.future, profile=prof)
+            av = GroupAvailability.objects.get(time_available_utc=self.past, profile=prof)
             self.assertEqual(av.matched_group_users, json.dumps(emails))
 
     def test_check_fuzzy_previous_matches(self):
-      # TODO
-      return
+        self.fresh_setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+        k = Profile.objects.get(first_name='karima')
+        tim = Profile.objects.get(first_name='tim')
+        mike = Profile.objects.get(first_name='michael')
+
+        group = [t]
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), tim, group), True)
+        group = [a, pj]
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), tim, group), True)
+
+        group = [t, a, pj, k]
+        Command.match_group(Command(), self.past, group)
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), tim, group), True)
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), t, group), False)
+        group = [t, pj, k]
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), a, group), False)
+        group = [t]
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), a, group), True)
+
+    def test_check_fuzzy_double_previous_matches(self):
+        self.fresh_setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+        k = Profile.objects.get(first_name='karima')
+        tim = Profile.objects.get(first_name='tim')
+        mike = Profile.objects.get(first_name='michael')
+
+        matches = [t, a, pj, k]
+        emails = [t.email, a.email, pj.email, k.email]
+        for prof in matches:
+            av = GroupAvailability.objects.get(time_available_utc=self.past, profile=prof)
+            av.matched_group_users = json.dumps(emails)
+            av.save()
+        
+        new_matches = [tim, a, pj, mike]
+        Command.match_group(Command(), self.future, new_matches)
+        group = [t]
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), tim, group), True)
+        group = [a, pj]
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), tim, group), False)
+        group = [a, t]
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), mike, group), True)
+        group = [a, t, k]
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), mike, group), True)
+        group = [mike, t, a]
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), k, group), False)
