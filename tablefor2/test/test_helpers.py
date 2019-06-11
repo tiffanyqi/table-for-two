@@ -7,7 +7,7 @@ import datetime
 import pytz
 
 
-class HelpersTestCast(TestCase):
+class HelpersTestCase(TestCase):
     def setup_profiles(self):
         # tiffany, Success, SF, No, once a month
         Profile.objects.create(

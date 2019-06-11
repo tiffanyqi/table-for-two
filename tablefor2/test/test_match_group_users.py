@@ -1,17 +1,18 @@
 from django.test import TestCase
 
+import datetime
+import json
+import pytz
+
 from tablefor2.models import *
 from tablefor2.management.commands.match_users import Command
-
-import datetime
-import pytz
 
 
 class GroupMatchUsersTestCase(TestCase):
     past = datetime.datetime(2016, 11, 5, 12, 0, tzinfo=pytz.UTC)  # 1478347200
     past2 = datetime.datetime(2016, 12, 5, 12, 0, tzinfo=pytz.UTC)
-    future = datetime.datetime(2030, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
-    future2 = datetime.datetime(2030, 11, 2, 12, 0, tzinfo=pytz.UTC)
+    future = datetime.datetime(2019, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
+    future2 = datetime.datetime(2019, 11, 2, 12, 0, tzinfo=pytz.UTC)
     first_names = ['tiffany', 'andrew', 'philip', 'karima', 'tim', 'michael', 'poop']
 
     # setup
@@ -55,7 +56,7 @@ class GroupMatchUsersTestCase(TestCase):
             match_type='group',
             frequency='Once a month',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2016, 11, 01),
+            date_entered_mixpanel=datetime.datetime(2016, 11, 1),
             distinct_id='andrew'
         )
         # PJ, Success, SF, Yes, once a month
@@ -71,7 +72,7 @@ class GroupMatchUsersTestCase(TestCase):
             google_hangout='Yes',
             frequency='Once a month',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2015, 11, 01),
+            date_entered_mixpanel=datetime.datetime(2015, 11, 1),
             distinct_id='pj'
         )
         # Karima, Success, Other, Yes, once a month
@@ -87,7 +88,7 @@ class GroupMatchUsersTestCase(TestCase):
             timezone='CEST',
             frequency='Once a month',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2016, 06, 01),
+            date_entered_mixpanel=datetime.datetime(2016, 6, 1),
             distinct_id='karima'
         )
         # Tim, Engineering, PST, Yes, once a month
@@ -103,7 +104,7 @@ class GroupMatchUsersTestCase(TestCase):
             timezone='PST',
             frequency='Once a month',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2013, 06, 01),
+            date_entered_mixpanel=datetime.datetime(2013, 6, 1),
             distinct_id='tim'
         )
         # Mike, Sales, SF, Yes, once a month
@@ -119,7 +120,7 @@ class GroupMatchUsersTestCase(TestCase):
             match_type='group',
             frequency='Once a month',
             accept_matches='Yes',
-            date_entered_mixpanel=datetime.datetime(2016, 01, 01),
+            date_entered_mixpanel=datetime.datetime(2016, 1, 1),
             distinct_id='mike'
         )
         # Poop, Engineering, SF, Yes, once a month
@@ -135,7 +136,7 @@ class GroupMatchUsersTestCase(TestCase):
             match_type='one-on-one',
             frequency='Once a month',
             accept_matches='No',
-            date_entered_mixpanel=datetime.datetime(2016, 01, 01),
+            date_entered_mixpanel=datetime.datetime(2016, 1, 1),
             distinct_id='poop'
         )
 
@@ -191,6 +192,7 @@ class GroupMatchUsersTestCase(TestCase):
         m = Profile.objects.get(first_name='michael')
         group = {self.future: [t, a, pj, m]}
         self.assertEqual(Command.run_group_matches(Command()), group)
+        Command.runs_matches(Command())
 
     def test_check_fuzzy_departments(self):
         self.fresh_setup()
@@ -226,7 +228,24 @@ class GroupMatchUsersTestCase(TestCase):
         self.assertEqual(Command.check_not_currently_matched(Command(), pj_av), True)
 
     def test_frequency(self):
-      self.fresh_setup()
-      t = Profile.objects.get(first_name='tiffany')
-      t_av = GroupAvailability.objects.get(profile=t, time_available_utc=self.future)
-      self.assertEqual(Command.check_frequency(Command(), t_av, t), True)
+        self.fresh_setup()
+        t = Profile.objects.get(first_name='tiffany')
+        t_av = GroupAvailability.objects.get(profile=t, time_available_utc=self.future)
+        self.assertEqual(Command.check_frequency(Command(), t_av, t), True)
+
+    def test_group_match(self):
+        self.fresh_setup()
+        t = Profile.objects.get(first_name='tiffany')
+        a = Profile.objects.get(first_name='andrew')
+        pj = Profile.objects.get(first_name='philip')
+        k = Profile.objects.get(first_name='karima')
+        matches = [t, a, pj, k]
+        emails = [t.email, a.email, pj.email, k.email]
+        Command.match_group(Command(), self.future, matches)
+        for prof in matches:
+            av = GroupAvailability.objects.get(time_available_utc=self.future, profile=prof)
+            self.assertEqual(av.matched_group_users, json.dumps(emails))
+
+    def test_check_fuzzy_previous_matches(self):
+      # TODO
+      return

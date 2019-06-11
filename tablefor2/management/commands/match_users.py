@@ -152,20 +152,16 @@ class Command(BaseCommand):
 
     def runs_matches(self):
         """
-        Actually runs the cron job, goes through new profiles and old profiles
-        and sees if the availabilities match at all
-        Returns all matches
+        Actually runs the cron job, 
         """
-        matches = self.run_one_on_one_matches()
-        for match in matches:
-            self.send_google_calendar_invite(match[0], match[1], match[2])
-
-        group_matches = self.run_group_matches()
-        # TODO: send google calendar invites
-
-        return (matches, group_matches)
+        self.run_one_on_one_matches()
+        self.run_group_matches()
 
     def run_one_on_one_matches(self):
+        """
+        goes through new profiles and old profiles and sees if the availabilities match at all
+        Returns all matches
+        """
         today = datetime.datetime.utcnow().date()
         matches = []
         # iterate through all profiles regardless of availability
@@ -184,9 +180,16 @@ class Command(BaseCommand):
                                 self.match(new_availability, old_availability, new_profile, old_profile)
                                 self.match(old_availability, new_availability, old_profile, new_profile)
                                 matches.append([new_availability, new_profile, old_profile])
+        # match the users
+        for match in matches:
+            self.send_google_calendar_invite(match[0], [match[1], match[2]], 'one-on-one')
+
         return matches
 
     def run_group_matches(self):
+        """
+        groups users by location and availability first and outputs the group matches
+        """
         today = datetime.datetime.utcnow().date()
         group_matches = {}
         for location in locations:
@@ -196,9 +199,13 @@ class Command(BaseCommand):
                 if (self.check_fuzzy_match(av.profile, av, curr_match)):
                     curr_match.append(av.profile)
                 if len(curr_match) == 4:
-                    group_matches[av.time_available_utc] = curr_match
+                    group_matches[av.time_available_utc] = curr_match  
                     self.match_group(av.time_available_utc, curr_match)
                     curr_match = []
+
+        # send the invites
+        for time, matches in group_matches.items():
+            self.send_google_calendar_invite(time, matches, 'group')
 
         return group_matches
 
@@ -242,7 +249,7 @@ class Command(BaseCommand):
 
         orig_av.save()
         original_profile.save()
-        self.execute_mixpanel_matches(orig_av, original_profile, matched_profile)
+        self.execute_mixpanel_one_on_one_matches(orig_av, original_profile, matched_profile)
 
     def match_group(self, time, matches):
         """
@@ -255,9 +262,9 @@ class Command(BaseCommand):
             av.save()
             prof.number_of_matches += 1
             prof.save()
-        # execute matches
+            self.execute_mixpanel_group_matches(prof)
 
-    def send_google_calendar_invite(self, availability, profile1, profile2):
+    def send_google_calendar_invite(self, time, profiles, match_type):
         """
         Sends the calendar invite to the newly matched profiles
         """
@@ -265,15 +272,16 @@ class Command(BaseCommand):
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('calendar', 'v3', http=http)
 
-        start_time = availability.time_available_utc
+        start_time = time if match_type == 'group' else time.time_available_utc
         end_time = start_time + datetime.timedelta(minutes=30)
         description = "You are now matched for a Table for Two session! The session lasts how ever long you'd like, and you can meet "
         description += "wherever you want. If you're on Google Hangout, please use the hangout link located in this event. If something "
         description += "comes up and you are unable to make the session, you are welcome to reschedule to a different time--don't be afraid "
-        description += "to reach out to them over Slack! If you have any questions, don't hesitate to Slack Tiffany Qi or Kate Ryan. Have fun!"
+        description += "to reach out to them over Slack! If you have any questions, don't hesitate to Slack Tiffany Qi or Kate Ryan. Have fun! "
+        description += "You can opt out of table for 2 by going to tablefortwo.herokuapp.com."
 
         event = {
-            'summary': '%s // %s Table for Two via %s' % (profile1.preferred_first_name, profile2.preferred_first_name, availability.google_hangout),
+            'summary': 'Table for Two ({})'.format(match_type),
             'description': description,
             'start': {
                 'dateTime': start_time.isoformat(),
@@ -283,18 +291,14 @@ class Command(BaseCommand):
                 'dateTime': end_time.isoformat(),
                 'timeZone': 'UTC',
             },
-            'attendees': [
-                {'email': profile1.email},
-                {'email': profile2.email},
-            ],
+            'attendees': [{'email': profile.email} for profile in profiles],
             "guestsCanModify": True
         }
 
-        print('Event created between %s and %s at %s' % (profile1.preferred_first_name, profile2.preferred_first_name, start_time))
+        print('{} event created with {} at {}'.format(match_type, [p.email for p in profiles], start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
         # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
-        # self.execute_mixpanel_calendar_invite(profile1, start_time)
-        # self.execute_mixpanel_calendar_invite(profile2, start_time)
+        # self.execute_mixpanel_calendar_invite(profiles, start_time)
 
     ### Helpers ###
 
@@ -438,7 +442,7 @@ class Command(BaseCommand):
             print('Storing credentials to ' + credential_path)
         return credentials
 
-    def execute_mixpanel_matches(self, orig_av, original_profile, matched_profile):
+    def execute_mixpanel_one_on_one_matches(self, orig_av, original_profile, matched_profile):
         """
         Execute Mixpanel code from matches
         """
@@ -453,12 +457,27 @@ class Command(BaseCommand):
             'Number of Matches': original_profile.number_of_matches,
             'Last Match Created': datetime.datetime.utcnow()
         })
+    
+    def execute_mixpanel_group_matches(self, profile):
+        """
+        Execute Mixpanel code from group matches
+        """
+        mp.track(profile.distinct_id, 'Match Created', {
+            'Current User Department': profile.department,
+            'Current User Location': profile.location,
+            'Type': 'Group',
+        })
+        mp.people_set(profile.distinct_id, {
+            'Number of Matches': profile.number_of_matches,
+            'Last Match Created': datetime.datetime.utcnow()
+        })
 
-    def execute_mixpanel_calendar_invite(self, profile, start_time):
+    def execute_mixpanel_calendar_invite(self, profiles, start_time):
         """
         Execute Mixpanel code from calendar invites
         """
-        mp.track(profile.distinct_id, 'Calendar Invite Sent', {
-            'Meeting Time': start_time.isoformat(),
-            'Timezone': profile.timezone
-        })
+        for prof in profiles:
+            mp.track(profile.distinct_id, 'Calendar Invite Sent', {
+                'Meeting Time': start_time.isoformat(),
+                'Timezone': profile.timezone
+            })
