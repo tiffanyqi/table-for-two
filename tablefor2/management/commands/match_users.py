@@ -298,8 +298,8 @@ class Command(BaseCommand):
 
         print('{} event created with {} at {}'.format(match_type, [p.email for p in profiles], start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
-        # self.execute_mixpanel_calendar_invite(profiles, start_time)
+        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        self.execute_mixpanel_calendar_invite(profiles, start_time)
 
     ### Helpers ###
 
