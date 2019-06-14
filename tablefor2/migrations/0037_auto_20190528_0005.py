@@ -6,7 +6,6 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-import jsonfield.fields
 
 
 class Migration(migrations.Migration):
@@ -20,7 +19,7 @@ class Migration(migrations.Migration):
             name='GroupAvailability',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('matched_group_users', jsonfield.fields.JSONField()),
+                ('matched_group_users', models.TextField(null=True)),
                 ('time_available', models.DateTimeField(default=django.utils.timezone.now)),
                 ('time_available_utc', models.DateTimeField(default=django.utils.timezone.now)),
             ],
