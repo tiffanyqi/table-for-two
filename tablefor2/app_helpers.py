@@ -17,11 +17,13 @@ def calculate_utc(profile, time_available):
 
 
 def get_names_from_group_avs(avs):
-    names = ''
-    emails = list(avs.values_list('matched_group_users', flat=True))
-    flat_emails = [item for sublist in emails for item in json.loads(sublist)]
-    for i, email in enumerate(flat_emails):
-        prof = Profile.objects.get(email=email)
-        name = '{} {}'.format(prof.preferred_first_name, prof.last_name)
-        names += get_string_for_and_format(name, i, len(flat_emails))
+    names = []
+    for av in avs:
+        name_string = ''
+        emails = json.loads(av.matched_group_users)
+        for i, email in enumerate(emails):
+            prof = Profile.objects.get(email=email)
+            name = '{} {}'.format(prof.preferred_first_name, prof.last_name)
+            name_string += get_string_for_and_format(name, i, len(emails))
+        names.append(name_string)
     return names

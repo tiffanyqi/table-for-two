@@ -48,7 +48,7 @@ def index(request):
             return render(request, 'tablefor2/index-logged-in.html', {
                 'profile': profile,
                 'availabilities': availabilities,
-                'has_current_match': current_matches or current_group_match,
+                'has_current_match': current_matches or current_group_avs,
                 'has_past_match': past_matches or past_group_matches,
                 'current_matches': current_matches,
                 'past_matches': past_matches,
@@ -59,7 +59,7 @@ def index(request):
                 'times': times,
             })
 
-    except:
+    except Exception as e:
         return render(request, 'tablefor2/index-logged-out.html')
 
 

@@ -102,4 +102,4 @@ class AppHelpersTestCase(TestCase):
         self.setup_avs()
         t = Profile.objects.get(first_name='tiffany')
         avs = GroupAvailability.objects.filter(profile=t).exclude(matched_group_users=None)
-        self.assertEqual(get_names_from_group_avs(avs), 'another test, tim test, and karima test.')
+        self.assertEqual(get_names_from_group_avs(avs), ['another test, tim test, and karima test.'])

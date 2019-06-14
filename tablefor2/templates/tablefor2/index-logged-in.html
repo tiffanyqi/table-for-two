@@ -56,6 +56,9 @@
                   <div>{{ past_match.time_available}}</div>
                 </div>
               {% endfor %}
+              {% for past_group_match in past_group_matches %}
+                <div class="past-match">{{ past_group_match }}</div>
+              {% endfor %}
             {% endif %}
             </div>
           </div>
