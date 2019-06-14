@@ -15,7 +15,7 @@
           </div>
           <div class="dashboard">
             <div class="matches">
-              {% if not current_matches %}
+              {% if not has_current_match %}
                 <div class="past-match">
                   <div class="glyphicon glyphicon-question-sign pull-right" data-toggle="tooltip" data-placement="right" title="Our matching algorithms run once a day and goes through everyone's availability. If there's someone there who's available at the same time as you and fulfills your matching critiera, we'll match you up! Sit tight, we'll have some for you shortly ☺"></div>
                   <br>
@@ -39,9 +39,16 @@
                   </div>
                 </div>
               {% endfor %}
+              {% if current_group_match_names %}
+                <div class="current-match">
+                  <div class="profile-info">
+                    <p>You have an upcoming group match with <span class="highlight">{{ current_group_match_names }}</span> on <span class="highlight">{{ current_match.time_available }}</span> via {{ current_match.google_hangout }}! They are from {{ current_match.department }}.
+                    </p>
+                  </div>
+                </div>
+              {% endif %}
             {% endif %}
-
-            {% if past_matches %}
+            {% if has_past_match %}
               {% for past_match in past_matches %}
                 <div class="past-match">
                   <div><strong>{{ past_match.matched_name}}</strong></div>
@@ -49,9 +56,11 @@
                   <div>{{ past_match.time_available}}</div>
                 </div>
               {% endfor %}
+              {% for past_group_match in past_group_matches %}
+                <div class="past-match">{{ past_group_match }}</div>
+              {% endfor %}
             {% endif %}
             </div>
-
           </div>
         </div>
 
@@ -79,11 +88,15 @@
                             <td>{{ profile.number_of_matches }}</td>
                           </tr>
                           <tr>
+                            <td>Match Type</td>
+                            <td>{{ profile.match_type }}</td>
+                          </tr>
+                          <tr>
                             <td>Frequency</td>
                             <td>{{ profile.frequency }}</td>
                           </tr>
                           <tr>
-                            <td>GHangout?</td>
+                            <td>Video call?</td>
                             <td>{{ profile.google_hangout }}</td>
                           </tr>
                           <tr>

@@ -7,11 +7,11 @@ import datetime
 import pytz
 
 
-class MatchTestCase(TestCase):
+class BasicMatchUsersTestCase(TestCase):
     past = datetime.datetime(2016, 11, 5, 12, 0, tzinfo=pytz.UTC)  # 1478347200
     past2 = datetime.datetime(2016, 12, 5, 12, 0, tzinfo=pytz.UTC)
-    future = datetime.datetime(2020, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
-    future2 = datetime.datetime(2020, 11, 2, 12, 0, tzinfo=pytz.UTC)
+    future = datetime.datetime(2030, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
+    future2 = datetime.datetime(2030, 11, 2, 12, 0, tzinfo=pytz.UTC)
 
     # setup
     def init_profiles(self):
@@ -26,6 +26,7 @@ class MatchTestCase(TestCase):
             timezone='PST',
             google_hangout='Yes',
             frequency='Once a month',
+            match_type='one-on-one',
             accept_matches='Yes',
             date_entered_mixpanel=datetime.datetime(2016, 10, 31),
             distinct_id='tiffany'
@@ -40,6 +41,7 @@ class MatchTestCase(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='No',
+            match_type='one-on-one',
             frequency='Once a month',
             accept_matches='Yes',
             date_entered_mixpanel=datetime.datetime(2016, 11, 01),
@@ -54,6 +56,7 @@ class MatchTestCase(TestCase):
             department='Success',
             location='San Francisco',
             timezone='PST',
+            match_type='one-on-one',
             google_hangout='Yes',
             frequency='Once a month',
             accept_matches='Yes',
@@ -69,6 +72,7 @@ class MatchTestCase(TestCase):
             department='Success',
             location='Other',
             google_hangout='Yes',
+            match_type='one-on-one',
             timezone='CEST',
             frequency='Once a month',
             accept_matches='Yes',
@@ -84,6 +88,7 @@ class MatchTestCase(TestCase):
             department='Engineering',
             location='New York',
             google_hangout='Yes',
+            match_type='one-on-one',
             timezone='EST',
             frequency='Once a month',
             accept_matches='Yes',
@@ -100,6 +105,7 @@ class MatchTestCase(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='Yes',
+            match_type='one-on-one',
             frequency='Once a month',
             accept_matches='Yes',
             date_entered_mixpanel=datetime.datetime(2016, 01, 01),
@@ -115,6 +121,7 @@ class MatchTestCase(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='Yes',
+            match_type='one-on-one',
             frequency='Once a month',
             accept_matches='No',
             date_entered_mixpanel=datetime.datetime(2016, 01, 01),
@@ -586,7 +593,7 @@ class MatchTestCase(TestCase):
         ]
 
         self.assertEqual(t_av_past.matched_name, None)
-        self.assertEqual(Command.runs_matches(Command()), matches)
+        self.assertEqual(Command.run_one_on_one_matches(Command()), matches)
 
     def test_match_and_run_future_first_day(self):
         self.previous_matches_setup()
@@ -608,12 +615,12 @@ class MatchTestCase(TestCase):
             [a_av_future, a, mike],
             [t_av_future, t, tim]
         ]
-        self.assertEqual(Command.runs_matches(Command()), matches)
+        self.assertEqual(Command.run_one_on_one_matches(Command()), matches)
 
     # case where there's two day in a row, but folks shouldn't be matched
     def test_match_and_run_future_second_day(self):
         self.future_matches_setup()
-        self.assertEqual(Command.runs_matches(Command()), [])
+        self.assertEqual(Command.run_one_on_one_matches(Command()), [])
 
     def test_check_google_hangout(self):
         self.fresh_setup()
@@ -756,12 +763,3 @@ class MatchTestCase(TestCase):
         self.assertEqual(Command.check_frequency(Command(), k_av, k), True)
         self.assertEqual(Command.check_frequency(Command(), tim_av, tim), False)
         self.assertEqual(Command.check_frequency(Command(), mike_av, mike), False)
-
-    def test_check_accept_matches(self):
-        self.fresh_setup()
-        poop = Profile.objects.get(first_name='poop')
-        t = Profile.objects.get(first_name='tiffany')
-        a = Profile.objects.get(first_name='andrew')
-
-        self.assertEqual(Command.check_accept_matches(Command(), t, a), True)
-        self.assertEqual(Command.check_accept_matches(Command(), poop, a), False)

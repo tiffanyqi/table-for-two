@@ -14,12 +14,17 @@ DEPARTMENTS = (  # change these departments
     ('Support', 'Support')
 )
 
+# Ensure in sync with match_users.py
 LOCATIONS = (
     ('--', 'Select a Location'),
     ('San Francisco', 'San Francisco'),
     ('New York', 'New York'),
     ('Seattle', 'Seattle'),
-    ('Lehi', 'Lehi'),
+    ('Austin', 'Austin'),
+    ('London', 'London'),
+    ('Paris', 'Paris'),
+    ('Barcelona', 'Barcelona'),
+    ('Singapore', 'Singapore'),
     ('Other', 'Other')
 )
 
@@ -30,13 +35,20 @@ TIMEZONES = (
     ('MST', 'US/Mountain'),
     ('PST', 'US/Pacific'),
     ('BST', 'Europe/London'),
-    ('CEST', 'Europe/Amsterdam')
+    ('CEST', 'Europe/Amsterdam'),
+    ('SGT', 'Singapore'),
 )
 
 BOOLEANS = (
     ('--', 'Select a Choice'),
     ('Yes', 'Yes'),
     ('No', 'No')
+)
+
+MATCH_TYPES = (
+    ('--', 'Select a Choice'),
+    ('group', 'Group of four'),
+    ('one-on-one', 'One on one'),
 )
 
 FREQUENCY = (
@@ -55,7 +67,8 @@ class ProfileForm(forms.Form):
     date_entered_mixpanel = forms.DateField(help_text='(When did you join Mixpanel? Format in MM/DD/YYYY or YYYY-MM-DD)')
     accept_matches = forms.ChoiceField(choices=BOOLEANS, help_text="Choose 'Yes' if you are just starting!")
     frequency = forms.ChoiceField(choices=FREQUENCY, help_text='How often do you want to participate?')
-    google_hangout = forms.ChoiceField(choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to Google Hangout?')
+    match_type = forms.ChoiceField(choices=MATCH_TYPES, help_text='Choose your match preference. You can choose to be in a group or a one on one.')
+    google_hangout = forms.ChoiceField(choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to video call?')
     what_is_your_favorite_animal = forms.CharField(max_length=50, required=False, help_text='You have 50 characters!', widget=forms.TextInput(attrs={'maxlength': 50}))
     name_a_fun_fact_about_yourself = forms.CharField(max_length=50, required=False, help_text='You have 50 characters!', widget=forms.TextInput(attrs={'maxlength': 50}))
     distinct_id = forms.CharField(widget=forms.HiddenInput(), label='')
@@ -81,7 +94,7 @@ class ProfileForm(forms.Form):
     def clean_google_hangout(self):
         google_hangout = self.cleaned_data.get('google_hangout')
         if google_hangout == '--':
-            raise forms.ValidationError('Please select your Google Hangout preference.')
+            raise forms.ValidationError('Please select your video calling preference.')
         return google_hangout
 
     def clean_accept_matches(self):
@@ -95,6 +108,12 @@ class ProfileForm(forms.Form):
         if frequency == '--':
             raise forms.ValidationError('Please select your frequency to participate.')
         return frequency
+
+    def clean_match_type(self):
+        match_type = self.cleaned_data.get('match_type')
+        if match_type == '--':
+            raise forms.ValidationError('Please select your type of match.')
+        return match_type
 
     def clean_date_entered_mixpanel(self):
         date_entered_mixpanel = self.cleaned_data.get('date_entered_mixpanel')

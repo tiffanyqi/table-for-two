@@ -1,19 +1,4 @@
-from tablefor2.forms import TIMEZONES
-from tablefor2.models import *
-
 import datetime
-import pytz
-
-
-# determines what the UTC equivalent of the original time is
-def calculate_utc(profile, time_available):
-    timezone = dict(TIMEZONES).get(profile.timezone)
-    local = pytz.timezone(timezone)
-    string = time_available.strftime("%Y-%m-%d %H:%M:%S")
-    naive = datetime.datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
-    local_datetime = local.localize(naive)
-    return local_datetime.astimezone(pytz.utc)  # 2017-07-19 12:00:00+00:00
-
 
 # calculate individual times from 8AM to 6PM
 def calculate_ampm():
@@ -67,3 +52,10 @@ def get_next_weekday(today, day, time):
 
     time_string = time.split(':')
     return datetime.datetime.combine(next_weekday, datetime.time(int(time_string[0]), int(time_string[1])))
+
+# returns a string somewhere in the position of 'string 1, string 2, and string 3'
+def get_string_for_and_format(string, curr_index, array_len):
+    if curr_index == array_len - 1:
+        return 'and {}.'.format(string)
+    elif curr_index < array_len:
+        return '{}, '.format(string)
