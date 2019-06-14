@@ -1,9 +1,11 @@
 import datetime
 
 # calculate individual times from 8AM to 6PM
-def calculate_ampm():
+def calculate_ampm(match_type):
     times = []
-    for i in range(8, 18):
+    start_hour = 8 if match_type == 'one-on-one' else 12
+    end_hour = 18 if match_type == 'one-on-one' else 13
+    for i in range(start_hour, end_hour):
         ampm = ''
         num = i
         if i < 12:

@@ -21,7 +21,7 @@ def index(request):
         # does the profile exist?
         profile = Profile.objects.get(email=request.user.email)
         recurring = RecurringAvailability.objects.filter(profile=profile)
-        times = calculate_ampm()
+        times = calculate_ampm(profile.match_type)
 
         # force users to add more info
         if not profile.extra_saved_information:
@@ -67,7 +67,7 @@ def index(request):
 @login_required
 def edit_availability(request):
     profile = Profile.objects.get(email=request.user.email)
-    times = calculate_ampm()
+    times = calculate_ampm(profile.match_type)
     recurring = RecurringAvailability.objects.filter(profile=profile)
     recurring_values = calculate_recurring_values(recurring)
 
