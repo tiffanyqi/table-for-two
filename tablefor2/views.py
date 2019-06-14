@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 from mixpanel import Mixpanel
 
+from tablefor2.app_helpers import get_names_from_group_avs
 from tablefor2.forms import *
 from tablefor2.helpers import calculate_ampm, calculate_recurring_values
 from tablefor2.models import *
@@ -39,11 +40,20 @@ def index(request):
             availabilities = Availability.objects.filter(profile=profile, time_available__gte=today).order_by('time_available') or None
             recurring_values = calculate_recurring_values(recurring)
 
+            current_group_avs = GroupAvailability.objects.filter(profile=profile, time_available__gt=today).exclude(matched_group_users=None) or None
+            current_group_match_names = get_names_from_group_avs(current_group_avs) if current_group_avs else ''
+            past_group_avs = GroupAvailability.objects.filter(profile=profile, time_available__lte=today).exclude(matched_group_users=None).order_by('-time_available_utc') or None
+            past_group_match_names = get_names_from_group_avs(past_group_avs) if past_group_avs else ''
+
             return render(request, 'tablefor2/index-logged-in.html', {
                 'profile': profile,
                 'availabilities': availabilities,
+                'has_current_match': current_matches or current_group_match,
+                'has_past_match': past_matches or past_group_matches,
                 'current_matches': current_matches,
                 'past_matches': past_matches,
+                'current_group_matches': current_group_match_names,
+                'past_group_matches': past_group_match_names,
                 'recurring': recurring,
                 'recurring_values': recurring_values,
                 'times': times,
@@ -178,6 +188,7 @@ def save_profile(request):
                 'Location': profile.location,
                 'Timezone': profile.timezone,
                 'Frequency': profile.frequency,
+                'Match Type': profile.match_type,
                 'Date Entered Mixpanel': str(profile.date_entered_mixpanel),
                 'Number of Matches': profile.number_of_matches,
                 'Date Joined': str(profile.date_joined)

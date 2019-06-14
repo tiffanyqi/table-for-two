@@ -12,7 +12,8 @@ from oauth2client.file import Storage
 import os
 from slackclient import SlackClient
 
-from tablefor2.helpers import calculate_utc, determine_ampm, get_next_weekday
+from tablefor2.app_helpers import calculate_utc
+from tablefor2.helpers import determine_ampm, get_next_weekday
 from tablefor2.models import (
     Availability,
     GroupAvailability,
