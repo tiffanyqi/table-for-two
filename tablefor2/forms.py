@@ -35,7 +35,7 @@ TIMEZONES = (
     ('MST', 'US/Mountain'),
     ('PST', 'US/Pacific'),
     ('BST', 'Europe/London'),
-    ('CEST', 'Europe/Amsterdam'),
+    ('CEST', 'Europe/Paris'),
     ('SGT', 'Singapore'),
 )
 
