@@ -7,6 +7,7 @@ DEPARTMENTS = (  # change these departments
     ('--', 'Select a Department'),
     ('Design', 'Design'),
     ('Engineering', 'Engineering'),
+    ('Product', 'Product'),
     ('General & Administrative', 'General & Administrative'),
     ('Marketing', 'Marketing'),
     ('Sales', 'Sales'),
