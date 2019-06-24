@@ -3,8 +3,8 @@ from django import forms
 from datetime import *
 
 
-DEPARTMENTS = (  # change these departments
-    ('--', 'Select a Department'),
+TEAMS = (
+    ('--', 'Select a Team'),
     ('Design', 'Design'),
     ('Engineering', 'Engineering'),
     ('Product', 'Product'),
@@ -62,7 +62,7 @@ FREQUENCY = (
 
 class ProfileForm(forms.Form):
     preferred_first_name = forms.CharField(max_length=50, help_text='First name only! Your last name is already recorded :)')
-    department = forms.ChoiceField(label="Team", choices=DEPARTMENTS)
+    department = forms.ChoiceField(label="Team", choices=TEAMS)
     location = forms.ChoiceField(choices=LOCATIONS)
     timezone = forms.ChoiceField(choices=TIMEZONES, help_text='Choose the closest city in your timezone')
     date_entered_mixpanel = forms.DateField(help_text='(When did you join Mixpanel? Format in MM/DD/YYYY or YYYY-MM-DD)')

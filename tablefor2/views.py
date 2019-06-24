@@ -17,8 +17,7 @@ mp = Mixpanel(MP_TOKEN)
 
 
 def index(request):
-    try:
-        # does the profile exist?
+    if request.user.is_authenticated:
         profile = Profile.objects.get(email=request.user.email)
         recurring = RecurringAvailability.objects.filter(profile=profile)
 
@@ -51,8 +50,7 @@ def index(request):
                 'current_group_matches': current_group_match_names,
                 'past_group_matches': past_group_match_names,
             })
-
-    except Exception as e:
+    else:
         return render(request, 'tablefor2/index-logged-out.html')
 
 
