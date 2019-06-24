@@ -35,7 +35,7 @@ TIMEZONES = (
     ('MST', 'US/Mountain'),
     ('PST', 'US/Pacific'),
     ('BST', 'Europe/London'),
-    ('CEST', 'Europe/Amsterdam'),
+    ('CEST', 'Europe/Paris'),
     ('SGT', 'Singapore'),
 )
 
@@ -61,22 +61,22 @@ FREQUENCY = (
 
 class ProfileForm(forms.Form):
     preferred_first_name = forms.CharField(max_length=50, help_text='First name only! Your last name is already recorded :)')
-    department = forms.ChoiceField(choices=DEPARTMENTS)
+    department = forms.ChoiceField(label="Team", choices=DEPARTMENTS)
     location = forms.ChoiceField(choices=LOCATIONS)
     timezone = forms.ChoiceField(choices=TIMEZONES, help_text='Choose the closest city in your timezone')
     date_entered_mixpanel = forms.DateField(help_text='(When did you join Mixpanel? Format in MM/DD/YYYY or YYYY-MM-DD)')
     accept_matches = forms.ChoiceField(choices=BOOLEANS, help_text="Choose 'Yes' if you are just starting!")
     frequency = forms.ChoiceField(choices=FREQUENCY, help_text='How often do you want to participate?')
     match_type = forms.ChoiceField(choices=MATCH_TYPES, help_text='Choose your match preference. You can choose to be in a group or a one on one.')
-    google_hangout = forms.ChoiceField(choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to video call?')
-    what_is_your_favorite_animal = forms.CharField(max_length=50, required=False, help_text='You have 50 characters!', widget=forms.TextInput(attrs={'maxlength': 50}))
-    name_a_fun_fact_about_yourself = forms.CharField(max_length=50, required=False, help_text='You have 50 characters!', widget=forms.TextInput(attrs={'maxlength': 50}))
+    google_hangout = forms.ChoiceField(label="Video call", choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to video call?')
+    what_is_your_favorite_movie = forms.CharField(label="Favorite movie", max_length=50, required=False, help_text='You have 50 characters!', widget=forms.TextInput(attrs={'maxlength': 50}))
+    name_a_fun_fact_about_yourself = forms.CharField(label="Fun fact about yourself", max_length=50, required=False, help_text='You have 50 characters!', widget=forms.TextInput(attrs={'maxlength': 50}))
     distinct_id = forms.CharField(widget=forms.HiddenInput(), label='')
 
     def clean_department(self):
         department = self.cleaned_data.get('department')
         if department == '--':
-            raise forms.ValidationError('Please select your department.')
+            raise forms.ValidationError('Please select your team.')
         return department
 
     def clean_location(self):

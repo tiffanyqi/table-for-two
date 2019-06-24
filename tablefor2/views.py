@@ -21,7 +21,6 @@ def index(request):
         # does the profile exist?
         profile = Profile.objects.get(email=request.user.email)
         recurring = RecurringAvailability.objects.filter(profile=profile)
-        times = calculate_ampm(profile.match_type)
 
         # force users to add more info
         if not profile.extra_saved_information:
@@ -37,8 +36,6 @@ def index(request):
             today = date.today()
             current_matches = Availability.objects.filter(profile=profile, time_available__gt=today).exclude(matched_name=None) or None
             past_matches = Availability.objects.filter(profile=profile, time_available__lte=today).exclude(matched_name=None).order_by('-time_available_utc') or None
-            availabilities = Availability.objects.filter(profile=profile, time_available__gte=today).order_by('time_available') or None
-            recurring_values = calculate_recurring_values(recurring)
 
             current_group_avs = GroupAvailability.objects.filter(profile=profile, time_available__gt=today).exclude(matched_group_users=None) or None
             current_group_match_names = get_names_from_group_avs(current_group_avs) if current_group_avs else ''
@@ -47,16 +44,12 @@ def index(request):
 
             return render(request, 'tablefor2/index-logged-in.html', {
                 'profile': profile,
-                'availabilities': availabilities,
                 'has_current_match': current_matches or current_group_avs,
                 'has_past_match': past_matches or past_group_matches,
                 'current_matches': current_matches,
                 'past_matches': past_matches,
                 'current_group_matches': current_group_match_names,
                 'past_group_matches': past_group_match_names,
-                'recurring': recurring,
-                'recurring_values': recurring_values,
-                'times': times,
             })
 
     except Exception as e:
@@ -134,7 +127,7 @@ def edit_profile(request):
             'frequency': profile.frequency,
             'match_type': profile.match_type,
             'date_entered_mixpanel': profile.date_entered_mixpanel,
-            'what_is_your_favorite_animal': profile.what_is_your_favorite_animal,
+            'what_is_your_favorite_movie': profile.what_is_your_favorite_movie,
             'name_a_fun_fact_about_yourself': profile.name_a_fun_fact_about_yourself
         }
         form = ProfileForm(initial=data)
@@ -172,7 +165,7 @@ def save_profile(request):
             profile.frequency = form.cleaned_data.get('frequency')
             profile.match_type = form.cleaned_data.get('match_type')
             profile.date_entered_mixpanel = form.cleaned_data.get('date_entered_mixpanel')
-            profile.what_is_your_favorite_animal = form.cleaned_data.get('what_is_your_favorite_animal')
+            profile.what_is_your_favorite_movie = form.cleaned_data.get('what_is_your_favorite_movie')
             profile.name_a_fun_fact_about_yourself = form.cleaned_data.get('name_a_fun_fact_about_yourself')
             profile.extra_saved_information = True
             profile.save()

@@ -9,12 +9,12 @@
     {% load static %}
         <div class="index-header">
             <div class="col-sm-4 box">
-                <h1 class="highlight">Welcome to Table for Two!</h1>
+                <h1 class="highlight">Welcome to Table for Two+!</h1>
                 <p class="highlight">Grabbing coffee or lunch with another Mixpaneler from another team is even easier than before.</p>
-                <p class="highlight"><em>#BeSocialMakeFriendships</em></p>
+                <p class="highlight"><em>One Team</em></p>
                 <br>
                 <div class="text-center">
-                    <a href="{% url "social:begin" "google-oauth2" %}"><button class="save btn btn-default">GET STARTED</button></a>
+                    <a href="{% url "social:begin" "google-oauth2" %}"><button class="save btn btn-default">Get Started</button></a>
                 </div>
             </div>
             <div class="col-sm-4 table-padding hidden-xs hidden-sm col-sm-offset-2">
@@ -22,28 +22,28 @@
             </div>
         </div>
         <div class="index-box">
-            <h2>What's Table for Two?</h2>
-            <p>Table for two is a program where you are randomly matched with someone outside of your team to have a 1:1 lunch, coffee or online hangout - the choice is yours!</p>
+            <h2>What's Table for Two+?</h2>
+            <p>Table for Two+ is a program where you are randomly matched with someone (or group!) outside your team or location to have lunch, coffee or online hangout - the choice is yours!</p>
             <div class="text-center">
                 <img id="chair-img" src="{% static "img/chairs-original.png" %}">
             </div>
         </div>
 
-        <div class="index-box">Just fill out your information and preferences, and select when you're generally available. Our algorithms will match you with another Mixpaneler once a month based on your availability, team, and tenure at Mixpanel. Each month, you'll meet with someone new!
+        <div class="index-box">Just fill out your information and preferences, and select when you're generally available. Our algorithms will match you with another Mixpaneler once a month based on your availability, team, and tenure at Mixpanel. Each month, you'll meet with someone new! If you select a group match, fill out your lunch availability.
             <div class="text-center">
-                <img id="availability-img" src="{% static "img/availability.png" %}">
+                <img id="availability-img" src="{% static "img/availability-2.png" %}">
             </div>
         </div>
 
-        <div class="index-box">If you choose to Google Hangout, you'll also be able to meet other Mixpanelers in a location other than your own.
+        <div class="index-box">If you choose to video call, you'll also be able to meet other Mixpanelers in a location other than your own.
             <div class="text-center">
-                <img id="availability-img" src="{% static "img/dashboard.png" %}">
+                <img id="availability-img" src="{% static "img/dashboard-2.png" %}">
             </div>
         </div>
 
         <div class="index-box text-center">
             Interested?
-            <a href="{% url "social:begin" "google-oauth2" %}"><button class="save btn btn-default">GET STARTED</button></a>
+            <a href="{% url "social:begin" "google-oauth2" %}"><button class="save btn btn-default">Get Started</button></a>
         </div>
     {% endblock %}
 

@@ -8,222 +8,58 @@
 {% block content %}
   {% load static %}
 
-      <div class="row">
-        <div class="col-sm-8 col-sm-push-4">
-          <div class="group-header">
-            <h1>Table for Two Dashboard</h1>
+    <div class="group-header">
+      <h1>Table for Two+ Dashboard</h1>
+    </div>
+    <div class="dashboard">
+      <div class="matches">
+        {% if not has_current_match %}
+          <div class="past-match">
+            <div class="glyphicon glyphicon-question-sign pull-right" data-toggle="tooltip" data-placement="right" title="Our matching algorithms run once a day and goes through everyone's availability. If there's someone there who's available at the same time as you and fulfills your matching critiera, we'll match you up! Sit tight, we'll have some for you shortly ☺"></div>
+            <br>
+            <p>You don't have any upcoming matches yet!</p>
           </div>
-          <div class="dashboard">
-            <div class="matches">
-              {% if not has_current_match %}
-                <div class="past-match">
-                  <div class="glyphicon glyphicon-question-sign pull-right" data-toggle="tooltip" data-placement="right" title="Our matching algorithms run once a day and goes through everyone's availability. If there's someone there who's available at the same time as you and fulfills your matching critiera, we'll match you up! Sit tight, we'll have some for you shortly ☺"></div>
-                  <br>
-                  <p>You don't have any upcoming matches yet!</p>
-                </div>
-            {% else %}
-              {% for current_match in current_matches %}
-                <div class="current-match">
-                  <div class="profile-info">
-                    <p>You have an upcoming match with <span class="highlight">{{ current_match.matched_name }}</span> on <span class="highlight">{{ current_match.time_available }}</span> via {{ current_match.google_hangout }}! They are from {{ current_match.department }}.
-                    
-                    {% if current_match.name_a_fun_fact_about_yourself %}
-                      A fun fact is that "{{ current_match.name_a_fun_fact_about_yourself }}".
-                    {% endif %}
-
-                    {% if current_match.what_is_your_favorite_animal %}
-                      They love {{ current_match.what_is_your_favorite_animal }}.
-                    {% endif %}
-                    </p>
-
-                  </div>
-                </div>
-              {% endfor %}
-              {% if current_group_match_names %}
-                <div class="current-match">
-                  <div class="profile-info">
-                    <p>You have an upcoming group match with <span class="highlight">{{ current_group_match_names }}</span> on <span class="highlight">{{ current_match.time_available }}</span> via {{ current_match.google_hangout }}! They are from {{ current_match.department }}.
-                    </p>
-                  </div>
-                </div>
+      {% else %}
+        {% for current_match in current_matches %}
+          <div class="current-match">
+            <div class="profile-info">
+              <p>You have an upcoming match with <span class="highlight">{{ current_match.matched_name }}</span> on <span class="highlight">{{ current_match.time_available }}</span> via {{ current_match.google_hangout }}! They are from {{ current_match.department }}.
+              
+              {% if current_match.name_a_fun_fact_about_yourself %}
+                A fun fact is that "{{ current_match.name_a_fun_fact_about_yourself }}".
               {% endif %}
-            {% endif %}
-            {% if has_past_match %}
-              {% for past_match in past_matches %}
-                <div class="past-match">
-                  <div><strong>{{ past_match.matched_name}}</strong></div>
-                  <div>{{ past_match.department }}</div>
-                  <div>{{ past_match.time_available}}</div>
-                </div>
-              {% endfor %}
-              {% for past_group_match in past_group_matches %}
-                <div class="past-match">{{ past_group_match }}</div>
-              {% endfor %}
-            {% endif %}
-            </div>
-          </div>
-        </div>
 
-        <div class="col-sm-4 col-sm-pull-8 profile-background">
-          <div class="group-header visible-xs">
-            <h2>Profile and Preferences</h2>
-          </div>
-          <div class="group-scroll">
-            <input type="hidden" id="distinct-id" value="{{ profile.distinct_id }}">
-            <div id="text-carousel" class="carousel slide" data-ride="carousel" data-interval="false">
-              <div class="row">
-                <div class="carousel-inner">
-                  <div class="item active">
-                    <div class="carousel-content">
-                      <table class="table profile-table">
-                        <thead>
-                          <tr>
-                            <th></th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td># of Total Matches</td>
-                            <td>{{ profile.number_of_matches }}</td>
-                          </tr>
-                          <tr>
-                            <td>Match Type</td>
-                            <td>{{ profile.match_type }}</td>
-                          </tr>
-                          <tr>
-                            <td>Frequency</td>
-                            <td>{{ profile.frequency }}</td>
-                          </tr>
-                          <tr>
-                            <td>Video call?</td>
-                            <td>{{ profile.google_hangout }}</td>
-                          </tr>
-                          <tr>
-                            <td>Favorite Animal</td>
-                            <td>{{ profile.what_is_your_favorite_animal }}</td>
-                          </tr>
-                          <tr>
-                            <td>Fun Fact</td>
-                            <td>{{ profile.name_a_fun_fact_about_yourself }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div class="item">
-                    <div class="carousel-content">
-                      <table class="table profile-table">
-                        <thead>
-                          <tr>
-                            <th></th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Preferred Name</td>
-                            <td>{{ profile.preferred_first_name }}</td>
-                          </tr>
-                          <tr>
-                            <td>Department</td>
-                            <td>{{ profile.department }}</td>
-                          </tr>
-                          <tr>
-                            <td>Location</td>
-                            <td>{{ profile.location }}</td>
-                          </tr> 
-                          <tr>
-                            <td>Timezone</td>
-                            <td>{{ profile.timezone }}</td>
-                          </tr>
-                          <tr>
-                            <td>Date Entered Mixpanel</td>
-                            <td>{{ profile.date_entered_mixpanel }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <a class="left carousel-control" href="#text-carousel" data-slide="prev">
-                <span class="glyphicon glyphicon-chevron-left"></span>
-              </a>
-              <a class="right carousel-control" href="#text-carousel" data-slide="next">
-                <span class="glyphicon glyphicon-chevron-right"></span>
-              </a>
-            </div>
-
-            <div class="text-center">
-              <a href="{% url 'edit-profile' %}"><button class="save btn btn-default">EDIT</button></a>
-            </div>
-          </div>
-
-          <div class="group-scroll" style="padding: 0px">
-            <div class="glyphicon glyphicon-question-sign pull-right" data-toggle="tooltip" data-placement="top" title="Your recurring availability -- scroll right inside the rows to see more. If you're accepting matches, you will continue to be matched. If you're not, turn it back on when you're ready in your profile!"></div>
-            <div class="text-center">
-              {% if profile.accept_matches == "Yes" %}
-                <div class="match-package">
-                  <img class="match-icon" src="{% static "img/green_icon.png" %}">
-                  <span data-toggle="tooltip" data-placement="top" title="You're ready to match! If you're OOO, turn this off by editing your profile.">Ready to Match!</span>
-                </div>
-              {% else %}
-                <div class="match-package">
-                  <img class="match-icon" src="{% static "img/red_icon.png" %}">
-                  <span data-toggle="tooltip" data-placement="top" title="You're not currently set to match. When you're ready turn this back on by editing your profile!.">Not Matching</span>
-                </div>
+              {% if current_match.what_is_your_favorite_movie %}
+                Their favorite movie is {{ current_match.what_is_your_favorite_movie }}.
               {% endif %}
-            </div>
-            <div class="table-container">
-              <table class="table" id="availability-table-view">
-                <thead>
-                  <tr>
-                    {% for time in times %}
-                    {% endfor %}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>MON</td>
-                    {% for time in times %}
-                      <td id="0-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
-                    {% endfor %}
-                  </tr>
-                  <tr>
-                    <td>TUE</td>
-                    {% for time in times %}
-                      <td id="1-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
-                    {% endfor %}
-                  </tr>
-                  <tr>
-                    <td>WED</td>
-                    {% for time in times %}
-                      <td id="2-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
-                    {% endfor %}
-                  </tr>
-                  <tr>
-                    <td>THU</td>
-                    {% for time in times %}
-                      <td id="3-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
-                    {% endfor %}
-                  </tr>
-                  <tr>
-                    <td>FRI</td>
-                    {% for time in times %}
-                      <td id="4-{{ time }}" data-toggle="tooltip" title="{{ time }}" data-placement="top"></td>
-                    {% endfor %}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <input type="hidden" id="recurring-availabilities" value="{{ recurring_values}}">
-            <div class="text-center">
-              <a href="{% url 'edit-availability' %}"><button class="save btn btn-default">EDIT</button></a>
+              </p>
+
             </div>
           </div>
-        </div>
+        {% endfor %}
+        {% if current_group_match_names %}
+          <div class="current-match">
+            <div class="profile-info">
+              <p>You have an upcoming group match with <span class="highlight">{{ current_group_match_names }}</span> on <span class="highlight">{{ current_match.time_available }}</span> via {{ current_match.google_hangout }}! They are from {{ current_match.department }}.
+              </p>
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+      {% if has_past_match %}
+        {% for past_match in past_matches %}
+          <div class="past-match">
+            <div class="match-name">{{ past_match.matched_name}}</div>
+            <div>{{ past_match.department }}</div>
+            <div>{{ past_match.time_available}}</div>
+          </div>
+        {% endfor %}
+        {% for past_group_match in past_group_matches %}
+          <div class="past-match match-name">{{ past_group_match }}</div>
+        {% endfor %}
+      {% endif %}
       </div>
+    </div>
 
   {% endblock %}
 

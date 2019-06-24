@@ -28,6 +28,7 @@ class Profile(AbstractBaseUser):
 
     picture_url = models.CharField(null=True, max_length=255)
     what_is_your_favorite_animal = models.CharField(null=True, max_length=50)
+    what_is_your_favorite_movie = models.CharField(null=True, max_length=50)
     name_a_fun_fact_about_yourself = models.CharField(null=True, max_length=50)
     accept_matches = models.CharField(null=True, max_length=50)
     match_type = models.CharField(null=False, default='one-on-one', max_length=20)
@@ -59,6 +60,7 @@ class Availability(models.Model):
     time_available_utc = models.DateTimeField(default=timezone.now)
     picture_url = models.CharField(null=True, max_length=255)
     what_is_your_favorite_animal = models.CharField(null=True, max_length=50)
+    what_is_your_favorite_movie = models.CharField(null=True, max_length=50)
     name_a_fun_fact_about_yourself = models.CharField(null=True, max_length=50)
     department = models.CharField(null=True, max_length=50)
     timezone = models.CharField(null=True, max_length=50)

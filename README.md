@@ -140,3 +140,23 @@ Front-end
 - saving of distinct_id
 - identify on db's distinct_id
 - clear cookie upon logout
+
+
+## Sample data
+<div class="past-match">
+	<div class="match-name">Hermione Granger</div>
+	<div>Success</div>
+	<div>June 19, 2019</div>
+</div>
+<div class="past-match">
+	<div class="match-name">Ron Weasley</div>
+	<div>Support</div>
+	<div>April 10, 2019</div>
+</div>
+
+
+<div class="current-match">
+	<p>You have an upcoming match with <span class="highlight">Harry Potter</span> on <span class="highlight">July 31, 2019, noon</span> via video call! They are from Engineering.
+	A fun fact is that "I know how to fly a broomstick". Their favorite movie is Harry Potter and the Sorcerer's Stone.
+	</p>
+</div>

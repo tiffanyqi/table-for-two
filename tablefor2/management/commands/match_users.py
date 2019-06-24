@@ -237,7 +237,7 @@ class Command(BaseCommand):
         orig_av.matched_name = matched_profile.preferred_first_name + ' ' + matched_profile.last_name
         orig_av.matched_email = matched_profile.email
         orig_av.picture_url = matched_profile.picture_url
-        orig_av.what_is_your_favorite_animal = matched_profile.what_is_your_favorite_animal
+        orig_av.what_is_your_favorite_movie = matched_profile.what_is_your_favorite_movie
         orig_av.name_a_fun_fact_about_yourself = matched_profile.name_a_fun_fact_about_yourself
         orig_av.department = matched_profile.department
         orig_av.timezone = matched_profile.timezone
