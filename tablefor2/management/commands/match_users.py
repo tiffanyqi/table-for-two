@@ -298,8 +298,8 @@ class Command(BaseCommand):
 
         print('{} event created with {} at {}'.format(match_type, [p.email for p in profiles], start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
-        self.execute_mixpanel_calendar_invite(profiles, start_time)
+        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        # self.execute_mixpanel_calendar_invite(profiles, start_time)
 
     ### Helpers ###
 
@@ -381,7 +381,7 @@ class Command(BaseCommand):
                 last_matched_av = GroupAvailability.objects.filter(profile=profile).exclude(matched_group_users=None).latest('time_available_utc')
             # compare the time between the last accepted av and this av
             days_between = abs((av_time - last_matched_av.time_available_utc).days)
-            day_limit = 35 - 7 * profile.frequency  # max is 28 days, which is once per month
+            day_limit = 35 - 7 * int(profile.frequency)  # max is 28 days, which is once per month
             return days_between >= day_limit
 
         except ObjectDoesNotExist:  # if no latest_matched_av, it'll be true for sure

@@ -25,9 +25,8 @@ class BasicMatchUsersTestCase(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='Yes',
-            frequency='Once a month',
+            frequency=1,
             match_type='one-on-one',
-            accept_matches='Yes',
             date_entered_mixpanel=datetime.datetime(2016, 10, 31),
             distinct_id='tiffany'
         )
@@ -42,8 +41,7 @@ class BasicMatchUsersTestCase(TestCase):
             timezone='PST',
             google_hangout='No',
             match_type='one-on-one',
-            frequency='Once a month',
-            accept_matches='Yes',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2016, 11, 01),
             distinct_id='andrew'
         )
@@ -58,8 +56,7 @@ class BasicMatchUsersTestCase(TestCase):
             timezone='PST',
             match_type='one-on-one',
             google_hangout='Yes',
-            frequency='Once a month',
-            accept_matches='Yes',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2015, 11, 01),
             distinct_id='pj'
         )
@@ -74,8 +71,7 @@ class BasicMatchUsersTestCase(TestCase):
             google_hangout='Yes',
             match_type='one-on-one',
             timezone='CEST',
-            frequency='Once a month',
-            accept_matches='Yes',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2016, 06, 01),
             distinct_id='karima'
         )
@@ -90,8 +86,7 @@ class BasicMatchUsersTestCase(TestCase):
             google_hangout='Yes',
             match_type='one-on-one',
             timezone='EST',
-            frequency='Once a month',
-            accept_matches='Yes',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2013, 06, 01),
             distinct_id='tim'
         )
@@ -106,8 +101,7 @@ class BasicMatchUsersTestCase(TestCase):
             timezone='PST',
             google_hangout='Yes',
             match_type='one-on-one',
-            frequency='Once a month',
-            accept_matches='Yes',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2016, 01, 01),
             distinct_id='mike'
         )
@@ -122,8 +116,7 @@ class BasicMatchUsersTestCase(TestCase):
             timezone='PST',
             google_hangout='Yes',
             match_type='one-on-one',
-            frequency='Once a month',
-            accept_matches='No',
+            frequency=0,
             date_entered_mixpanel=datetime.datetime(2016, 01, 01),
             distinct_id='poop'
         )

@@ -36,9 +36,8 @@ class GroupMatchUsersTestCase(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='Yes',
-            frequency='Once a month',
+            frequency=1,
             match_type='group',
-            accept_matches='Yes',
             date_entered_mixpanel=datetime.datetime(2016, 10, 31),
             distinct_id='tiffany'
         )
@@ -53,8 +52,7 @@ class GroupMatchUsersTestCase(TestCase):
             timezone='PST',
             google_hangout='No',
             match_type='group',
-            frequency='Once a month',
-            accept_matches='Yes',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2016, 11, 1),
             distinct_id='andrew'
         )
@@ -69,8 +67,7 @@ class GroupMatchUsersTestCase(TestCase):
             timezone='PST',
             match_type='group',
             google_hangout='Yes',
-            frequency='Once a month',
-            accept_matches='Yes',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2015, 11, 1),
             distinct_id='pj'
         )
@@ -85,8 +82,7 @@ class GroupMatchUsersTestCase(TestCase):
             google_hangout='Yes',
             match_type='group',
             timezone='CEST',
-            frequency='Once a month',
-            accept_matches='Yes',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2016, 6, 1),
             distinct_id='karima'
         )
@@ -101,8 +97,7 @@ class GroupMatchUsersTestCase(TestCase):
             google_hangout='Yes',
             match_type='group',
             timezone='PST',
-            frequency='Once a month',
-            accept_matches='Yes',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2013, 6, 1),
             distinct_id='tim'
         )
@@ -117,8 +112,7 @@ class GroupMatchUsersTestCase(TestCase):
             timezone='PST',
             google_hangout='Yes',
             match_type='group',
-            frequency='Once a month',
-            accept_matches='Yes',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2016, 1, 1),
             distinct_id='mike'
         )
