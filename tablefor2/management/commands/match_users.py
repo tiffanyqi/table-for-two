@@ -91,13 +91,13 @@ class Command(BaseCommand):
         Checks to see if the matching profiles are valid employees, otherwise	
         set to not accepting matches	
         """	
-        for profile in Profile.objects.filter(accept_matches='Yes'):	
+        for profile in Profile.objects.filter(frequency__gt=0):	
             try:	
                 employees[profile.email]	
             except KeyError:	
-                profile.accept_matches = 'No'	
+                profile.frequency = 0	
                 profile.save()
-                mp.people_set(original_profile.distinct_id, {'Accepting Matches': 'No'})
+                mp.people_set(original_profile.distinct_id, {'Accepting Matches': 'No', 'Frequency': 0})
                 print('Deactivated ' + profile.email)
 
     def create_availabilities(self, today):
@@ -108,7 +108,7 @@ class Command(BaseCommand):
         availabilities = []
         recurrings = RecurringAvailability.objects.all()
         for rec_av in recurrings:
-            if rec_av.profile.accept_matches == 'Yes':
+            if rec_av.profile.frequency > 0:
                 day = rec_av.day  # num of week
                 time = determine_ampm(rec_av.time)  # HH:MM, miltary
                 time_available = get_next_weekday(today, day, time)
@@ -166,9 +166,9 @@ class Command(BaseCommand):
         today = datetime.datetime.utcnow().date()
         matches = []
         # iterate through all profiles regardless of availability
-        for new_profile in Profile.objects.filter(match_type='one-on-one', accept_matches='Yes').order_by('-date_entered_mixpanel'):
+        for new_profile in Profile.objects.filter(match_type='one-on-one', frequency__gt=0).order_by('-date_entered_mixpanel'):
             new_profile_availabilities = Availability.objects.filter(profile=new_profile, time_available_utc__gte=today)
-            for old_profile in Profile.objects.filter(accept_matches='Yes', date_entered_mixpanel__lt=new_profile.date_entered_mixpanel).order_by('date_entered_mixpanel'):
+            for old_profile in Profile.objects.filter(frequency__gt=0, date_entered_mixpanel__lt=new_profile.date_entered_mixpanel).order_by('date_entered_mixpanel'):
                 old_profile_availabilities = Availability.objects.filter(profile=old_profile, time_available_utc__gte=today)
 
                 # check each av in the profile
@@ -196,7 +196,7 @@ class Command(BaseCommand):
         for location in locations:
             # assuming these are all lunchtime avs from av creation
             in_progress_matched_profiles = []
-            for av in GroupAvailability.objects.filter(profile__location=location, time_available_utc__gte=today, profile__accept_matches='Yes'):
+            for av in GroupAvailability.objects.filter(profile__location=location, time_available_utc__gte=today, profile__frequency__gt=0):
                 if (self.check_fuzzy_match(av.profile, av, in_progress_matched_profiles)):
                     in_progress_matched_profiles.append(av.profile)
                 if len(in_progress_matched_profiles) == 4:
@@ -381,7 +381,8 @@ class Command(BaseCommand):
                 last_matched_av = GroupAvailability.objects.filter(profile=profile).exclude(matched_group_users=None).latest('time_available_utc')
             # compare the time between the last accepted av and this av
             days_between = abs((av_time - last_matched_av.time_available_utc).days)
-            return days_between >= 28
+            day_limit = 35 - 7 * profile.frequency  # max is 28 days, which is once per month
+            return days_between >= day_limit
 
         except ObjectDoesNotExist:  # if no latest_matched_av, it'll be true for sure
             return True

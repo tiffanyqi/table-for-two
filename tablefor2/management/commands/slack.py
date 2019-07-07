@@ -36,10 +36,10 @@ class Command(BaseCommand):
         Checks to see if the matching profiles are valid employees, otherwise	
         set to not accepting matches	
         """	
-        for profile in Profile.objects.filter(accept_matches='Yes'):	
+        for profile in Profile.objects.filter(frequency__gt=0):	
             try:	
                 employees[profile.email]	
             except KeyError:	
-                profile.accept_matches = "No"	
+                profile.frequency = 0	
                 profile.save()	
                 print("Deactivated " + profile.email)

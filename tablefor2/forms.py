@@ -68,7 +68,6 @@ class ProfileForm(forms.Form):
     location = forms.ChoiceField(choices=LOCATIONS)
     timezone = forms.ChoiceField(choices=TIMEZONES, help_text='Choose the closest city in your timezone')
     date_entered_mixpanel = forms.DateField(help_text='(When did you join Mixpanel? Format in MM/DD/YYYY or YYYY-MM-DD)')
-    accept_matches = forms.ChoiceField(choices=BOOLEANS, help_text="Choose 'Yes' if you are just starting!")
     frequency = forms.ChoiceField(choices=FREQUENCY, help_text='How often do you want to participate?')
     match_type = forms.ChoiceField(choices=MATCH_TYPES, help_text='Choose your match preference. You can choose to be in a group or a one on one.')
     google_hangout = forms.ChoiceField(label="Video call", choices=BOOLEANS, help_text='If you are not matched with someone in your area, would you be willing to video call?')
@@ -100,16 +99,10 @@ class ProfileForm(forms.Form):
             raise forms.ValidationError('Please select your video calling preference.')
         return google_hangout
 
-    def clean_accept_matches(self):
-        accept_matches = self.cleaned_data.get('accept_matches')
-        if accept_matches == '--':
-            raise forms.ValidationError("Please select your matching preference. Select 'Yes' if you're just starting!")
-        return accept_matches
-
     def clean_frequency(self):
         frequency = self.cleaned_data.get('frequency')
         if frequency == '--':
-            raise forms.ValidationError('Please select your frequency to participate.')
+            raise forms.ValidationError('Please select your frequency per month to participate.')
         return frequency
 
     def clean_match_type(self):
