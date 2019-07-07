@@ -2,7 +2,7 @@ $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip({
     container : 'body'
   });
-  if ($('h1').text() !== 'Welcome to Table for Two!' && $('h1').text() !== 'Edit Your Profile') {
+  if ($('h1').text() === 'Edit Your Recurring Availability') {
     toggleSelected();
     populateTimes();
   }
