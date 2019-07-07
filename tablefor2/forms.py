@@ -53,10 +53,12 @@ MATCH_TYPES = (
 )
 
 FREQUENCY = (
-    ('--', 'Select a Frequency'),
-    # ('Once a week', 'Once a week'),
-    # ('Once every other week', 'Once every other week'),
-    ('Once a month', 'Once a month')
+    ('--', 'Select a frequency per month'),
+    (0, '0'),
+    (1, '1'),
+    (2, '2'),
+    (3, '3'),
+    (4, '4'),
 )
 
 
