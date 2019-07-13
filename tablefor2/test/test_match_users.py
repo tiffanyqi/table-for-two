@@ -12,13 +12,17 @@ class BasicMatchUsersTestCase(TestCase):
     past2 = datetime.datetime(2016, 12, 5, 12, 0, tzinfo=pytz.UTC)
     future = datetime.datetime(2030, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
     future2 = datetime.datetime(2030, 11, 2, 12, 0, tzinfo=pytz.UTC)
+    week1 = datetime.datetime(2030, 11, 2, 12, 0, tzinfo=pytz.UTC)
+    week2 = datetime.datetime(2030, 11, 14, 12, 0, tzinfo=pytz.UTC)
+    week3 = datetime.datetime(2030, 11, 21, 12, 0, tzinfo=pytz.UTC)
+    week4 = datetime.datetime(2030, 11, 28, 12, 0, tzinfo=pytz.UTC)
 
     # setup
     def init_profiles(self):
         # tiffany, Success, SF, No, once a month
         Profile.objects.create(
             first_name='tiffany',
-            last_name='qi',
+            last_name='test',
             preferred_first_name='tiffany',
             email='tiffany@TEST-mixpanel.com',
             department='Success',
@@ -33,7 +37,7 @@ class BasicMatchUsersTestCase(TestCase):
         # andrew, Engineering, SF, No, once a month
         Profile.objects.create(
             first_name='andrew',
-            last_name='huang',
+            last_name='test',
             preferred_first_name='andrew',
             email='andrew@not-TEST-mixpanel.com',
             department='Engineering',
@@ -42,13 +46,13 @@ class BasicMatchUsersTestCase(TestCase):
             google_hangout='No',
             match_type='one-on-one',
             frequency=1,
-            date_entered_mixpanel=datetime.datetime(2016, 11, 01),
+            date_entered_mixpanel=datetime.datetime(2016, 11, 1),
             distinct_id='andrew'
         )
         # PJ, Success, SF, Yes, once a month
         Profile.objects.create(
             first_name='philip',
-            last_name='ople',
+            last_name='test',
             preferred_first_name='pj',
             email='pj@TEST-mixpanel.com',
             department='Success',
@@ -57,13 +61,13 @@ class BasicMatchUsersTestCase(TestCase):
             match_type='one-on-one',
             google_hangout='Yes',
             frequency=1,
-            date_entered_mixpanel=datetime.datetime(2015, 11, 01),
+            date_entered_mixpanel=datetime.datetime(2015, 11, 1),
             distinct_id='pj'
         )
         # Karima, Success, Other, Yes, once a month
         Profile.objects.create(
             first_name='karima',
-            last_name='el moujahid',
+            last_name='test',
             preferred_first_name='karima',
             email='karima@TEST-mixpanel.com',
             department='Success',
@@ -72,13 +76,13 @@ class BasicMatchUsersTestCase(TestCase):
             match_type='one-on-one',
             timezone='CEST',
             frequency=1,
-            date_entered_mixpanel=datetime.datetime(2016, 06, 01),
+            date_entered_mixpanel=datetime.datetime(2016, 6, 1),
             distinct_id='karima'
         )
         # Tim, Engineering, New York, Yes, once a month
         Profile.objects.create(
             first_name='tim',
-            last_name='trefen',
+            last_name='test',
             preferred_first_name='tim',
             email='tim@TEST-mixpanel.com',
             department='Engineering',
@@ -87,13 +91,13 @@ class BasicMatchUsersTestCase(TestCase):
             match_type='one-on-one',
             timezone='EST',
             frequency=1,
-            date_entered_mixpanel=datetime.datetime(2013, 06, 01),
+            date_entered_mixpanel=datetime.datetime(2013, 6, 1),
             distinct_id='tim'
         )
         # Mike, Sales, SF, Yes, once a month
         Profile.objects.create(
             first_name='michael',
-            last_name='walker',
+            last_name='test',
             preferred_first_name='mike',
             email='mike@TEST-mixpanel.com',
             department='Sales',
@@ -102,10 +106,10 @@ class BasicMatchUsersTestCase(TestCase):
             google_hangout='Yes',
             match_type='one-on-one',
             frequency=1,
-            date_entered_mixpanel=datetime.datetime(2016, 01, 01),
+            date_entered_mixpanel=datetime.datetime(2016, 1, 1),
             distinct_id='mike'
         )
-        # Poop, Engineering, SF, Yes, once a month
+        # Poop, Engineering, SF, 0 frequency
         Profile.objects.create(
             first_name='poop',
             last_name='test',
@@ -117,7 +121,7 @@ class BasicMatchUsersTestCase(TestCase):
             google_hangout='Yes',
             match_type='one-on-one',
             frequency=0,
-            date_entered_mixpanel=datetime.datetime(2016, 01, 01),
+            date_entered_mixpanel=datetime.datetime(2016, 1, 1),
             distinct_id='poop'
         )
 
@@ -212,7 +216,7 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='tiffany'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='andrew huang',
+            matched_name='andrew test',
             matched_email='andrew@not-TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -229,14 +233,14 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='andrew'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='tiffany qi',
+            matched_name='tiffany test',
             matched_email='tiffany@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='andrew'),
             time_available=self.past2,
             time_available_utc=self.past2,
-            matched_name='pj ople',
+            matched_name='pj test',
             matched_email='pj@TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -248,14 +252,14 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='philip'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='mike walker',
+            matched_name='mike test',
             matched_email='mike@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='philip'),
             time_available=self.past2,
             time_available_utc=self.past2,
-            matched_name='andrew huang',
+            matched_name='andrew test',
             matched_email='andrew@not-TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -267,7 +271,7 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='karima'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='tim trefen',
+            matched_name='tim test',
             matched_email='tim@TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -284,7 +288,7 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='tim'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='karima el moujahid',
+            matched_name='karima test',
             matched_email='karima@TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -301,7 +305,7 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='michael'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='pj ople',
+            matched_name='pj test',
             matched_email='pj@TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -330,7 +334,7 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='tiffany'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='andrew huang',
+            matched_name='andrew test',
             matched_email='andrew@not-TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -352,21 +356,21 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='andrew'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='tiffany qi',
+            matched_name='tiffany test',
             matched_email='tiffany@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='andrew'),
             time_available=self.past2,
             time_available_utc=self.past2,
-            matched_name='pj ople',
+            matched_name='pj test',
             matched_email='pj@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='andrew'),
             time_available=self.future,
             time_available_utc=self.future,
-            matched_name='mike walker',
+            matched_name='mike test',
             matched_email='mike@TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -378,21 +382,21 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='philip'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='mike walker',
+            matched_name='mike test',
             matched_email='mike@TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='philip'),
             time_available=self.past2,
             time_available_utc=self.past2,
-            matched_name='andrew huang',
+            matched_name='andrew test',
             matched_email='andrew@not-TEST-mixpanel.com'
         )
         Availability.objects.create(
             profile=Profile.objects.get(first_name='philip'),
             time_available=self.future,
             time_available_utc=self.future,
-            matched_name='tim trefen',
+            matched_name='tim test',
             matched_email='tim@TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -404,7 +408,7 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='karima'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='tim trefen',
+            matched_name='tim test',
             matched_email='tim@TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -426,7 +430,7 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='tim'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='karima el moujahid',
+            matched_name='karima test',
             matched_email='karima@TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -438,7 +442,7 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='tim'),
             time_available=self.future,
             time_available_utc=self.future,
-            matched_name='pj ople',
+            matched_name='pj test',
             matched_email='pj@TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -450,7 +454,7 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='michael'),
             time_available=self.past,
             time_available_utc=self.past,
-            matched_name='pj ople',
+            matched_name='pj test',
             matched_email='pj@TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -462,7 +466,7 @@ class BasicMatchUsersTestCase(TestCase):
             profile=Profile.objects.get(first_name='michael'),
             time_available=self.future,
             time_available_utc=self.future,
-            matched_name='andrew huang',
+            matched_name='andrew test',
             matched_email='andrew@not-TEST-mixpanel.com'
         )
         Availability.objects.create(
@@ -600,8 +604,8 @@ class BasicMatchUsersTestCase(TestCase):
         t_av_future = Availability.objects.get(profile=t, time_available_utc=self.future)
         mike_av_past2 = Availability.objects.get(profile=mike, time_available_utc=self.past2)
 
-        self.assertEqual(t_av_past.matched_name, 'andrew huang')
-        self.assertEqual(a_av_past.matched_name, 'tiffany qi')
+        self.assertEqual(t_av_past.matched_name, 'andrew test')
+        self.assertEqual(a_av_past.matched_name, 'tiffany test')
         self.assertEqual(mike_av_past2.matched_name, None)
 
         matches = [
@@ -702,9 +706,9 @@ class BasicMatchUsersTestCase(TestCase):
         self.assertEqual(Command.check_not_currently_matched(Command(), pj_av), True)
 
         # case where users just were matched
-        t_av.matched_name = 'andrew huang'
+        t_av.matched_name = 'andrew test'
         t_av.matched_email = 'andrew@not-TEST-mixpanel.com'
-        a_av.matched_name = 'tiffany qi'
+        a_av.matched_name = 'tiffany test'
         a_av.matched_email = 'tiffany@TEST-mixpanel.com'
 
         self.assertEqual(Command.check_not_currently_matched(Command(), a_av), False)
@@ -724,10 +728,10 @@ class BasicMatchUsersTestCase(TestCase):
         self.assertEqual(Command.check_frequency(Command(), a_av, a), True)
 
         # case where users just were matched
-        mike_av.matched_name = 'andrew huang'
+        mike_av.matched_name = 'andrew test'
         mike_av.matched_email = 'andrew@not-TEST-mixpanel.com'
         mike_av.save()
-        a_av.matched_name = 'mike walker'
+        a_av.matched_name = 'mike test'
         a_av.matched_email = 'mike@TEST-mixpanel.com'
         a_av.save()
 

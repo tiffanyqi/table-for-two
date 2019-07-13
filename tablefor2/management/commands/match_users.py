@@ -56,7 +56,7 @@ class Command(BaseCommand):
     - [x] Compares only users who have a different profile.department
     - [x] Checks same location first, else if both open to a google_hangout
     - [x] Ensure that the 1x/mo frequency has not yet been satisifed
-    - [ ] (v2) Ensure that their chosen frequency has not yet been satisfied
+    - [x] (v2) Ensure that their chosen frequency has not yet been satisfied
     - [x] If two users finally fits all of these criteria, we'll take the two
     Availability models and set the matched_name and matched_email
     - [x] Send a calendar invite to both parties
@@ -298,8 +298,8 @@ class Command(BaseCommand):
 
         print('{} event created with {} at {}'.format(match_type, [p.email for p in profiles], start_time))
         # event = service.events().insert(calendarId='primary', body=event).execute()
-        # event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
-        # self.execute_mixpanel_calendar_invite(profiles, start_time)
+        event = service.events().insert(calendarId='primary', body=event, sendNotifications=True).execute()
+        self.execute_mixpanel_calendar_invite(profiles, start_time)
 
     ### Helpers ###
 
