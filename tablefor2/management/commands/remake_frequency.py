@@ -1,6 +1,8 @@
 from __future__ import print_function
 from django.core.management.base import BaseCommand
 
+from mixpanel import Mixpanel
+
 from tablefor2.models import Profile
 from tablefor2.settings import MP_TOKEN
 
@@ -21,4 +23,5 @@ class Command(BaseCommand):
             else:
                 profile.frequency = 0
             profile.save()
-            mp.people_set(profile.distinct_id, {'Frequency': profile.frequency})
+            if profile.distinct_id:
+                mp.people_set(profile.distinct_id, {'Frequency': profile.frequency})
