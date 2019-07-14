@@ -97,7 +97,7 @@ class Command(BaseCommand):
             except KeyError:	
                 profile.frequency = 0	
                 profile.save()
-                mp.people_set(original_profile.distinct_id, {'Accepting Matches': 'No', 'Frequency': 0})
+                mp.people_set(profile.distinct_id, {'Accepting Matches': 'No', 'Frequency': 0})
                 print('Deactivated ' + profile.email)
 
     def create_availabilities(self, today):
@@ -119,6 +119,7 @@ class Command(BaseCommand):
                     except:
                         av = Availability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
                         av.save()
+                    availabilities.append(av)
                 else:
                     if rec_av.time == '12PM':
                         try:
@@ -126,7 +127,7 @@ class Command(BaseCommand):
                         except:
                             av = GroupAvailability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
                             av.save()
-                availabilities.append(av)
+                        availabilities.append(av)
         print(Availability.objects.filter(time_available__gte=today).count(), ' created')
         return availabilities
 
@@ -148,7 +149,7 @@ class Command(BaseCommand):
         old_group_availabilities = GroupAvailability.objects.filter(time_available_utc__lt=today, matched_group_users=None)
         print('deleted ', old_availabilities.count() + old_group_availabilities.count())
         old_availabilities.delete()
-        old_group_availabilities.dekete()
+        old_group_availabilities.delete()
         return future_availabilities
 
     def runs_matches(self):
