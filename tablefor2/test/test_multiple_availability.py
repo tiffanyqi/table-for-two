@@ -34,8 +34,7 @@ class MatchMultipleAvailabilityTestCase(TestCase):
                 timezone='PST',
                 google_hangout='Yes',
                 match_type='one-on-one',
-                frequency='Once a month',
-                accept_matches='Yes'
+                frequency=1,
             )
 
     def fresh_setup(self):
@@ -72,8 +71,7 @@ class MatchMultipleAvailabilityTestCase(TestCase):
             timezone='PST',
             google_hangout='Yes',
             match_type='one-on-one',
-            frequency='Once a month',
-            accept_matches='Yes'
+            frequency=1,
         )
 
         Availability.objects.create(

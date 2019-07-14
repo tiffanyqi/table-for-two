@@ -20,7 +20,7 @@ class AppHelpersTestCase(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='No',
-            frequency='Once a month',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2016, 10, 31),
             match_type='one-on-one',
             distinct_id='tiffany'
@@ -35,7 +35,7 @@ class AppHelpersTestCase(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='No',
-            frequency='Once a month',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2016, 10, 31),
             match_type='one-on-one',
             distinct_id='another'
@@ -51,7 +51,7 @@ class AppHelpersTestCase(TestCase):
             google_hangout='Yes',
             timezone='EST',
             match_type='one-on-one',
-            frequency='Once a month',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2013, 6, 1),
             distinct_id='tim'
         )
@@ -66,7 +66,7 @@ class AppHelpersTestCase(TestCase):
             google_hangout='Yes',
             match_type='one-on-one',
             timezone='CEST',
-            frequency='Once a month',
+            frequency=1,
             date_entered_mixpanel=datetime.datetime(2016, 6, 1),
             distinct_id='karima'
         )

@@ -22,7 +22,7 @@ class Profile(AbstractBaseUser):
     location = models.CharField(null=True, max_length=50)
     timezone = models.CharField(null=True, max_length=50)
     google_hangout = models.CharField(null=True, max_length=50)
-    frequency = models.CharField(null=True, max_length=50)
+    frequency = models.IntegerField(default=1)
     number_of_matches = models.IntegerField(default=0)
     date_entered_mixpanel = models.DateField(null=True)
 
@@ -30,7 +30,7 @@ class Profile(AbstractBaseUser):
     what_is_your_favorite_animal = models.CharField(null=True, max_length=50)
     what_is_your_favorite_movie = models.CharField(null=True, max_length=50)
     name_a_fun_fact_about_yourself = models.CharField(null=True, max_length=50)
-    accept_matches = models.CharField(null=True, max_length=50)
+    accept_matches = models.CharField(null=True, max_length=50)  # deprecated
     match_type = models.CharField(null=False, default='one-on-one', max_length=20)
 
     objects = UserManager()

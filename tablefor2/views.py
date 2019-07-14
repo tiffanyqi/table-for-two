@@ -118,7 +118,6 @@ def edit_profile(request):
         data = {
             'preferred_first_name': profile.preferred_first_name,
             'department': profile.department,
-            'accept_matches': profile.accept_matches,
             'location': profile.location,
             'timezone': profile.timezone,
             'google_hangout': profile.google_hangout,
@@ -156,7 +155,6 @@ def save_profile(request):
             # save the form info to this profile
             profile.preferred_first_name = form.cleaned_data.get('preferred_first_name')
             profile.department = form.cleaned_data.get('department')
-            profile.accept_matches = form.cleaned_data.get('accept_matches')
             profile.google_hangout = form.cleaned_data.get('google_hangout')
             profile.location = form.cleaned_data.get('location')
             profile.timezone = form.cleaned_data.get('timezone')
@@ -174,7 +172,6 @@ def save_profile(request):
                 'Preferred Name': profile.preferred_first_name,
                 '$email': profile.email,
                 'Department': profile.department,
-                'Accepting Matches': profile.accept_matches,
                 'Google Hangout': profile.google_hangout,
                 'Location': profile.location,
                 'Timezone': profile.timezone,

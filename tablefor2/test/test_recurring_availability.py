@@ -19,9 +19,8 @@ class RecurringAvailabilityTest(TestCase):
             location='San Francisco',
             timezone='PST',
             google_hangout='No',
-            frequency='Once a month',
+            frequency=1,
             match_type='one-on-one',
-            accept_matches='Yes',
             date_entered_mixpanel=datetime.datetime(2016, 10, 31),
             distinct_id='tiffany'
         )
