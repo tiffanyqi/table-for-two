@@ -43,8 +43,8 @@ def index(request):
 
             return render(request, 'tablefor2/index-logged-in.html', {
                 'profile': profile,
-                'has_current_match': current_matches or current_group_avs,
-                'has_past_match': past_matches or past_group_matches,
+                'has_current_match': current_matches or current_group_match_names,
+                'has_past_match': past_matches or past_group_match_names,
                 'current_matches': current_matches,
                 'past_matches': past_matches,
                 'current_group_matches': current_group_match_names,
