@@ -30,4 +30,4 @@ class HelpersTestCase(TestCase):
         self.assertEqual(get_string_for_and_format(group[0], 0, array_len), 'test 1, ')
         self.assertEqual(get_string_for_and_format(group[1], 1, array_len), 'test 2, ')
         self.assertEqual(get_string_for_and_format(group[2], 2, array_len), 'test 3, ')
-        self.assertEqual(get_string_for_and_format(group[3], 3, array_len), 'and test 4.')
+        self.assertEqual(get_string_for_and_format(group[3], 3, array_len), 'and test 4')

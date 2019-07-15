@@ -17,7 +17,7 @@ def calculate_utc(profile, time_available):
 
 
 def get_names_from_group_avs(avs):
-    names = []
+    names = ''
     for av in avs:
         name_string = ''
         emails = json.loads(av.matched_group_users)
@@ -25,5 +25,5 @@ def get_names_from_group_avs(avs):
             prof = Profile.objects.get(email=email)
             name = '{} {}'.format(prof.preferred_first_name, prof.last_name)
             name_string += get_string_for_and_format(name, i, len(emails))
-        names.append(name_string)
+        names += name_string
     return names

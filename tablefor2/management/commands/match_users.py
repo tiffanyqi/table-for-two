@@ -97,7 +97,7 @@ class Command(BaseCommand):
             except KeyError:	
                 profile.frequency = 0	
                 profile.save()
-                mp.people_set(original_profile.distinct_id, {'Accepting Matches': 'No', 'Frequency': 0})
+                mp.people_set(profile.distinct_id, {'Accepting Matches': 'No', 'Frequency': 0})
                 print('Deactivated ' + profile.email)
 
     def create_availabilities(self, today):
@@ -119,15 +119,17 @@ class Command(BaseCommand):
                     except:
                         av = Availability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
                         av.save()
+                    availabilities.append(av)
                 else:
-                    if rec_av.time == '12PM':
+                    if rec_av.time == '12:00PM' or rec_av.time == '12:30PM':
                         try:
                             av = GroupAvailability.objects.get(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
                         except:
                             av = GroupAvailability(profile=rec_av.profile, time_available=time_available, time_available_utc=utc)
                             av.save()
-                availabilities.append(av)
-        print(Availability.objects.filter(time_available__gte=today).count(), ' created')
+                        availabilities.append(av)
+        print(Availability.objects.filter(time_available__gte=today).count(), 'one on one availabilities created')
+        print(GroupAvailability.objects.filter(time_available__gte=today).count(), 'group availabilities created')
         return availabilities
 
     def delete_availabilities(self, today):
@@ -146,9 +148,9 @@ class Command(BaseCommand):
         # prevent excess rows from being generated for heroku
         old_availabilities = Availability.objects.filter(time_available_utc__lt=today, matched_name=None)
         old_group_availabilities = GroupAvailability.objects.filter(time_available_utc__lt=today, matched_group_users=None)
-        print('deleted ', old_availabilities.count() + old_group_availabilities.count())
+        print('deleted ', old_availabilities.count() + old_group_availabilities.count(), 'total availabilities')
         old_availabilities.delete()
-        old_group_availabilities.dekete()
+        old_group_availabilities.delete()
         return future_availabilities
 
     def runs_matches(self):
@@ -479,7 +481,7 @@ class Command(BaseCommand):
         """
         Execute Mixpanel code from calendar invites
         """
-        for prof in profiles:
+        for profile in profiles:
             mp.track(profile.distinct_id, 'Calendar Invite Sent', {
                 'Meeting Time': start_time.isoformat(),
                 'Timezone': profile.timezone

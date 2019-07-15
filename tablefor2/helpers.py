@@ -58,6 +58,6 @@ def get_next_weekday(today, day, time):
 # returns a string somewhere in the position of 'string 1, string 2, and string 3'
 def get_string_for_and_format(string, curr_index, array_len):
     if curr_index == array_len - 1:
-        return 'and {}.'.format(string)
+        return 'and {}'.format(string)
     elif curr_index < array_len:
         return '{}, '.format(string)
