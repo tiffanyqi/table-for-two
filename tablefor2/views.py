@@ -48,7 +48,7 @@ def index(request):
                 'current_matches': current_matches,
                 'past_matches': past_matches,
                 'current_group_matches': current_group_match_names,
-                'current_group_av': current_group_avs.first(),
+                'current_group_av': current_group_avs.first() if current_group_avs else None,
                 'past_group_matches': past_group_match_names,
             })
     else:
