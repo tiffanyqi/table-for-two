@@ -6,6 +6,7 @@ from tablefor2 import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^dashboard$', views.dashboard, name='dashboard'),
     url(r'^admin/', admin.site.urls),
 
     url(r'^availability/edit/$', views.edit_availability, name='edit-availability'),
