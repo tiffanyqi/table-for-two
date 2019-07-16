@@ -17,7 +17,12 @@ mp = Mixpanel(MP_TOKEN)
 
 
 def index(request):
-    if request.user.is_authenticated:
+    return render(request, 'tablefor2/index-logged-out.html')
+
+
+@login_required
+def dashboard(request):
+    try:
         profile = Profile.objects.get(email=request.user.email)
         recurring = RecurringAvailability.objects.filter(profile=profile)
 
@@ -51,8 +56,8 @@ def index(request):
                 'current_group_av': current_group_avs.first() if current_group_avs else None,
                 'past_group_matches': past_group_match_names,
             })
-    else:
-        return render(request, 'tablefor2/index-logged-out.html')
+    except:
+        return render(request, 'tablefor2/404.html')
 
 
 # prepares the edit screen for recurring availability
@@ -103,7 +108,7 @@ def save_availability(request):
             })
 
         time.sleep(1)  # wait until everything's done saving, hacky
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/dashboard')
     else:
         return HttpResponseRedirect('tablefor2/availability/edit.html')
 
@@ -184,7 +189,7 @@ def save_profile(request):
             })
 
             # add a message here?
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/dashboard")
 
     return render(request, 'tablefor2/profile/edit.html', {'form': form})
 

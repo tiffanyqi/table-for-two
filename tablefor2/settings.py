@@ -78,7 +78,7 @@ TEMPLATES = [
 ]
 
 LOGIN_URL = '/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/dashboard'
 
 SOCIAL_AUTH_AUTHENTICATION_BACKENDS = (
     'social_core.backends.open_id.OpenIdAuth',
