@@ -108,7 +108,7 @@ def save_availability(request):
             })
 
         time.sleep(1)  # wait until everything's done saving, hacky
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/dashboard')
     else:
         return HttpResponseRedirect('tablefor2/availability/edit.html')
 
@@ -189,7 +189,7 @@ def save_profile(request):
             })
 
             # add a message here?
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/dashboard")
 
     return render(request, 'tablefor2/profile/edit.html', {'form': form})
 
