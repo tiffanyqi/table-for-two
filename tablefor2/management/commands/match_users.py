@@ -91,7 +91,7 @@ class Command(BaseCommand):
         Checks to see if the matching profiles are valid employees, otherwise	
         set to not accepting matches	
         """	
-        for profile in Profile.objects.filter(frequency__gt=0):	
+        for profile in Profile.objects.filter(frequency__gt=0):
             try:	
                 employees[profile.email]	
             except KeyError:	
@@ -168,9 +168,9 @@ class Command(BaseCommand):
         today = datetime.datetime.utcnow().date()
         matches = []
         # iterate through all profiles regardless of availability
-        for new_profile in Profile.objects.filter(match_type='one-on-one', frequency__gt=0).order_by('-date_entered_mixpanel'):
+        for new_profile in Profile.objects.filter(match_type='one-on-one', frequency__gt=0).order_by('-date_entered_mixpanel').exclude(date_entered_mixpanel=None):
             new_profile_availabilities = Availability.objects.filter(profile=new_profile, time_available_utc__gte=today)
-            for old_profile in Profile.objects.filter(frequency__gt=0, date_entered_mixpanel__lt=new_profile.date_entered_mixpanel).order_by('date_entered_mixpanel'):
+            for old_profile in Profile.objects.filter(frequency__gt=0, date_entered_mixpanel__lt=new_profile.date_entered_mixpanel).order_by('date_entered_mixpanel').exclude(date_entered_mixpanel=None):
                 old_profile_availabilities = Availability.objects.filter(profile=old_profile, time_available_utc__gte=today)
 
                 # check each av in the profile
