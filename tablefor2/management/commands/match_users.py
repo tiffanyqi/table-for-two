@@ -198,13 +198,22 @@ class Command(BaseCommand):
         for location in locations:
             # assuming these are all lunchtime avs from av creation
             in_progress_matched_profiles = []
+            available_slots_to_profiles = {}
             for av in GroupAvailability.objects.filter(profile__location=location, time_available_utc__gte=today, profile__frequency__gt=0):
-                if (self.check_fuzzy_match(av.profile, av, in_progress_matched_profiles)):
-                    in_progress_matched_profiles.append(av.profile)
-                if len(in_progress_matched_profiles) == 4:
-                    group_matches[av.time_available_utc] = in_progress_matched_profiles  
-                    self.match_group(av.time_available_utc, in_progress_matched_profiles)
-                    in_progress_matched_profiles = []
+                if av.time_available_utc in available_slots_to_profiles:
+                    available_slots_to_profiles[av.time_available_utc].append(av.profile)
+                else:
+                    available_slots_to_profiles[av.time_available_utc] = [av.profile]
+            for time_slot, profiles in available_slots_to_profiles.iteritems():
+                for prof in profiles:
+                    av = GroupAvailability.objects.get(profile=prof, time_available_utc=time_slot)
+                    if (self.check_fuzzy_match(av.profile, av, in_progress_matched_profiles)):
+                        in_progress_matched_profiles.append(av.profile)
+                    if len(in_progress_matched_profiles) == 4:
+                        group_matches[time_slot] = in_progress_matched_profiles
+                        self.match_group(time_slot, in_progress_matched_profiles)
+                        in_progress_matched_profiles = []
+                in_progress_matched_profiles = []
 
         # send the invites
         for time, matches in group_matches.items():
