@@ -14,15 +14,25 @@ class HelpersTestCase(TestCase):
         self.assertEqual(determine_ampm('9:30AM'), '9:30')
 
     def test_get_next_weekday(self):
-        today = datetime.datetime(2017, 8, 21)
+        today = datetime.datetime(2017, 8, 21) # Monday
         self.assertEqual(get_next_weekday(today, '0', '12:00'), datetime.datetime(2017, 8, 28, 12, 0))
         self.assertEqual(get_next_weekday(today, '1', '1:00'), datetime.datetime(2017, 8, 29, 1, 0))
         self.assertEqual(get_next_weekday(today, '4', '15:30'), datetime.datetime(2017, 9, 1, 15, 30))
 
-        today = datetime.datetime(2017, 8, 24)
+        today = datetime.datetime(2017, 8, 24) # Thursday
         self.assertEqual(get_next_weekday(today, '0', '12:00'), datetime.datetime(2017, 8, 28, 12, 0))
         self.assertEqual(get_next_weekday(today, '1', '1:00'), datetime.datetime(2017, 8, 29, 1, 0))
         self.assertEqual(get_next_weekday(today, '4', '15:30'), datetime.datetime(2017, 9, 1, 15, 30))
+
+        today = datetime.datetime(2019, 7, 19) # Friday
+        self.assertEqual(get_next_weekday(today, '0', '12:00'), datetime.datetime(2019, 7, 29, 12, 0))
+        self.assertEqual(get_next_weekday(today, '1', '1:00'), datetime.datetime(2019, 7, 30, 1, 0))
+        self.assertEqual(get_next_weekday(today, '4', '15:30'), datetime.datetime(2019, 8, 2, 15, 30))
+
+        today = datetime.datetime(2019, 7, 21) # Sunday
+        self.assertEqual(get_next_weekday(today, '0', '12:00'), datetime.datetime(2019, 7, 29, 12, 0))
+        self.assertEqual(get_next_weekday(today, '1', '1:00'), datetime.datetime(2019, 7, 30, 1, 0))
+        self.assertEqual(get_next_weekday(today, '4', '15:30'), datetime.datetime(2019, 8, 2, 15, 30))
 
     def test_get_string_for_and_format(self):
         group = ['test 1', 'test 2', 'test 3', 'test 4'] # should return 'test 1, test 2, test 3, and test 4'
