@@ -251,7 +251,7 @@ class GroupMatchUsersTestCase(TestCase):
         group = [t, pj, k]
         self.assertEqual(Command.check_fuzzy_previous_matches(Command(), a, group), False)
         group = [t]
-    #     self.assertEqual(Command.check_fuzzy_previous_matches(Command(), a, group), True)
+        self.assertEqual(Command.check_fuzzy_previous_matches(Command(), a, group), True)
 
     def test_check_fuzzy_double_previous_matches(self):
         self.fresh_setup()
