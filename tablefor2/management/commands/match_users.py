@@ -207,7 +207,7 @@ class Command(BaseCommand):
             for time_slot, profiles in available_slots_to_profiles.iteritems():
                 for prof in profiles:
                     av = GroupAvailability.objects.get(profile=prof, time_available_utc=time_slot)
-                    if (self.check_fuzzy_match(av.profile, av, in_progress_matched_profiles)):
+                    if self.check_fuzzy_match(av.profile, av, in_progress_matched_profiles):
                         in_progress_matched_profiles.append(av.profile)
                     if len(in_progress_matched_profiles) == 4:
                         group_matches[time_slot] = in_progress_matched_profiles
