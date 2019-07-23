@@ -103,7 +103,7 @@ class ProfileForm(forms.Form):
         location = self.cleaned_data.get('location')
         if timezone == '--':
             raise forms.ValidationError('Please select the closest city in your timezone.')
-        elif location != '--' and LOCATION_TO_TIMEZONE[location] != timezone:
+        elif location != '--' and location !== 'Other' and LOCATION_TO_TIMEZONE[location] != timezone:
             raise forms.ValidationError('Please change the timezone to match your city.')
         return timezone
 
