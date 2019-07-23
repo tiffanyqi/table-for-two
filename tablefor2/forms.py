@@ -40,6 +40,17 @@ TIMEZONES = (
     ('SGT', 'Singapore'),
 )
 
+LOCATION_TO_TIMEZONE = {
+    'San Francisco': 'PST',
+    'New York': 'EST',
+    'Seattle': 'PST',
+    'Austin': 'MST',
+    'London': 'BST',
+    'Paris': 'CEST',
+    'Barcelona': 'CEST',
+    'Singapore': 'SGT',
+}
+
 BOOLEANS = (
     ('--', 'Select a Choice'),
     ('Yes', 'Yes'),
@@ -89,8 +100,11 @@ class ProfileForm(forms.Form):
 
     def clean_timezone(self):
         timezone = self.cleaned_data.get('timezone')
+        location = self.cleaned_data.get('location')
         if timezone == '--':
             raise forms.ValidationError('Please select the closest city in your timezone.')
+        elif location != '--' and LOCATION_TO_TIMEZONE[location] != timezone:
+            raise forms.ValidationError('Please change the timezone to match your city.')
         return timezone
 
     def clean_google_hangout(self):
