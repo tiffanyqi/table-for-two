@@ -10,8 +10,8 @@ from tablefor2.management.commands.match_users import Command
 
 class GroupMatchUsersTestCase(TestCase):
     past = datetime.datetime(2016, 11, 5, 12, 0, tzinfo=pytz.UTC)  # 1478347200
-    future = datetime.datetime(2019, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
-    future2 = datetime.datetime(2019, 11, 2, 12, 0, tzinfo=pytz.UTC)
+    future = datetime.datetime(2030, 11, 1, 12, 0, tzinfo=pytz.UTC)
+    future2 = datetime.datetime(2030, 11, 2, 12, 0, tzinfo=pytz.UTC)
     first_names = ['tiffany', 'andrew', 'philip', 'karima', 'tim', 'michael']
 
     # setup
@@ -174,8 +174,8 @@ class GroupMatchUsersTestCase(TestCase):
         t = Profile.objects.get(first_name='tiffany')
         a = Profile.objects.get(first_name='andrew')
         pj = Profile.objects.get(first_name='philip')
-        tim = Profile.objects.get(first_name='tim')
-        group = {self.future2: [t, a, pj, tim]}
+        mike = Profile.objects.get(first_name='michael')
+        group = {self.future: [t, a, pj, mike]}
         self.assertEqual(Command.run_group_matches(Command()), group)
 
     def test_check_fuzzy_departments(self):

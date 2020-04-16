@@ -7,6 +7,10 @@ Table for Two is a web app that allows Mixpanelers the chance to meet with other
 - Set your own profile settings (location? google hangout?)
 - Matches folks automatically and puts the event on the calendar
 
+## How to run on your machine if you have everything installed
+- activate an env with `source tablefor2/bin/activate`
+- run with `python manage.py runserver`
+- go to `localhost:8000`
 
 ## How to run the matching system
 - Go to Heroku
