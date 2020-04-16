@@ -287,9 +287,9 @@ class Command(BaseCommand):
         start_time = time if match_type == 'group' else time.time_available_utc
         end_time = start_time + datetime.timedelta(minutes=30)
         description = "You are now matched for a Table for Two session! The session lasts how ever long you'd like, and you can meet "
-        description += "wherever you want. If you're on Google Hangout, please use the hangout link located in this event. If something "
+        description += "wherever you want. Please set up a Zoom call separately if you are unable to meet in person! If something "
         description += "comes up and you are unable to make the session, you are welcome to reschedule to a different time--don't be afraid "
-        description += "to reach out to them over Slack! If you have any questions, don't hesitate to Slack Tiffany Qi or Kate Ryan. Have fun! "
+        description += "to reach out to them over Slack. If you have any questions, don't hesitate to Slack Tiffany Qi. Have fun! "
         description += "You can opt out of table for 2 by going to tablefortwo.herokuapp.com."
 
         event = {

@@ -10,7 +10,7 @@ from tablefor2.management.commands.match_users import Command
 
 class GroupMatchUsersTestCase(TestCase):
     past = datetime.datetime(2016, 11, 5, 12, 0, tzinfo=pytz.UTC)  # 1478347200
-    future = datetime.datetime(2019, 11, 1, 12, 0, tzinfo=pytz.UTC)  # 1509537600
+    future = datetime.datetime(2019, 11, 1, 12, 0, tzinfo=pytz.UTC)
     future2 = datetime.datetime(2019, 11, 2, 12, 0, tzinfo=pytz.UTC)
     first_names = ['tiffany', 'andrew', 'philip', 'karima', 'tim', 'michael']
 
