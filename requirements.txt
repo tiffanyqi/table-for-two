@@ -22,7 +22,7 @@ pyasn1==0.3.7
 pyasn1-modules==0.1.5
 PyBambooHR==0.7.1
 pycparser==2.20
-PyJWT==1.5.3
+PyJWT==2.4.0
 python-openid==2.2.5
 pytz==2017.3
 requests==2.18.4
